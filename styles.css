@@ -10,11 +10,22 @@ body {
 }
 
 .navbar {
-    background-color: #333;
-    padding: 1rem;
+    background-color: #e6f0fa; /* Light blue background from the image */
+    padding: 10px 20px;
     display: flex;
-    justify-content: center;
     align-items: center;
+    border-radius: 25px; /* Rounded corners */
+    margin: 10px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.nav-logo {
+    margin-right: 20px;
+}
+
+.logo {
+    height: 30px; /* Adjust based on your logo size */
+    width: auto;
 }
 
 .nav-menu {
@@ -22,12 +33,33 @@ body {
     margin: 0;
     padding: 0;
     display: flex;
-    justify-content: center;
+    align-items: center;
     flex-wrap: wrap;
 }
 
 .nav-menu li {
-    margin: 0 10px;
+    margin: 0 15px;
+}
+
+.nav-button {
+    color: #000; /* Black text */
+    text-decoration: none;
+    font-weight: 500;
+    padding: 5px 10px;
+    transition: color 0.3s ease;
+}
+
+.nav-button:hover {
+    color: #0066cc; /* Blue on hover to match site theme */
+}
+
+.nav-toggle {
+    display: none;
+    color: #000;
+    font-size: 1.5rem;
+    cursor: pointer;
+    position: absolute;
+    right: 20px;
 }
 
 .button {
@@ -269,16 +301,14 @@ h2 {
 }
 
 @media (max-width: 768px) {
-    .awards-container {
-        grid-template-columns: 1fr;
-    }
-    
-    .award-card {
-        margin: 0;
-    }
     .navbar {
         flex-direction: column;
         align-items: flex-start;
+        padding: 10px;
+    }
+
+    .nav-logo {
+        margin: 0 auto;
     }
 
     .nav-menu {
@@ -301,8 +331,7 @@ h2 {
     }
 
     .nav-button {
-        width: 80%;
-        margin: 5px auto;
+        width: 100%;
         padding: 10px;
     }
 }
