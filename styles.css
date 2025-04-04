@@ -30,6 +30,28 @@ body {
     margin: 0 10px;
 }
 
+.button {
+    display: inline-block;
+    padding: 8px 16px;
+    background-color: #0066cc;
+    color: white;
+    text-decoration: none;
+    border-radius: 5px;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.button:hover {
+    background-color: #004d99;
+    transform: scale(1.05);
+}
+
+.button.unavailable {
+    background-color: #666;
+    cursor: not-allowed;
+    transform: none; /* Prevents scaling on hover for unavailable */
+}
+
+/* Navigation (updated to use .button) */
 .nav-button {
     color: white;
     text-decoration: none;
@@ -39,7 +61,6 @@ body {
     transition: background-color 0.3s ease, transform 0.2s ease;
     display: inline-block;
 }
-
 .nav-button:hover {
     background-color: #004d99;
     transform: scale(1.05);
@@ -248,6 +269,13 @@ h2 {
 }
 
 @media (max-width: 768px) {
+    .awards-container {
+        grid-template-columns: 1fr;
+    }
+    
+    .award-card {
+        margin: 0;
+    }
     .navbar {
         flex-direction: column;
         align-items: flex-start;
