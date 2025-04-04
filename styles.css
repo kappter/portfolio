@@ -1,3 +1,7 @@
+* {
+    box-sizing: border-box;
+}
+
 body {
     font-family: Arial, sans-serif;
     margin: 0;
@@ -5,6 +9,36 @@ body {
     line-height: 1.6;
 }
 
+/* Navigation */
+.navbar {
+    background-color: #333;
+    padding: 1rem;
+}
+
+.nav-menu {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+}
+
+.nav-menu li {
+    margin-right: 20px;
+}
+
+.nav-menu a {
+    color: white;
+    text-decoration: none;
+}
+
+.nav-toggle {
+    display: none;
+    color: white;
+    font-size: 1.5rem;
+    cursor: pointer;
+}
+
+/* Main Content */
 header {
     text-align: center;
     padding: 20px;
@@ -26,6 +60,77 @@ h2 {
 }
 
 .container {
-    max-width: 1000px;
+    max-width: 1200px;
     margin: 0 auto;
+}
+
+/* Skills */
+.skills-container {
+    margin: 20px 0;
+}
+
+.skill {
+    margin: 15px 0;
+}
+
+.skill span {
+    display: block;
+    margin-bottom: 5px;
+}
+
+.progress-bar {
+    background-color: #f0f0f0;
+    height: 20px;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.progress {
+    background-color: #0066cc;
+    height: 100%;
+    transition: width 1s ease-in-out;
+}
+
+/* Projects */
+.project-gallery {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+    margin: 20px 0;
+}
+
+.project-card {
+    border: 1px solid #ddd;
+    padding: 15px;
+    border-radius: 5px;
+}
+
+.project-card img {
+    max-width: 100%;
+    height: auto;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .nav-menu {
+        display: none;
+        flex-direction: column;
+        width: 100%;
+    }
+
+    .nav-menu.active {
+        display: flex;
+    }
+
+    .nav-toggle {
+        display: block;
+    }
+
+    .nav-menu li {
+        margin: 10px 0;
+    }
+
+    .project-gallery {
+        grid-template-columns: 1fr;
+    }
 }
