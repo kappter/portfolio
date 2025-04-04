@@ -3,11 +3,16 @@ document.addEventListener('DOMContentLoaded', function() {
     const navToggle = document.querySelector('.nav-toggle');
     const navMenu = document.querySelector('.nav-menu');
 
+    // Add Awards to navigation
+    const awardsNav = document.createElement('li');
+    awardsNav.innerHTML = '<a href="#awards">Awards</a>';
+    navMenu.insertBefore(awardsNav, navMenu.children[5]); // Insert before Projects
+
     navToggle.addEventListener('click', () => {
         navMenu.classList.toggle('active');
     });
 
-    // Smooth scrolling
+    // Smooth scrolling (updated to include new Awards link)
     const links = document.querySelectorAll('a[href^="#"]');
     links.forEach(link => {
         link.addEventListener('click', function(e) {
