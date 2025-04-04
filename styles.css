@@ -189,10 +189,50 @@ h2 {
     cursor: not-allowed;
 }
 
+.teaching-content {
+    margin: 20px 0;
+}
+
+.teaching-resource {
+    background-color: #f8f8f8;
+    padding: 15px;
+    border-radius: 8px;
+    margin-top: 15px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    transition: transform 0.3s ease;
+}
+
+.teaching-resource:hover {
+    transform: translateY(-5px);
+}
+
+.teaching-resource h3 {
+    margin: 0 0 10px;
+    color: #0066cc;
+    font-size: 1.2em;
+}
+
+.teaching-resource p {
+    margin: 0 0 15px;
+    color: #666;
+}
+
+.teaching-link {
+    display: inline-block;
+    padding: 8px 15px;
+    background-color: #0066cc;
+    color: white;
+    text-decoration: none;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+}
+
+.teaching-link:hover {
+    background-color: #004d99;
+}
+
 /* Responsive Design */
 @media (max-width: 768px) {
-    /* ... Previous media query styles ... */
-    
     .awards-container {
         grid-template-columns: 1fr;
     }
@@ -200,10 +240,6 @@ h2 {
     .award-card {
         margin: 0;
     }
-}
-
-/* Responsive Design */
-@media (max-width: 768px) {
     .nav-menu {
         display: none;
         flex-direction: column;
