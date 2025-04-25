@@ -44,6 +44,33 @@ document.addEventListener('DOMContentLoaded', function() {
             window.removeEventListener('scroll', animateProgressBars);
         }
     }
+    fetch('guitar_pieces.json')
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Failed to load guitar pieces');
+            }
+            return response.json();
+        })
+        .then(data => {
+            const list = document.getElementById('guitar-pieces-list');
+            data.forEach(piece => {
+                const li = document.createElement('li');
+                li.className = 'guitar-piece';
+                li.innerHTML = `
+                    <span>${piece.title}</span>
+                    <audio controls>
+                        <source src="${piece.path}" type="${piece.path.endsWith('.mp3') ? 'audio/mpeg' : 'audio/wav'}">
+                        Your browser does not support the audio element.
+                    </audio>
+                `;
+                list.appendChild(li);
+            });
+        })
+        .catch(error => {
+            console.error('Error loading guitar pieces:', error);
+            const list = document.getElementById('guitar-pieces-list');
+            list.innerHTML = '<li>Unable to load guitar pieces.</li>';
+        });
 
     window.addEventListener('scroll', animateProgressBars);
 });
