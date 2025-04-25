@@ -44,6 +44,26 @@ document.addEventListener('DOMContentLoaded', function() {
             window.removeEventListener('scroll', animateProgressBars);
         }
     }
+    fetch('https://api.github.com/repos/<your-username>/<your-repo>/contents/audio/guitar_pieces')
+    .then(response => response.json())
+    .then(data => {
+        const list = document.getElementById('guitar-pieces-list');
+        data.forEach(file => {
+            if (file.name.endsWith('.mp3') || file.name.endsWith('.wav')) {
+                const li = document.createElement('li');
+                li.className = 'guitar-piece';
+                li.innerHTML = `
+                    <span>${file.name.replace(/\.(mp3|wav)$/, '')}</span>
+                    <audio controls>
+                        <source src="${file.download_url}" type="${file.name.endsWith('.mp3') ? 'audio/mpeg' : 'audio/wav'}">
+                        Your browser does not support the audio element.
+                    </audio>
+                `;
+                list.appendChild(li);
+            }
+        });
+    })
+    .catch(error => console.error('Error fetching files:', error));
     fetch('guitar_pieces.json')
         .then(response => {
             if (!response.ok) {
