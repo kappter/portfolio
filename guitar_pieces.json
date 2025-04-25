@@ -1,1 +1,14 @@
-
+[
+  {
+    "title": "Guitar Piece 1",
+    "path": "audio/guitar_pieces/tick.wav"
+  },
+  {
+    "title": "Guitar Piece 2",
+    "path": "audio/guitar_pieces/tock.wav"
+  },
+  {
+    "title": "Guitar Piece 3",
+    "path": "audio/guitar_pieces/piece3.mp3"
+  }
+]
