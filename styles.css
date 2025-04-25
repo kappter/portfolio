@@ -1,29 +1,29 @@
 :root {
-    /* Light theme variables */
-    --bg-color: #f5f5f5;
-    --text-color: #2d2d2d;
-    --header-bg: #ffffff;
-    --card-bg: #ffffff;
-    --border-color: #e0e0e0;
-    --accent-color: #1a73e8;
-    --accent-hover: #1557b0;
-    --secondary-text: #666;
-    --shadow-color: rgba(0, 0, 0, 0.1);
-    --progress-bg: #e8ecef;
+    /* Light theme variables (earth tones) */
+    --bg-color: #f5f3e7; /* Warm beige */
+    --text-color: #3a2f1f; /* Dark brown */
+    --header-bg: #fefcf5; /* Off-white */
+    --card-bg: #fefcf5; /* Off-white */
+    --border-color: #e6e2d3; /* Light tan */
+    --accent-color: #6b7d4b; /* Olive green */
+    --accent-hover: #5a6a3f; /* Darker olive green */
+    --secondary-text: #7a6f5e; /* Muted taupe */
+    --shadow-color: rgba(58, 47, 31, 0.1); /* Subtle brown */
+    --progress-bg: #e6e2d3; /* Light tan */
 }
 
 [data-theme="dark"] {
-    /* Dark theme variables */
-    --bg-color: #1a1a1a;
-    --text-color: #e0e0e0;
-    --header-bg: #2d2d2d;
-    --card-bg: #2d2d2d;
-    --border-color: #444;
-    --accent-color: #4a90e2;
-    --accent-hover: #357abd;
-    --secondary-text: #aaa;
-    --shadow-color: rgba(0, 0, 0, 0.3);
-    --progress-bg: #444;
+    /* Dark theme variables (earth tones) */
+    --bg-color: #2a2518; /* Deep charcoal brown */
+    --text-color: #e8e4d2; /* Light beige */
+    --header-bg: #3c3526; /* Dark taupe */
+    --card-bg: #3c3526; /* Dark taupe */
+    --border-color: #5c5342; /* Dark tan */
+    --accent-color: #829465; /* Muted sage green */
+    --accent-hover: #6e7d53; /* Darker sage green */
+    --secondary-text: #a69f8e; /* Light taupe */
+    --shadow-color: rgba(0, 0, 0, 0.3); /* Darker brown */
+    --progress-bg: #5c5342; /* Dark tan */
 }
 
 * {
@@ -165,7 +165,7 @@ h3 {
 }
 
 .button.unavailable {
-    background-color: #b0b0b0;
+    background-color: #8c8373; /* Muted taupe for disabled buttons */
     cursor: not-allowed;
 }
 
