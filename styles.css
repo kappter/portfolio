@@ -181,6 +181,10 @@ h3 {
     gap: 12px;
 }
 
+.skill {
+    margin-bottom: 12px;
+}
+
 .skill span {
     font-size: 13px;
     font-weight: 500;
@@ -200,6 +204,19 @@ h3 {
     background-color: var(--accent-color);
     height: 100%;
     transition: width 0.8s ease;
+}
+
+.skill-link {
+    display: inline-block;
+    font-size: 12px;
+    color: var(--accent-color);
+    text-decoration: none;
+    margin-top: 4px;
+    transition: color 0.2s ease;
+}
+
+.skill-link:hover {
+    color: var(--accent-hover);
 }
 
 .project-gallery {
