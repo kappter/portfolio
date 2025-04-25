@@ -1,26 +1,23 @@
 document.addEventListener('DOMContentLoaded', function() {
-    // Navigation toggle
+    // Navigation toggle for mobile
     const navToggle = document.querySelector('.nav-toggle');
     const navMenu = document.querySelector('.nav-menu');
-
-    // Add Awards to navigation
-    const awardsNav = document.createElement('li');
-    awardsNav.innerHTML = '<a href="#awards">Awards</a>';
-    navMenu.insertBefore(awardsNav, navMenu.children[5]); // Insert before Projects
 
     navToggle.addEventListener('click', () => {
         navMenu.classList.toggle('active');
     });
 
-    // Smooth scrolling (updated to include new Awards link)
+    // Smooth scrolling for anchor links
     const links = document.querySelectorAll('a[href^="#"]');
     links.forEach(link => {
         link.addEventListener('click', function(e) {
             e.preventDefault();
             const target = document.querySelector(this.getAttribute('href'));
-            target.scrollIntoView({ behavior: 'smooth' });
-            if (window.innerWidth <= 768) {
-                navMenu.classList.remove('active');
+            if (target) {
+                target.scrollIntoView({ behavior: 'smooth' });
+                if (window.innerWidth <= 768) {
+                    navMenu.classList.remove('active');
+                }
             }
         });
     });
@@ -44,53 +41,59 @@ document.addEventListener('DOMContentLoaded', function() {
             window.removeEventListener('scroll', animateProgressBars);
         }
     }
-    fetch('https://api.github.com/repos/<your-username>/<your-repo>/contents/audio/guitar_pieces')
-    .then(response => response.json())
-    .then(data => {
-        const list = document.getElementById('guitar-pieces-list');
-        data.forEach(file => {
-            if (file.name.endsWith('.mp3') || file.name.endsWith('.wav')) {
-                const li = document.createElement('li');
-                li.className = 'guitar-piece';
-                li.innerHTML = `
-                    <span>${file.name.replace(/\.(mp3|wav)$/, '')}</span>
-                    <audio controls>
-                        <source src="${file.download_url}" type="${file.name.endsWith('.mp3') ? 'audio/mpeg' : 'audio/wav'}">
-                        Your browser does not support the audio element.
-                    </audio>
-                `;
-                list.appendChild(li);
-            }
-        });
-    })
-    .catch(error => console.error('Error fetching files:', error));
-    fetch('guitar_pieces.json')
-        .then(response => {
-            if (!response.ok) {
-                throw new Error('Failed to load guitar pieces');
-            }
-            return response.json();
-        })
-        .then(data => {
-            const list = document.getElementById('guitar-pieces-list');
-            data.forEach(piece => {
-                const li = document.createElement('li');
-                li.className = 'guitar-piece';
-                li.innerHTML = `
-                    <span>${piece.title}</span>
-                    <audio controls>
-                        <source src="${piece.path}" type="${piece.path.endsWith('.mp3') ? 'audio/mpeg' : 'audio/wav'}">
-                        Your browser does not support the audio element.
-                    </audio>
-                `;
-                list.appendChild(li);
-            });
-        })
-        .catch(error => {
-            console.error('Error loading guitar pieces:', error);
-            const list = document.getElementById('guitar-pieces-list');
-            list.innerHTML = '<li>Unable to load guitar pieces.</li>';
-        });
 
-    window.addEventListener('scroll', animateProgressBars);
+    if (skillsSection) {
+        window.addEventListener('scroll', animateProgressBars);
+    }
+
+    // Fetch and populate guitar pieces
+    const guitarList = document.getElementById('guitar-pieces-list');
+    if (guitarList) {
+        fetch('guitar_pieces.json')
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Failed to load guitar pieces');
+                }
+                return response.json();
+            })
+            .then(data => {
+                data.forEach(piece => {
+                    const li = document.createElement('li');
+                    li.className = 'guitar-piece';
+                    li.innerHTML = `
+                        <span>${piece.title}</span>
+                        <audio controls>
+                            <source src="${piece.path}" type="${piece.path.endsWith('.mp3') ? 'audio/mpeg' : 'audio/wav'}">
+                            Your browser does not support the audio element.
+                        </audio>
+                    `;
+                    guitarList.appendChild(li);
+                });
+            })
+            .catch(error => {
+                console.error('Error loading guitar pieces:', error);
+                guitarList.innerHTML = '<li>Unable to load guitar pieces.</li>';
+            });
+    }
+
+    // Dark mode toggle
+    const themeToggle = document.getElementById('theme-toggle');
+    const html = document.documentElement;
+
+    // Apply saved theme on load
+    const savedTheme = localStorage.getItem('theme') || 'light';
+    html.setAttribute('data-theme', savedTheme);
+    if (themeToggle) {
+        themeToggle.textContent = savedTheme === 'dark' ? 'Toggle Light Mode' : 'Toggle Dark Mode';
+    }
+
+    if (themeToggle) {
+        themeToggle.addEventListener('click', () => {
+            const currentTheme = html.getAttribute('data-theme');
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            html.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+            themeToggle.textContent = newTheme === 'dark' ? 'Toggle Light Mode' : 'Toggle Dark Mode';
+        });
+    }
 });
