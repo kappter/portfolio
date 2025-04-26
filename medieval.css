@@ -1,0 +1,111 @@
+:root {
+    /* Light theme variables (medieval) */
+    --bg-color: #f4e8d1; /* Parchment */
+    --text-color: #2c1a0a; /* Dark brown */
+    --header-bg: #e6d7b2; /* Light parchment */
+    --card-bg: #e6d7b2; /* Light parchment */
+    --border-color: #8b6f47; /* Bronze */
+    --accent-color: #a32e2e; /* Deep red */
+    --accent-hover: #7a2323; /* Darker red */
+    --secondary-text: #5c4033; /* Muted brown */
+    --shadow-color: rgba(44, 26, 10, 0.2); /* Brown shadow */
+    --progress-bg: #d9c7a0; /* Pale parchment */
+}
+
+[data-theme="dark"] {
+    /* Dark theme variables (medieval) */
+    --bg-color: #2c1a0a; /* Dark brown */
+    --text-color: #e6d7b2; /* Light parchment */
+    --header-bg: #3f2a1d; /* Darker brown */
+    --card-bg: #3f2a1d; /* Darker brown */
+    --border-color: #a68a64; /* Dark bronze */
+    --accent-color: #d9534f; /* Brighter red */
+    --accent-hover: #b33936; /* Slightly darker red */
+    --secondary-text: #a68a64; /* Light bronze */
+    --shadow-color: rgba(0, 0, 0, 0.5); /* Dark shadow */
+    --progress-bg: #5c4033; /* Muted brown */
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+html, body {
+    height: 100%;
+}
+
+body {
+    font-family: 'Cinzel', -apple-system, BlinkMacSystemFont, 'Roboto', sans-serif;
+    font-size: 14px;
+    line-height: 1.5;
+    color: var(--text-color);
+    background-color: var(--bg-color);
+    transition: background-color 0.3s ease, color 0.3s ease;
+    display: flex;
+    flex-direction: column;
+}
+
+.container {
+    flex: 1 0 auto;
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 24px;
+    padding-top: 80px;
+    padding-bottom: 80px;
+}
+
+.navbar {
+    background-color: var(--header-bg);
+    padding: 12px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    box-shadow: 0 1px 3px var(--shadow-color);
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 1000;
+}
+
+.nav-logo .logo {
+    height: 24px;
+    width: auto;
+}
+
+.nav-menu {
+    list-style: none;
+    display: flex;
+    align-items: center;
+}
+
+.nav-menu li {
+    margin: 0 12px;
+}
+
+.nav-button {
+    color: var(--text-color);
+    text-decoration: none;
+    font-weight: 700;
+    font-size: 13px;
+    padding: 6px 12px;
+    border-radius: 4px;
+    transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.nav-button:hover {
+    background-color: var(--progress-bg);
+    color: var(--accent-color);
+}
+
+.nav-toggle {
+    display: none;
+    font-size: 1.2rem;
+    cursor: pointer;
+    color: var(--text-color);
+}
+
+#theme-selector {
+    background-color:
