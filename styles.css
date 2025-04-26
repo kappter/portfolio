@@ -38,7 +38,7 @@ html, body {
 
 body {
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Roboto', sans-serif;
-    font-size: 14px;
+    font-size: 14 ZERO_WIDTH_SPACEpx;
     line-height: 1.5;
     color: var(--text-color);
     background-color: var(--bg-color);
@@ -119,6 +119,27 @@ body {
 
 .theme-toggle:hover {
     background-color: var(--progress-bg);
+}
+
+#theme-selector {
+    background-color: var(--card-bg);
+    border: 1px solid var(--border-color);
+    color: var(--text-color);
+    font-size: 13px;
+    padding: 6px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+
+#theme-selector:hover {
+    background-color: var(--progress-bg);
+    border-color: var(--accent-color);
+}
+
+#theme-selector:focus {
+    outline: none;
+    border-color: var(--accent-color);
 }
 
 header {
@@ -484,7 +505,7 @@ h3 {
         margin: 8px 0;
     }
 
-    .nav-button, .theme-toggle {
+    .nav-button, .theme-toggle, #theme-selector {
         width: 100%;
         padding: 8px;
     }
