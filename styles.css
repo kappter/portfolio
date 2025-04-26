@@ -52,7 +52,7 @@ body {
     max-width: 960px;
     margin: 0 auto;
     padding: 24px;
-    padding-top: 80px; /* Add padding to prevent content from being hidden behind fixed navbar */
+    padding-top: 80px; /* Prevent content from being hidden behind fixed navbar */
     padding-bottom: 80px; /* Prevent content from being hidden behind fixed footer */
 }
 
@@ -373,86 +373,65 @@ h3 {
     max-width: 200px;
 }
 
-/* Footer Social Icons */
-.social-icons {
-    margin-top: 10px; /* Space above icons */
-    display: flex;
-    gap: 15px; /* Space between icons */
-    justify-content: center; /* Center icons horizontally */
-}
-
-.social-icons a {
-    color: #333; /* Match your footer text color, adjust as needed */
-    font-size: 24px; /* Icon size */
-    text-decoration: none; /* Remove underline */
-    transition: color 0.3s ease; /* Smooth hover effect */
-}
-
-.social-icons a:hover {
-    color: #007bff; /* Blue hover effect, matches common link styles */
-}
-
-/* Ensure footer remains responsive */
-.footer {
-    text-align: center;
-    padding: 20px;
-    background-color: #f8f8f8; /* Assuming a light background, adjust as needed */
-}
-
-/* Adjust donation-links for better spacing */
-.donation-links {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 10px;
-}
-
-.donation-links a {
-    color: #007bff; /* Match your existing link colors */
-    text-decoration: none;
-}
-
-.donation-links a:hover {
-    text-decoration: underline;
-}
-
 .footer {
     position: fixed;
     bottom: 0;
     left: 0;
     width: 100%;
     background-color: var(--header-bg);
-    padding: 12px;
+    padding: 10px 20px; /* Reduced for compactness */
     text-align: center;
     border-top: 1px solid var(--border-color);
     box-shadow: 0 -1px 3px var(--shadow-color);
     z-index: 1000;
 }
 
-.footer p {
-    font-size: 13px;
-    color: var(--secondary-text);
-    margin-bottom: 8px;
+.footer-content {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 20px; /* Space between elements */
+    flex-wrap: wrap; /* Allow wrapping for smaller screens */
+    font-size: 13px; /* Compact text */
 }
 
-.coffee-link, .cashapp-link, .linkedin-link {
-    font-size: 13px;
-    padding: 6px 12px;
-    background-color: var(--accent-color);
-    color: #ffffff;
-    text-decoration: none;
-    border-radius: 4px;
-    transition: background-color 0.2s ease;
+.footer-content span {
+    color: var(--secondary-text);
 }
-.coffee-link:hover, .cashapp-link:hover, .linkedin-link:hover {
-    background-color: var(--accent-hover);
+
+.social-icons {
+    display: flex;
+    gap: 10px; /* Tight spacing between icons */
+}
+
+.social-icons a {
+    color: var(--text-color);
+    font-size: 18px; /* Smaller icons for compactness */
+    text-decoration: none;
+    transition: color 0.2s ease;
+}
+
+.social-icons a:hover {
+    color: var(--accent-color);
+}
+
+.donation-links {
+    display: flex;
+    gap: 15px; /* Space between links */
+}
+
+.donation-links a {
+    color: var(--accent-color);
+    text-decoration: none;
+    font-size: 13px; /* Compact text */
+    transition: color 0.2s ease;
+}
+
+.donation-links a:hover {
+    color: var(--accent-hover);
 }
 
 @media (max-width: 768px) {
-    .social-icons {
-        gap: 10px; /* Reduce spacing on small screens */
-        font-size: 20px; /* Slightly smaller icons */
-    }
     .navbar {
         flex-direction: column;
         align-items: flex-start;
@@ -476,7 +455,7 @@ h3 {
 
     .nav-menu.active {
         display: flex;
-        margin-top: 48px; /* Add margin to account for fixed navbar height */
+        margin-top: 48px; /* Account for fixed navbar height */
     }
 
     .nav-toggle {
@@ -497,14 +476,14 @@ h3 {
 
     .container {
         padding: 16px;
-        padding-top: 100px; /* Increased padding for mobile to account for fixed navbar */
-        padding-bottom: 100px; /* Increased padding for mobile to account for fixed footer */
+        padding-top: 100px; /* Increased for mobile navbar */
+        padding-bottom: 100px; /* Increased for mobile footer */
     }
 
     .teaching-image {
-    width: 80px;
-    margin: 0 8px 8px 0;
-}
+        width: 80px;
+        margin: 0 8px 8px 0;
+    }
 
     h1 {
         font-size: 24px;
@@ -515,10 +494,20 @@ h3 {
     }
 
     .footer {
-        padding: 8px;
+        padding: 8px 16px; /* Even tighter for mobile */
     }
 
-    .footer p {
-        margin-bottom: 12px;
+    .footer-content {
+        flex-direction: column;
+        gap: 8px; /* Tighter spacing on mobile */
+    }
+
+    .social-icons {
+        gap: 8px;
+        font-size: 16px; /* Smaller icons on mobile */
+    }
+
+    .donation-links {
+        gap: 10px;
     }
 }
