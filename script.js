@@ -84,7 +84,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const savedTheme = localStorage.getItem('theme') || 'light';
     html.setAttribute('data-theme', savedTheme);
     if (themeToggle) {
-        themeToggle.textContent = savedTheme === 'dark' ? 'Toggle Light Mode' : 'Toggle Dark Mode';
+        themeToggle.textContent = savedTheme === 'dark' ? 'Light' : 'Dark';
     }
 
     if (themeToggle) {
@@ -93,7 +93,7 @@ document.addEventListener('DOMContentLoaded', function() {
             const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
             html.setAttribute('data-theme', newTheme);
             localStorage.setItem('theme', newTheme);
-            themeToggle.textContent = newTheme === 'dark' ? 'Toggle Light Mode' : 'Toggle Dark Mode';
+            themeToggle.textContent = newTheme === 'dark' ? 'Light' : 'Dark';
         });
     }
 });
