@@ -91,7 +91,7 @@ body {
     font-weight: 500;
     font-size: 13px;
     padding: 6px 12px;
-    border-radius: 0; /* Sharper corners */
+    border-radius: 0;
     transition: background-color 0.2s ease, color 0.2s ease;
 }
 
@@ -149,7 +149,7 @@ header p {
 
 section {
     padding: 24px 0;
-    border-bottom: 1px solid var(--border-color);
+    border-bottom: 1px solid var(--border-color); /* Architectural solid line */
 }
 
 h2 {
@@ -167,10 +167,11 @@ h3 {
 }
 
 .teaching-image {
-    float: left;
+    display: block; /* Centered for architectural theme */
+    margin: 0 auto 12px;
     width: 100px;
+    max-width: 100px;
     height: auto;
-    margin: 0 12px 12px 0;
     border: 2px solid var(--border-color);
     border-radius: 0;
 }
@@ -488,7 +489,8 @@ h3 {
 
     .teaching-image {
         width: 80px;
-        margin: 0 8px 8px 0;
+        max-width: 80px;
+        margin: 0 auto 8px;
     }
 
     h1 {
