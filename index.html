@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mr Ken Kapptie | Computer Science Portfolio</title>
     <link rel="icon" type="image/png" href="images/kjklogo.png">
-    <link rel="stylesheet" href="styles.css">
+    <link id="theme-stylesheet" rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 </head>
 <body>
@@ -25,7 +25,26 @@
             <li><a href="#art" class="nav-button">Art</a></li>
             <li><a href="#music" class="nav-button">Music</a></li>
             <li><a href="#blogs" class="nav-button">Blogs</a></li>
-            <li><button class="theme-toggle" id="theme-toggle">Dark</button></li>
+            <li>
+                <select id="theme-selector" aria-label="Select Theme and Style">
+                    <optgroup label="Natural Theme">
+                        <option value="natural-light">Natural Light</option>
+                        <option value="natural-dark">Natural Dark</option>
+                    </optgroup>
+                    <optgroup label="Architectural Theme">
+                        <option value="architectural-light">Architectural Light</option>
+                        <option value="architectural-dark">Architectural Dark</option>
+                    </optgroup>
+                    <optgroup label="Space Theme">
+                        <option value="space-light">Space Light</option>
+                        <option value="space-dark">Space Dark</option>
+                    </optgroup>
+                    <optgroup label="Medieval Theme">
+                        <option value="medieval-light">Medieval Light</option>
+                        <option value="medieval-dark">Medieval Dark</option>
+                    </optgroup>
+                </select>
+            </li>
         </ul>
     </nav>
 
@@ -133,10 +152,10 @@
             </div>
         </section>
 
-       <section id="awards">
+        <section id="awards">
             <h2>Awards</h2>
-           <p><img src="images/award.jpg" alt="Teaching Award" class="teaching-image">The path of teaching, creating, and exploring is rarely paved with applause. It winds quietly through late nights, unasked questions, silent triumphs, and unseen acts of faith. Recognition, when it comes, is not a finish line, but a mirror—a small, fleeting glimpse that says: yes, the work mattered. It touched something real.</p>
-           <p>Each of these honors is less a trophy and more a story—a moment where my efforts in technology education, leadership, artistry, and mentorship resonated beyond the classroom walls. They remind me that the best rewards are never held in hand, but in the lives and minds that were stirred to new beginnings.</p>
+            <p><img src="images/award.jpg" alt="Teaching Award" class="teaching-image">The path of teaching, creating, and exploring is rarely paved with applause. It winds quietly through late nights, unasked questions, silent triumphs, and unseen acts of faith. Recognition, when it comes, is not a finish line, but a mirror—a small, fleeting glimpse that says: yes, the work mattered. It touched something real.</p>
+            <p>Each of these honors is less a trophy and more a story—a moment where my efforts in technology education, leadership, artistry, and mentorship resonated beyond the classroom walls. They remind me that the best rewards are never held in hand, but in the lives and minds that were stirred to new beginnings.</p>
             <div class="awards-container">
                 <div class="award-card">
                     <h3>UITEA Teacher of the Year(2025)</h3>
@@ -182,22 +201,23 @@
         </section>
     </div>
 
-   <footer class="footer">
-    <div class="footer-content">
-        <span>© 2025 Ken Kapptie. All rights reserved.</span>
-        <div class="social-icons">
-            <a href="https://www.facebook.com/kappter/" target="_blank" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
-            <a href="https://x.com/kappter" target="_blank" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
-            <a href="https://www.instagram.com/kappter/?hl=en" target="_blank" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
-            <a href="https://github.com/kappter" target="_blank" aria-label="GitHub"><i class="fab fa-github"></i></a>
+    <footer class="footer">
+        <div class="footer-content">
+            <span>© 2025 Ken Kapptie. All rights reserved.</span>
+            <div class="social-icons">
+                <a href="https://www.facebook.com/kappter/" target="_blank" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+                <a href="https://x.com/kappter" target="_blank" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+                <a href="https://www.instagram.com/kappter/?hl=en" target="_blank" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                <a href="https://github.com/kappter" target="_blank" aria-label="GitHub"><i class="fab fa-github"></i></a>
+            </div>
+            <div class="donation-links">
+                <a href="https://buymeacoffee.com/kappterw" target="_blank" class="coffee-link">Buy Me a Coffee</a>
+                <a href="https://www.linkedin.com/in/ken-kapptie-0b19665" target="_blank" class="linkedin-link">LinkedIn</a>
+            </div>
         </div>
-        <div class="donation-links">
-            <a href="https://buymeacoffee.com/kappterw" target="_blank" class="coffee-link">Buy Me a Coffee</a>
-            <a href="https://www.linkedin.com/in/ken-kapptie-0b19665" target="_blank" class="linkedin-link">LinkedIn</a>
-        </div>
-    </div>
-</footer>
+    </footer>
 
     <script src="script.js"></script>
+    <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9369d13b7f67bd05',t:'MTc0NTcwOTY5NS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script>
 </body>
 </html>
