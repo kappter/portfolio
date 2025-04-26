@@ -1,519 +1,80 @@
-:root {
-    /* Light theme variables (earth tones) */
-    --bg-color: #f5f3e7; /* Warm beige */
-    --text-color: #3a2f1f; /* Dark brown */
-    --header-bg: #fefcf5; /* Off-white */
-    --card-bg: #fefcf5; /* Off-white */
-    --border-color: #e6e2d3; /* Light tan */
-    --accent-color: #6b7d4b; /* Olive green */
-    --accent-hover: #5a6a3f; /* Darker olive green */
-    --secondary-text: #7a6f5e; /* Muted taupe */
-    --shadow-color: rgba(58, 47, 31, 0.1); /* Subtle brown */
-    --progress-bg: #e6e2d3; /* Light tan */
-}
-
-[data-theme="dark"] {
-    /* Dark theme variables (earth tones) */
-    --bg-color: #2a2518; /* Deep charcoal brown */
-    --text-color: #e8e4d2; /* Light beige */
-    --header-bg: #3c3526; /* Dark taupe */
-    --card-bg: #3c3526; /* Dark taupe */
-    --border-color: #5c5342; /* Dark tan */
-    --accent-color: #829465; /* Muted sage green */
-    --accent-hover: #6e7d53; /* Darker sage green */
-    --secondary-text: #a69f8e; /* Light taupe */
-    --shadow-color: rgba(0, 0, 0, 0.3); /* Darker brown */
-    --progress-bg: #5c5342; /* Dark tan */
-}
-
-* {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-}
-
-html, body {
-    height: 100%;
-}
-
-body {
-    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Roboto', sans-serif;
-    font-size: 14px;
-    line-height: 1.5;
-    color: var(--text-color);
-    background-color: var(--bg-color);
-    transition: background-color 0.3s ease, color 0.3s ease;
-    display: flex;
-    flex-direction: column;
-}
-
-.container {
-    flex: 1 0 auto;
-    max-width: 960px;
-    margin: 0 auto;
-    padding: 24px;
-    padding-top: 80px;
-    padding-bottom: 80px;
-}
-
-.navbar {
-    background-color: var(--header-bg);
-    padding: 12px 24px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    box-shadow: 0 1px 3px var(--shadow-color);
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    z-index: 1000;
-}
-
-.nav-logo .logo {
-    height: 24px;
-    width: auto;
-}
-
-.nav-menu {
-    list-style: none;
-    display: flex;
-    align-items: center;
-}
-
-.nav-menu li {
-    margin: 0 12px;
-}
-
-.nav-button {
-    color: var(--text-color);
-    text-decoration: none;
-    font-weight: 500;
-    font-size: 13px;
-    padding: 6px 12px;
-    border-radius: 4px;
-    transition: background-color 0.2s ease, color 0.2s ease;
-}
-
-.nav-button:hover {
-    background-color: var(--progress-bg);
-    color: var(--accent-color);
-}
-
-.nav-toggle {
-    display: none;
-    font-size: 1.2rem;
-    cursor: pointer;
-    color: var(--text-color);
-}
-
-#theme-selector {
-    background-color: var(--card-bg);
-    border: 1px solid var(--border-color);
-    color: var(--text-color);
-    font-size: 13px;
-    padding: 6px 12px;
-    border-radius: 4px;
-    cursor: pointer;
-    transition: background-color 0.2s ease, border-color 0.2s ease;
-}
-
-#theme-selector:hover {
-    background-color: var(--progress-bg);
-    border-color: var(--accent-color);
-}
-
-#theme-selector:focus {
-    outline: none;
-    border-color: var(--accent-color);
-}
-
-header {
-    text-align: center;
-    padding: 32px 0;
-    background-color: var(--header-bg);
-    border-bottom: 1px solid var(--border-color);
-}
-
-h1 {
-    font-size: 28px;
-    font-weight: 600;
-    color: var(--text-color);
-    margin-bottom: 8px;
-}
-
-header p {
-    font-size: 14px;
-    color: var(--secondary-text);
-}
-
-section {
-    padding: 24px 0;
-    border-bottom: 1px solid var(--border-color);
-}
-
-h2 {
-    font-size: 20px;
-    font-weight: 600;
-    color: var(--accent-color);
-    margin-bottom: 16px;
-}
-
-h3 {
-    font-size: 16px;
-    font-weight: 600;
-    color: var(--accent-color);
-    margin-bottom: 8px;
-}
-
-.teaching-image {
-    float: left;
-    width: 100px;
-    height: auto;
-    margin: 0 12px 12px 0;
-    border: 2px solid var(--border-color);
-    border-radius: 4px;
-}
-
-.button {
-    display: inline-block;
-    padding: 6px 12px;
-    background-color: var(--accent-color);
-    color: #ffffff;
-    text-decoration: none;
-    font-size: 13px;
-    border-radius: 4px;
-    transition: background-color 0.2s ease;
-}
-
-.button:hover {
-    background-color: var(--accent-hover);
-}
-
-.button.unavailable {
-    background-color: #8c8373;
-    cursor: not-allowed;
-}
-
-.skills-container {
-    display: grid;
-    gap: 12px;
-}
-
-.skill {
-    margin-bottom: 12px;
-}
-
-.skill span {
-    font-size: 13px;
-    font-weight: 500;
-    color: var(--text-color);
-    margin-bottom: 4px;
-    display: block;
-}
-
-.progress-bar {
-    background-color: var(--progress-bg);
-    height: 8px;
-    border-radius: 4px;
-    overflow: hidden;
-}
-
-.progress {
-    background-color: var(--accent-color);
-    height: 100%;
-    transition: width 0.8s ease;
-}
-
-.skill-link {
-    display: inline-block;
-    font-size: 12px;
-    color: var(--accent-color);
-    text-decoration: none;
-    margin-top: 4px;
-    transition: color 0.2s ease;
-}
-
-.skill-link:hover {
-    color: var(--accent-hover);
-}
-
-.project-gallery {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-    gap: 16px;
-}
-
-.project-card {
-    background-color: var(--card-bg);
-    border: 1px solid var(--border-color);
-    border-radius: 6px;
-    padding: 16px;
-    transition: box-shadow 0.2s ease;
-}
-
-.project-card:hover {
-    box-shadow: 0 2px 8px var(--shadow-color);
-}
-
-.project-card img {
-    max-width: 100%;
-    height: auto;
-    border-radius: 4px;
-    margin-bottom: 12px;
-}
-
-.project-card p {
-    font-size: 13px;
-    color: var(--secondary-text);
-    margin-bottom: 12px;
-}
-
-.project-link {
-    font-size: 13px;
-    padding: 6px 12px;
-    background-color: var(--accent-color);
-    color: #ffffff;
-    text-decoration: none;
-    border-radius: 4px;
-    transition: background-color 0.2s ease;
-}
-
-.project-link:hover {
-    background-color: var(--accent-hover);
-}
-
-.awards-container {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 16px;
-}
-
-.award-card {
-    background-color: var(--card-bg);
-    border: 1px solid var(--border-color);
-    border-radius: 6px;
-    padding: 16px;
-    transition: box-shadow 0.2s ease;
-}
-
-.award-card:hover {
-    box-shadow: 0 2px 8px var(--shadow-color);
-}
-
-.award-card p {
-    font-size: 13px;
-    color: var(--secondary-text);
-    margin-bottom: 12px;
-}
-
-.teaching-content {
-    padding: 16px 0;
-}
-
-.teaching-resource {
-    background-color: var(--card-bg);
-    border: 1px solid var(--border-color);
-    border-radius: 6px;
-    padding: 16px;
-    margin-top: 16px;
-    transition: box-shadow 0.2s ease;
-}
-
-.teaching-resource:hover {
-    box-shadow: 0 2px 8px var(--shadow-color);
-}
-
-.teaching-resource p {
-    font-size: 13px;
-    color: var(--secondary-text);
-    margin-bottom: 12px;
-}
-
-.teaching-link {
-    font-size: 13px;
-    padding: 6px 12px;
-    background-color: var(--accent-color);
-    color: #ffffff;
-    text-decoration: none;
-    border-radius: 4px;
-    transition: background-color 0.2s ease;
-}
-
-.teaching-link:hover {
-    background-color: var(--accent-hover);
-}
-
-.music-container {
-    margin: 16px 0;
-}
-
-.guitar-pieces {
-    list-style: none;
-    padding: 0;
-}
-
-.guitar-piece {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 12px;
-    background-color: var(--card-bg);
-    border: 1px solid var(--border-color);
-    border-radius: 6px;
-    margin-bottom: 8px;
-    transition: box-shadow 0.2s ease;
-}
-
-.guitar-piece:hover {
-    box-shadow: 0 2px 8px var(--shadow-color);
-}
-
-.guitar-piece span {
-    font-size: 13px;
-    font-weight: 500;
-    color: var(--text-color);
-}
-
-.guitar-piece audio {
-    max-width: 200px;
-}
-
-.footer {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    background-color: var(--header-bg);
-    padding: 10px 20px;
-    text-align: center;
-    border-top: 1px solid var(--border-color);
-    box-shadow: 0 -1px 3px var(--shadow-color);
-    z-index: 1000;
-}
-
-.footer-content {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 20px;
-    flex-wrap: wrap;
-    font-size: 13px;
-}
-
-.footer-content span {
-    color: var(--secondary-text);
-}
-
-.social-icons {
-    display: flex;
-    gap: 10px;
-}
-
-.social-icons a {
-    color: var(--text-color);
-    font-size: 18px;
-    text-decoration: none;
-    transition: color 0.2s ease;
-}
-
-.social-icons a:hover {
-    color: var(--accent-color);
-}
-
-.donation-links {
-    display: flex;
-    gap: 15px;
-}
-
-.donation-links a {
-    color: var(--accent-color);
-    text-decoration: none;
-    font-size: 13px;
-    transition: color 0.2s ease;
-}
-
-.donation-links a:hover {
-    color: var(--accent-hover);
-}
-
-@media (max-width: 768px) {
-    .navbar {
-        flex-direction: column;
-        align-items: flex-start;
-        padding: 12px;
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
+// Navigation toggle for mobile
+document.addEventListener('DOMContentLoaded', () => {
+    const navToggle = document.querySelector('.nav-toggle');
+    const navMenu = document.querySelector('.nav-menu');
+
+    navToggle.addEventListener('click', () => {
+        navMenu.classList.toggle('active');
+    });
+});
+
+// Theme switching logic
+const themeSelector = document.querySelector('#theme-selector');
+const stylesheet = document.querySelector('#theme-stylesheet');
+
+themeSelector.addEventListener('change', () => {
+    const theme = themeSelector.value;
+    let cssFile = 'styles.css'; // Default
+    let themeMode = 'light'; // Default
+
+    // Map theme selection to CSS file and mode
+    switch (theme) {
+        case 'natural-light':
+            cssFile = 'styles.css';
+            themeMode = 'light';
+            break;
+        case 'natural-dark':
+            cssFile = 'styles.css';
+            themeMode = 'dark';
+            break;
+        case 'architectural-light':
+            cssFile = 'architectural.css';
+            themeMode = 'light';
+            break;
+        case 'architectural-dark':
+            cssFile = 'architectural.css';
+            themeMode = 'dark';
+            break;
+        case 'space-light':
+            cssFile = 'space.css';
+            themeMode = 'light';
+            break;
+        case 'space-dark':
+            cssFile = 'space.css';
+            themeMode = 'dark';
+            break;
+        case 'medieval-light':
+            cssFile = 'medieval.css';
+            themeMode = 'light';
+            break;
+        case 'medieval-dark':
+            cssFile = 'medieval.css';
+            themeMode = 'dark';
+            break;
     }
 
-    .nav-logo {
-        margin: 0 auto;
-    }
+    // Update stylesheet
+    stylesheet.setAttribute('href', cssFile);
+    // Update data-theme attribute
+    document.documentElement.setAttribute('data-theme', themeMode);
+});
 
-    .nav-menu {
-        display: none;
-        flex-direction: column;
-        width: 100%;
-        text-align: center;
-    }
-
-    .nav-menu.active {
-        display: flex;
-        margin-top: 48px;
-    }
-
-    .nav-toggle {
-        display: block;
-        position: absolute;
-        left: 24px;
-        top: 16px;
-    }
-
-    .nav-menu li {
-        margin: 8px 0;
-    }
-
-    .nav-button, #theme-selector {
-        width: 100%;
-        padding: 8px;
-    }
-
-    .container {
-        padding: 16px;
-        padding-top: 100px;
-        padding-bottom: 100px;
-    }
-
-    .teaching-image {
-        width: 80px;
-        margin: 0 8px 8px 0;
-    }
-
-    h1 {
-        font-size: 24px;
-    }
-
-    h2 {
-        font-size: 18px;
-    }
-
-    .footer {
-        padding: 8px 16px;
-    }
-
-    .footer-content {
-        flex-direction: column;
-        gap: 8px;
-    }
-
-    .social-icons {
-        gap: 8px;
-        font-size: 16px;
-    }
-
-    .donation-links {
-        gap: 10px;
-    }
-}
+// Load guitar pieces from JSON
+fetch('guitar_pieces.json')
+    .then(response => response.json())
+    .then(data => {
+        const guitarList = document.querySelector('#guitar-pieces-list');
+        data.forEach(piece => {
+            const li = document.createElement('li');
+            li.classList.add('guitar-piece');
+            li.innerHTML = `
+                <span>${piece.title}</span>
+                <audio controls>
+                    <source src="${piece.path}" type="audio/wav">
+                    Your browser does not support the audio element.
+                </audio>
+            `;
+            guitarList.appendChild(li);
+        });
+    })
+    .catch(error => console.error('Error loading guitar pieces:', error));
