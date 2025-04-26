@@ -149,7 +149,7 @@ header p {
 
 section {
     padding: 24px 0;
-    border-bottom: 1px solid var(--border-color);
+    border-bottom: 3px dotted var(--border-color); /* Space dotted line */
 }
 
 h2 {
@@ -167,8 +167,9 @@ h3 {
 }
 
 .teaching-image {
-    float: left;
+    float: left; /* Left-aligned for space theme */
     width: 100px;
+    max-width: 100px;
     height: auto;
     margin: 0 12px 12px 0;
     border: 2px solid var(--border-color);
@@ -488,6 +489,7 @@ h3 {
 
     .teaching-image {
         width: 80px;
+        max-width: 80px;
         margin: 0 8px 8px 0;
     }
 
