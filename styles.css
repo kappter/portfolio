@@ -373,6 +373,49 @@ h3 {
     max-width: 200px;
 }
 
+/* Footer Social Icons */
+.social-icons {
+    margin-top: 10px; /* Space above icons */
+    display: flex;
+    gap: 15px; /* Space between icons */
+    justify-content: center; /* Center icons horizontally */
+}
+
+.social-icons a {
+    color: #333; /* Match your footer text color, adjust as needed */
+    font-size: 24px; /* Icon size */
+    text-decoration: none; /* Remove underline */
+    transition: color 0.3s ease; /* Smooth hover effect */
+}
+
+.social-icons a:hover {
+    color: #007bff; /* Blue hover effect, matches common link styles */
+}
+
+/* Ensure footer remains responsive */
+.footer {
+    text-align: center;
+    padding: 20px;
+    background-color: #f8f8f8; /* Assuming a light background, adjust as needed */
+}
+
+/* Adjust donation-links for better spacing */
+.donation-links {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+}
+
+.donation-links a {
+    color: #007bff; /* Match your existing link colors */
+    text-decoration: none;
+}
+
+.donation-links a:hover {
+    text-decoration: underline;
+}
+
 .footer {
     position: fixed;
     bottom: 0;
@@ -406,6 +449,10 @@ h3 {
 }
 
 @media (max-width: 768px) {
+    .social-icons {
+        gap: 10px; /* Reduce spacing on small screens */
+        font-size: 20px; /* Slightly smaller icons */
+    }
     .navbar {
         flex-direction: column;
         align-items: flex-start;
