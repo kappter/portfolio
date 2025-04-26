@@ -76,24 +76,40 @@ document.addEventListener('DOMContentLoaded', function() {
             });
     }
 
-    // Dark mode toggle
-    const themeToggle = document.getElementById('theme-toggle');
+    // Theme and style selector
+    const themeSelector = document.getElementById('theme-selector');
     const html = document.documentElement;
+    const stylesheet = document.getElementById('theme-stylesheet');
+
+    // Map theme values to CSS files and data-theme attributes
+    const themeConfig = {
+        'natural-light': { css: 'styles.css', dataTheme: 'light' },
+        'natural-dark': { css: 'styles.css', dataTheme: 'dark' },
+        'architectural-light': { css: 'architectural.css', dataTheme: 'light' },
+        'architectural-dark': { css: 'architectural.css', dataTheme: 'dark' },
+        'space-light': { css: 'space.css', dataTheme: 'light' },
+        'space-dark': { css: 'space.css', dataTheme: 'dark' },
+        'medieval-light': { css: 'medieval.css', dataTheme: 'light' },
+        'medieval-dark': { css: 'medieval.css', dataTheme: 'dark' }
+    };
 
     // Apply saved theme on load
-    const savedTheme = localStorage.getItem('theme') || 'light';
-    html.setAttribute('data-theme', savedTheme);
-    if (themeToggle) {
-        themeToggle.textContent = savedTheme === 'dark' ? 'Light' : 'Dark';
+    const savedTheme = localStorage.getItem('theme') || 'natural-light';
+    if (themeSelector) {
+        themeSelector.value = savedTheme;
+        const config = themeConfig[savedTheme] || themeConfig['natural-light'];
+        stylesheet.href = config.css;
+        html.setAttribute('data-theme', config.dataTheme);
     }
 
-    if (themeToggle) {
-        themeToggle.addEventListener('click', () => {
-            const currentTheme = html.getAttribute('data-theme');
-            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
-            html.setAttribute('data-theme', newTheme);
-            localStorage.setItem('theme', newTheme);
-            themeToggle.textContent = newTheme === 'dark' ? 'Light' : 'Dark';
+    // Handle theme selection
+    if (themeSelector) {
+        themeSelector.addEventListener('change', () => {
+            const selectedTheme = themeSelector.value;
+            const config = themeConfig[selectedTheme] || themeConfig['natural-light'];
+            stylesheet.href = config.css;
+            html.setAttribute('data-theme', config.dataTheme);
+            localStorage.setItem('theme', selectedTheme);
         });
     }
 });
