@@ -194,7 +194,7 @@ h3 {
 }
 
 .teaching-image:hover {
-    transform: scale(6); /* Scales to 100px * 6 = 600px, exceeding 500px */
+    transform: scale(3); /* 100px * 3 = 300px */
     z-index: 10;
 }
 
@@ -290,7 +290,7 @@ h3 {
 }
 
 .project-card img:hover {
-    transform: scale(2.5); /* Scales to ~600px (assuming original width ~240px), exceeding 500px */
+    transform: scale(1.25); /* 240px * 1.25 = 300px */
     z-index: 10;
 }
 
@@ -499,7 +499,7 @@ h3 {
 }
 
 .blog-image:hover {
-    transform: scale(2.5); /* Scales to ~700px (assuming original width ~280px), exceeding 500px */
+    transform: scale(1.07); /* 280px * 1.07 ≈ 300px */
     z-index: 10;
 }
 
@@ -677,15 +677,15 @@ h3 {
     }
 
     .teaching-image:hover {
-        transform: scale(6.25); /* Scales to 80px * 6.25 = 500px, meeting 500px requirement */
+        transform: scale(3.75); /* 80px * 3.75 = 300px */
     }
 
     .project-card img:hover {
-        transform: scale(2); /* Adjusted for mobile to avoid overflow */
+        transform: scale(1.25);
     }
 
     .blog-image:hover {
-        transform: scale(2); /* Adjusted for mobile to avoid overflow */
+        transform: scale(1.07);
     }
 
     h1 {
