@@ -29,41 +29,48 @@ document.addEventListener('DOMContentLoaded', function () {
         navMenu.classList.toggle('active');
     });
 
-    // Load guitar pieces with error handling
-    fetch('guitar_pieces.json')
-        .then(response => {
-            if (!response.ok) {
-                throw new Error('Failed to load guitar_pieces.json');
-            }
-            return response.json();
-        })
-        .then(data => {
-            const guitarList = document.getElementById('guitar-pieces-list');
-            if (!Array.isArray(data)) {
-                throw new Error('guitar_pieces.json is not a valid array');
-            }
-            data.forEach(piece => {
-                if (!piece.title || !piece.file) {
-                    console.warn('Invalid guitar piece entry:', piece);
-                    return;
+    // Function to load guitar pieces
+    function loadGuitarPieces() {
+        const guitarList = document.getElementById('guitar-pieces-list');
+        guitarList.innerHTML = ''; // Clear existing list
+
+        fetch('guitar_pieces.json')
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Failed to load guitar_pieces.json');
                 }
-                const li = document.createElement('li');
-                li.className = 'guitar-piece';
-                li.innerHTML = `
-                    <span>${piece.title}</span>
-                    <audio controls>
-                        <source src="audio/guitar_pieces/${piece.file}" type="audio/wav">
-                        Your browser does not support the audio element.
-                    </audio>
-                `;
-                guitarList.appendChild(li);
+                return response.json();
+            })
+            .then(data => {
+                if (!Array.isArray(data)) {
+                    throw new Error('guitar_pieces.json is not a valid array');
+                }
+                data.forEach(piece => {
+                    if (!piece.title || !piece.file) {
+                        console.warn('Invalid guitar piece entry:', piece);
+                        return;
+                    }
+                    const li = document.createElement('li');
+                    li.className = 'guitar-piece';
+                    const audioType = piece.file.toLowerCase().endsWith('.mp3') ? 'audio/mpeg' : 'audio/wav';
+                    li.innerHTML = `
+                        <span>${piece.title}</span>
+                        <audio controls>
+                            <source src="audio/guitar_pieces/${piece.file}" type="${audioType}">
+                            Your browser does not support the audio element.
+                        </audio>
+                    `;
+                    guitarList.appendChild(li);
+                });
+            })
+            .catch(error => {
+                console.error('Error loading guitar pieces:', error);
+                guitarList.innerHTML = '<li>Unable to load guitar pieces at this time.</li>';
             });
-        })
-        .catch(error => {
-            console.error('Error loading guitar pieces:', error);
-            const guitarList = document.getElementById('guitar-pieces-list');
-            guitarList.innerHTML = '<li>Unable to load guitar pieces at this time.</li>';
-        });
+    }
+
+    // Initial load of guitar pieces
+    loadGuitarPieces();
 
     // Blog posts array (simulating a CSV file client-side)
     const blogPosts = [
