@@ -1,3 +1,45 @@
+window.addBlogPost = function () {
+    const title = document.getElementById('blog-title').value.trim();
+    const text = document.getElementById('blog-text').value.trim();
+    const imageInput = document.getElementById('blog-image');
+    const imageFile = imageInput.files[0];
+
+    if (!title || !text) {
+        alert('Please fill in the title and content.');
+        return;
+    }
+
+    const formData = new FormData();
+    formData.append('title', title);
+    formData.append('text', text);
+    if (imageFile) {
+        formData.append('image', imageFile);
+    }
+
+    fetch('/add-blog', {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.text())
+    .then(result => {
+        console.log(result);
+        // Add to blogPosts array and update display
+        const newPost = {
+            title: title,
+            text: text,
+            image: imageFile ? `blog/${imageFile.name}` : '',
+            link: `https://example.com/blog/${title.toLowerCase().replace(/\s+/g, '-')}`
+        };
+        blogPosts.push(newPost);
+        displayBlogPosts();
+
+        // Clear the form
+        document.getElementById('blog-title').value = '';
+        document.getElementById('blog-text').value = '';
+        document.getElementById('blog-image').value = '';
+    })
+    .catch(error => console.error('Error submitting blog post:', error));
+};
 document.addEventListener('DOMContentLoaded', function () {
     // Theme switching logic
     const themeSelector = document.getElementById('theme-selector');
