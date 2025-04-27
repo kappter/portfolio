@@ -1,77 +1,378 @@
+/* Reset default styles for consistency */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Define theme variables */
+:root {
+    /* Default theme (fallback) */
+    --background: #ffffff;
+    --text: #000000;
+    --primary: #007bff;
+    --secondary: #6c757d;
+    --accent: #28a745;
+    --link-color: #007bff;
+    --link-hover: #0056b3;
+    --link-visited: #800080;
+    --link-active: #ff0000;
+}
+
 /* Natural Light Theme */
 [data-theme="natural-light"] {
-    --link-color: #2e7d32;
-    --link-hover: #4caf50;
-    --link-visited: #5a8b5c;
-    --link-active: #1b5e20;
+    --background: #f5f5f5;
+    --text: #333;
+    --primary: #4a5e3a;
+    --secondary: #8d6e63;
+    --accent: #a5d6a7;
+    --link-color: #2e7d32; /* Forest green */
+    --link-hover: #4caf50; /* Lighter green */
+    --link-visited: #5a8b5c; /* Olive green */
+    --link-active: #1b5e20; /* Darker green */
 }
 
 /* Natural Dark Theme */
 [data-theme="natural-dark"] {
-    --link-color: #81c784;
-    --link-hover: #a5d6a7;
-    --link-visited: #628963;
-    --link-active: #4caf50;
+    --background: #1a1a1a;
+    --text: #e0e0e0;
+    --primary: #a5d6a7;
+    --secondary: #bcaaa4;
+    --accent: #4a5e3a;
+    --link-color: #81c784; /* Light green */
+    --link-hover: #a5d6a7; /* Brighter green */
+    --link-visited: #628963; /* Muted green */
+    --link-active: #4caf50; /* Deep green */
 }
 
 /* Architectural Light Theme */
 [data-theme="architectural-light"] {
-    --link-color: #4682b4;
-    --link-hover: #87ceeb;
-    --link-visited: #708090;
-    --link-active: #2f4f4f;
+    --background: #e0e0e0;
+    --text: #212121;
+    --primary: #455a64;
+    --secondary: #78909c;
+    --accent: #b0bec5;
+    --link-color: #4682b4; /* Steel blue */
+    --link-hover: #87ceeb; /* Lighter blue */
+    --link-visited: #708090; /* Slate gray */
+    --link-active: #2f4f4f; /* Darker blue */
 }
 
 /* Architectural Dark Theme */
 [data-theme="architectural-dark"] {
-    --link-color: #4dd0e1;
-    --link-hover: #80deea;
-    --link-visited: #4f9a94;
-    --link-active: #0097a7;
+    --background: #2f4f4f;
+    --text: #d3d3d3;
+    --primary: #b0bec5;
+    --secondary: #78909c;
+    --accent: #455a64;
+    --link-color: #4dd0e1; /* Cyan */
+    --link-hover: #80deea; /* Brighter cyan */
+    --link-visited: #4f9a94; /* Teal */
+    --link-active: #0097a7; /* Dark cyan */
 }
 
 /* Space Light Theme */
 [data-theme="space-light"] {
-    --link-color: #8a4af3;
-    --link-hover: #b388ff;
-    --link-visited: #6a1b9a;
-    --link-active: #4a0072;
+    --background: #f0f4ff;
+    --text: #0d1b2a;
+    --primary: #1b263b;
+    --secondary: #415a77;
+    --accent: #778da9;
+    --link-color: #8a4af3; /* Cosmic purple */
+    --link-hover: #b388ff; /* Lighter purple */
+    --link-visited: #6a1b9a; /* Deep purple */
+    --link-active: #4a0072; /* Dark purple */
 }
 
 /* Space Dark Theme */
 [data-theme="space-dark"] {
-    --link-color: #40c4ff;
-    --link-hover: #80d8ff;
-    --link-visited: #0288d1;
-    --link-active: #01579b;
+    --background: #0d1b2a;
+    --text: #ffffff;
+    --primary: #778da9;
+    --secondary: #415a77;
+    --accent: #1b263b;
+    --link-color: #40c4ff; /* Neon blue */
+    --link-hover: #80d8ff; /* Brighter blue */
+    --link-visited: #0288d1; /* Darker blue */
+    --link-active: #01579b; /* Deep blue */
 }
 
 /* Medieval Light Theme */
 [data-theme="medieval-light"] {
-    --link-color: #c62828;
-    --link-hover: #ef5350;
-    --link-visited: #8d4e4e;
-    --link-active: #8e0000;
+    --background: #f5f5dc;
+    --text: #3e2723;
+    --primary: #5c4033;
+    --secondary: #8d6e63;
+    --accent: #d4a017;
+    --link-color: #c62828; /* Royal red */
+    --link-hover: #ef5350; /* Lighter red */
+    --link-visited: #8d4e4e; /* Muted red */
+    --link-active: #8e0000; /* Dark red */
 }
 
 /* Medieval Dark Theme */
 [data-theme="medieval-dark"] {
-    --link-color: #ffb300;
-    --link-hover: #ffca28;
-    --link-visited: #c79100;
-    --link-active: #a67600;
+    --background: #3e2723;
+    --text: #f5f5dc;
+    --primary: #d4a017;
+    --secondary: #8d6e63;
+    --accent: #5c4033;
+    --link-color: #ffb300; /* Gold */
+    --link-hover: #ffca28; /* Brighter gold */
+    --link-visited: #c79100; /* Darker gold */
+    --link-active: #a67600; /* Deep gold */
 }
 
-/* Apply link styles globally using the theme variables */
+/* Apply theme variables to the page */
+body {
+    background: var(--background);
+    color: var(--text);
+    font-family: 'Inter', sans-serif;
+    line-height: 1.6;
+}
+
+/* Container for main content */
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+/* Header styles */
+header {
+    text-align: center;
+    padding: 40px 0;
+}
+
+header h1 {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 2.5em;
+    color: var(--primary);
+}
+
+header p {
+    font-size: 1.1em;
+    color: var(--secondary);
+}
+
+/* Section styles */
+section {
+    margin-bottom: 40px;
+}
+
+section h2 {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 2em;
+    color: var(--primary);
+    margin-bottom: 20px;
+}
+
+section p {
+    margin-bottom: 15px;
+}
+
+/* Teaching images */
+.teaching-image {
+    max-width: 100px;
+    float: left;
+    margin-right: 15px;
+    border-radius: 5px;
+}
+
+/* Navbar styles */
+.navbar {
+    background: var(--primary);
+    padding: 10px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
+.nav-logo img {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+}
+
+.nav-menu {
+    list-style: none;
+    display: flex;
+    gap: 20px;
+}
+
+.nav-menu li {
+    display: inline;
+}
+
+.nav-button {
+    font-family: 'Cinzel', serif;
+    font-size: 1em;
+    padding: 5px 10px;
+    border-radius: 5px;
+    transition: background 0.3s ease;
+}
+
+.nav-button:hover {
+    background: var(--accent);
+}
+
+.nav-toggle {
+    display: none;
+    font-size: 1.5em;
+    color: var(--text);
+    cursor: pointer;
+}
+
+/* Theme selector */
+#theme-selector {
+    background: var(--background);
+    color: var(--text);
+    border: 1px solid var(--secondary);
+    padding: 5px;
+    border-radius: 5px;
+    font-family: 'Inter', sans-serif;
+}
+
+/* Skills section */
+.skills-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+.skill {
+    flex: 1 1 200px;
+    padding: 10px;
+    border: 1px solid var(--secondary);
+    border-radius: 5px;
+}
+
+.progress-bar {
+    background: var(--background);
+    border: 1px solid var(--secondary);
+    border-radius: 10px;
+    height: 10px;
+    margin: 5px 0;
+}
+
+.progress {
+    background: var(--accent);
+    height: 100%;
+    border-radius: 10px;
+}
+
+/* Project gallery */
+.project-gallery {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+}
+
+.project-card {
+    border: 1px solid var(--secondary);
+    border-radius: 5px;
+    padding: 15px;
+    background: var(--background);
+}
+
+.project-card img {
+    max-width: 100%;
+    border-radius: 5px;
+}
+
+.project-card h3 {
+    font-family: 'Montserrat', sans-serif;
+    color: var(--primary);
+    margin: 10px 0;
+}
+
+/* Awards section */
+.awards-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+}
+
+.award-card {
+    border: 1px solid var(--secondary);
+    border-radius: 5px;
+    padding: 15px;
+    background: var(--background);
+}
+
+.award-card h3 {
+    font-family: 'Montserrat', sans-serif;
+    color: var(--primary);
+    margin-bottom: 10px;
+}
+
+/* Music section */
+.music-container {
+    margin-top: 20px;
+}
+
+.guitar-pieces {
+    list-style: none;
+    margin-top: 10px;
+}
+
+.guitar-pieces li {
+    padding: 5px 0;
+}
+
+/* Button styles */
+.button, .toggle-button {
+    background: var(--accent);
+    color: var(--text);
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+.button:hover, .toggle-button:hover {
+    background: var(--secondary);
+}
+
+.button.unavailable {
+    background: var(--secondary);
+    cursor: not-allowed;
+}
+
+/* Footer styles */
+.footer {
+    background: var(--primary);
+    color: var(--text);
+    text-align: center;
+    padding: 20px;
+    margin-top: 40px;
+}
+
+.footer-content {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 20px;
+}
+
+.social-icons a, .donation-links a {
+    margin: 0 10px;
+}
+
+/* Link styles */
 a {
     color: var(--link-color);
-    text-decoration: none; /* Remove default underline for cleaner look */
-    transition: color 0.3s ease; /* Smooth color transition on hover */
+    text-decoration: none;
+    transition: color 0.3s ease;
 }
 
 a:hover {
     color: var(--link-hover);
-    text-decoration: underline; /* Add underline on hover for clarity */
+    text-decoration: underline;
 }
 
 a:visited {
@@ -82,7 +383,7 @@ a:active {
     color: var(--link-active);
 }
 
-/* Ensure links within specific elements (like nav, footer) inherit the same styles */
+/* Ensure links within specific elements inherit the same styles */
 .navbar a, .footer a, .project-link, .skill-link, .button {
     color: var(--link-color);
 }
@@ -98,4 +399,41 @@ a:active {
 
 .navbar a:active, .footer a:active, .project-link:active, .skill-link:active, .button:active {
     color: var(--link-active);
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+    .nav-menu {
+        display: none;
+        flex-direction: column;
+        position: absolute;
+        top: 60px;
+        left: 0;
+        width: 100%;
+        background: var(--primary);
+        padding: 10px 0;
+    }
+
+    .nav-menu.active {
+        display: flex;
+    }
+
+    .nav-toggle {
+        display: block;
+    }
+
+    .nav-menu li {
+        margin: 10px 0;
+        text-align: center;
+    }
+
+    .teaching-image {
+        float: none;
+        display: block;
+        margin: 0 auto 15px;
+    }
+
+    .skills-container, .project-gallery, .awards-container {
+        grid-template-columns: 1fr;
+    }
 }
