@@ -101,6 +101,16 @@ document.addEventListener('DOMContentLoaded', function () {
     // Initial display of blog posts
     displayBlogPosts();
 
+    // Toggle blog form visibility
+    const toggleButton = document.getElementById('toggle-blog-form');
+    const blogFormContent = document.getElementById('blog-form-content');
+    const toggleIcon = toggleButton.querySelector('.toggle-icon');
+
+    toggleButton.addEventListener('click', () => {
+        blogFormContent.classList.toggle('active');
+        toggleIcon.classList.toggle('active');
+    });
+
     // Expose addBlogPost to global scope for onclick
     window.addBlogPost = function () {
         const title = document.getElementById('blog-title').value.trim();
@@ -151,6 +161,10 @@ document.addEventListener('DOMContentLoaded', function () {
         document.getElementById('blog-title').value = '';
         document.getElementById('blog-text').value = '';
         document.getElementById('blog-image').value = '';
+
+        // Optionally collapse the form after submission
+        blogFormContent.classList.remove('active');
+        toggleIcon.classList.remove('active');
     }
 
     // Function to append to CSV (simulated for client-side)
