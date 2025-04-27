@@ -1,4 +1,10 @@
 [
-  {"title": "Guitar Piece 1", "path": "audio/guitar_pieces/tick.wav"},
-  {"title": "Guitar Piece 2", "path": "audio/guitar_pieces/tock.wav"}
+    {
+        "title": "Tick",
+        "file": "tick.wav"
+    },
+    {
+        "title": "Tock",
+        "file": "tock.wav"
+    }
 ]
