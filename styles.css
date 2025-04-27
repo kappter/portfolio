@@ -188,6 +188,14 @@ h3 {
     margin: 0 12px 12px 0;
     border: 2px solid var(--border-color);
     border-radius: 4px;
+    transition: transform 0.3s ease;
+    position: relative;
+    z-index: 1;
+}
+
+.teaching-image:hover {
+    transform: scale(6); /* Scales to 100px * 6 = 600px, exceeding 500px */
+    z-index: 10;
 }
 
 .button {
@@ -276,6 +284,14 @@ h3 {
     height: auto;
     border-radius: 4px;
     margin-bottom: 12px;
+    transition: transform 0.3s ease;
+    position: relative;
+    z-index: 1;
+}
+
+.project-card img:hover {
+    transform: scale(2.5); /* Scales to ~600px (assuming original width ~240px), exceeding 500px */
+    z-index: 10;
 }
 
 .project-card p {
@@ -477,6 +493,14 @@ h3 {
     height: auto;
     border-radius: 4px;
     margin-bottom: 12px;
+    transition: transform 0.3s ease;
+    position: relative;
+    z-index: 1;
+}
+
+.blog-image:hover {
+    transform: scale(2.5); /* Scales to ~700px (assuming original width ~280px), exceeding 500px */
+    z-index: 10;
 }
 
 .blog-card p {
@@ -650,6 +674,18 @@ h3 {
         width: 80px;
         max-width: 80px;
         margin: 0 8px 8px 0;
+    }
+
+    .teaching-image:hover {
+        transform: scale(6.25); /* Scales to 80px * 6.25 = 500px, meeting 500px requirement */
+    }
+
+    .project-card img:hover {
+        transform: scale(2); /* Adjusted for mobile to avoid overflow */
+    }
+
+    .blog-image:hover {
+        transform: scale(2); /* Adjusted for mobile to avoid overflow */
     }
 
     h1 {
