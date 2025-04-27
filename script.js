@@ -1,45 +1,3 @@
-window.addBlogPost = function () {
-    const title = document.getElementById('blog-title').value.trim();
-    const text = document.getElementById('blog-text').value.trim();
-    const imageInput = document.getElementById('blog-image');
-    const imageFile = imageInput.files[0];
-
-    if (!title || !text) {
-        alert('Please fill in the title and content.');
-        return;
-    }
-
-    const formData = new FormData();
-    formData.append('title', title);
-    formData.append('text', text);
-    if (imageFile) {
-        formData.append('image', imageFile);
-    }
-
-    fetch('/add-blog', {
-        method: 'POST',
-        body: formData
-    })
-    .then(response => response.text())
-    .then(result => {
-        console.log(result);
-        // Add to blogPosts array and update display
-        const newPost = {
-            title: title,
-            text: text,
-            image: imageFile ? `blog/${imageFile.name}` : '',
-            link: `https://example.com/blog/${title.toLowerCase().replace(/\s+/g, '-')}`
-        };
-        blogPosts.push(newPost);
-        displayBlogPosts();
-
-        // Clear the form
-        document.getElementById('blog-title').value = '';
-        document.getElementById('blog-text').value = '';
-        document.getElementById('blog-image').value = '';
-    })
-    .catch(error => console.error('Error submitting blog post:', error));
-};
 document.addEventListener('DOMContentLoaded', function () {
     // Theme switching logic
     const themeSelector = document.getElementById('theme-selector');
@@ -71,32 +29,48 @@ document.addEventListener('DOMContentLoaded', function () {
         navMenu.classList.toggle('active');
     });
 
-    // Load guitar pieces
+    // Load guitar pieces with error handling
     fetch('guitar_pieces.json')
-        .then(response => response.json())
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Failed to load guitar_pieces.json');
+            }
+            return response.json();
+        })
         .then(data => {
             const guitarList = document.getElementById('guitar-pieces-list');
+            if (!Array.isArray(data)) {
+                throw new Error('guitar_pieces.json is not a valid array');
+            }
             data.forEach(piece => {
+                if (!piece.title || !piece.file) {
+                    console.warn('Invalid guitar piece entry:', piece);
+                    return;
+                }
                 const li = document.createElement('li');
                 li.className = 'guitar-piece';
                 li.innerHTML = `
                     <span>${piece.title}</span>
                     <audio controls>
-                        <source src="audio/guitar_pieces/${piece.file}" type="audio/mpeg">
+                        <source src="audio/guitar_pieces/${piece.file}" type="audio/wav">
                         Your browser does not support the audio element.
                     </audio>
                 `;
                 guitarList.appendChild(li);
             });
         })
-        .catch(error => console.error('Error loading guitar pieces:', error));
+        .catch(error => {
+            console.error('Error loading guitar pieces:', error);
+            const guitarList = document.getElementById('guitar-pieces-list');
+            guitarList.innerHTML = '<li>Unable to load guitar pieces at this time.</li>';
+        });
 
     // Blog posts array (simulating a CSV file client-side)
     const blogPosts = [
         {
             title: "Teaching Technology in the Classroom",
             text: "Reflections on integrating coding and robotics into high school education.",
-            image: "", // No image for initial posts
+            image: "",
             link: "https://example.com/blog/teaching-technology"
         },
         {
@@ -142,10 +116,8 @@ document.addEventListener('DOMContentLoaded', function () {
         // Simulate image upload (GitHub Pages doesn't allow file writing)
         let imagePath = '';
         if (imageFile) {
-            // In a real setup, this would upload to blog/ folder
             const fileName = imageFile.name;
             imagePath = `blog/${fileName}`; // Simulated path
-            // For now, we'll use a data URL to display the image client-side
             const reader = new FileReader();
             reader.onload = function (e) {
                 imagePath = e.target.result; // Use data URL for display
