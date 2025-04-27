@@ -210,16 +210,21 @@
         <section id="blogs">
             <h2>Blogs</h2>
             <p>Here are some of my thoughts and experiences shared through blog posts:</p>
-            <div class="blog-container">
-                <div class="blog-card">
-                    <h3>Teaching Technology in the Classroom</h3>
-                    <p>Reflections on integrating coding and robotics into high school education.</p>
-                    <a href="https://example.com/blog/teaching-technology" target="_blank" class="button">Read More</a>
-                </div>
-                <div class="blog-card">
-                    <h3>The Art of Learning Through Music</h3>
-                    <p>Exploring how music can enhance learning and creativity in students.</p>
-                    <a href="https://example.com/blog/music-learning" target="_blank" class="button">Read More</a>
+            <div class="blog-container" id="blog-container">
+                <!-- Blog posts will be dynamically added here -->
+            </div>
+            <div class="blog-form-container">
+                <h3>Add a New Blog Post</h3>
+                <div class="form-container">
+                    <div class="blog-form">
+                        <label for="blog-title">Title:</label>
+                        <input type="text" id="blog-title" placeholder="Enter blog title" required>
+                        <label for="blog-text">Content:</label>
+                        <textarea id="blog-text" placeholder="Write your blog post here" required></textarea>
+                        <label for="blog-image">Upload Image:</label>
+                        <input type="file" id="blog-image" accept="image/*">
+                        <button onclick="addBlogPost()" class="button">Submit Blog Post</button>
+                    </div>
                 </div>
             </div>
         </section>
