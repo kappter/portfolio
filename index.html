@@ -214,16 +214,21 @@
                 <!-- Blog posts will be dynamically added here -->
             </div>
             <div class="blog-form-container">
-                <h3>Add a New Blog Post</h3>
-                <div class="form-container">
-                    <div class="blog-form">
-                        <label for="blog-title">Title:</label>
-                        <input type="text" id="blog-title" placeholder="Enter blog title" required>
-                        <label for="blog-text">Content:</label>
-                        <textarea id="blog-text" placeholder="Write your blog post here" required></textarea>
-                        <label for="blog-image">Upload Image:</label>
-                        <input type="file" id="blog-image" accept="image/*">
-                        <button onclick="addBlogPost()" class="button">Submit Blog Post</button>
+                <button id="toggle-blog-form" class="toggle-button">
+                    <span class="toggle-text">Add a New Blog Post</span>
+                    <i class="fas fa-chevron-down toggle-icon"></i>
+                </button>
+                <div id="blog-form-content" class="collapsible-content">
+                    <div class="form-container">
+                        <div class="blog-form">
+                            <label for="blog-title">Title:</label>
+                            <input type="text" id="blog-title" placeholder="Enter blog title" required>
+                            <label for="blog-text">Content:</label>
+                            <textarea id="blog-text" placeholder="Write your blog post here" required></textarea>
+                            <label for="blog-image">Upload Image:</label>
+                            <input type="file" id="blog-image" accept="image/*">
+                            <button onclick="addBlogPost()" class="button">Submit Blog Post</button>
+                        </div>
                     </div>
                 </div>
             </div>
