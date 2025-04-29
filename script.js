@@ -73,7 +73,7 @@ document.addEventListener('DOMContentLoaded', function () {
     loadGuitarPieces();
 
     // Blog posts array (simulating a CSV file client-side)
-    constdd blogPosts = [
+    const blogPosts = [
         {
             title: "Teaching Technology in the Classroom",
             text: "Reflections on integrating coding and robotics into high school education.",
@@ -191,68 +191,4 @@ document.addEventListener('DOMContentLoaded', function () {
         a.click();
         window.URL.revokeObjectURL(url);
     }
-
-    // Function to load GitHub repositories
-    function loadGitHubRepos() {
-        const skillsContainer = document.getElementById('skills-container');
-        skillsContainer.innerHTML = ''; // Clear existing skills
-
-        // Check localStorage for cached data
-        const cachedRepos = localStorage.getItem('githubRepos');
-        const cacheTimestamp = localStorage.getItem('githubReposTimestamp');
-        const cacheDuration = 24 * 60 * 60 * 1000; // 24 hours in milliseconds
-
-        if (cachedRepos && cacheTimestamp && (Date.now() - cacheTimestamp < cacheDuration)) {
-            // Use cached data
-            const repos = JSON.parse(cachedRepos);
-            displayRepos(repos);
-            return;
-        }
-
-        // Fetch repositories from GitHub API
-        fetch('https://api.github.com/users/kappter/repos')
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Failed to load GitHub repositories');
-                }
-                return response.json();
-            })
-            .then(data => {
-                if (!Array.isArray(data)) {
-                    throw new Error('GitHub API response is not a valid array');
-                }
-                // Cache the data
-                localStorage.setItem('githubRepos', JSON.stringify(data));
-                localStorage.setItem('githubReposTimestamp', Date.now());
-                displayRepos(data);
-            })
-            .catch(error => {
-                console.error('Error loading GitHub repositories:', error);
-                skillsContainer.innerHTML = '<p>Unable to load repositories at this time.</p>';
-            });
-    }
-
-    // Function to display repositories
-    function displayRepos(repos) {
-        const skillsContainer = document.getElementById('skills-container');
-        skillsContainer.className = 'skills-container project-gallery'; // Reuse project-gallery styling
-
-        repos.forEach(repo => {
-            // Skip repositories without a description or language
-            if (!repo.description || !repo.language) return;
-
-            const repoCard = document.createElement('div');
-            repoCard.className = 'project-card';
-            repoCard.innerHTML = `
-                <h3>${repo.name}</h3>
-                <p>${repo.description || 'No description available.'}</p>
-                <p><strong>Language:</strong> ${repo.language}</p>
-                <a href="${repo.html_url}" target="_blank" class="project-link">View on GitHub</a>
-            `;
-            skillsContainer.appendChild(repoCard);
-        });
-    }
-
-    // Initial load of GitHub repositories
-    loadGitHubRepos();
 });
