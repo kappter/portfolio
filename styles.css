@@ -26,6 +26,10 @@
     --progress-bg: #5c5342; /* Dark tan */
 }
 
+html {
+    scroll-behavior: smooth;
+}
+
 * {
     box-sizing: border-box;
     margin: 0;
