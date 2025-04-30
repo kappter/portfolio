@@ -1,0 +1,255 @@
+<script type="text/javascript">
+        var gk_isXlsx = false;
+        var gk_xlsxFileLookup = {};
+        var gk_fileData = {};
+        function filledCell(cell) {
+          return cell !== '' && cell != null;
+        }
+        function loadFileData(filename) {
+        if (gk_isXlsx && gk_xlsxFileLookup[filename]) {
+            try {
+                var workbook = XLSX.read(gk_fileData[filename], { type: 'base64' });
+                var firstSheetName = workbook.SheetNames[0];
+                var worksheet = workbook.Sheets[firstSheetName];
+
+                // Convert sheet to JSON to filter blank rows
+                var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, blankrows: false, defval: '' });
+                // Filter out blank rows (rows where all cells are empty, null, or undefined)
+                var filteredData = jsonData.filter(row => row.some(filledCell));
+
+                // Heuristic to find the header row by ignoring rows with fewer filled cells than the next row
+                var headerRowIndex = filteredData.findIndex((row, index) =>
+                  row.filter(filledCell).length >= filteredData[index + 1]?.filter(filledCell).length
+                );
+                // Fallback
+                if (headerRowIndex === -1 || headerRowIndex > 25) {
+                  headerRowIndex = 0;
+                }
+
+                // Convert filtered JSON back to CSV
+                var csv = XLSX.utils.aoa_to_sheet(filteredData.slice(headerRowIndex)); // Create a new sheet from filtered array of arrays
+                csv = XLSX.utils.sheet_to_csv(csv, { header: 1 });
+                return csv;
+            } catch (e) {
+                console.error(e);
+                return "";
+            }
+        }
+        return gk_fileData[filename] || "";
+        }
+        </script><!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kenneth Kapptie - Resume</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #1a1a1a;
+            color: #ffffff;
+            line-height: 1.6;
+            padding: 20px;
+        }
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 40px;
+            background-color: #2a2a2a;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        .header h1 {
+            font-size: 2.5em;
+            color: #00aaff;
+        }
+        .header p {
+            font-size: 1.1em;
+            color: #cccccc;
+        }
+        .contact-info {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 30px;
+            font-size: 0.9em;
+        }
+        .section {
+            margin-bottom: 30px;
+        }
+        .section h2 {
+            font-size: 1.8em;
+            color: #00aaff;
+            margin-bottom: 15px;
+            border-bottom: 2px solid #00aaff;
+            padding-bottom: 5px;
+        }
+        .section ul {
+            list-style: none;
+        }
+        .section ul li {
+            margin-bottom: 10px;
+            padding-left: 20px;
+            position: relative;
+        }
+        .section ul li:before {
+            content: '•';
+            color: #00aaff;
+            position: absolute;
+            left: 0;
+        }
+        .job {
+            margin-bottom: 20px;
+        }
+        .job h3 {
+            font-size: 1.3em;
+            color: #ffffff;
+        }
+        .job p {
+            font-size: 0.9em;
+            color: #cccccc;
+        }
+        a {
+            color: #00aaff;
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+        @media (max-width: 600px) {
+            .container {
+                padding: 20px;
+            }
+            .contact-info {
+                flex-direction: column;
+                text-align: center;
+            }
+            .header h1 {
+                font-size: 2em;
+            }
+            .section h2 {
+                font-size: 1.5em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Kenneth J. Kapptie</h1>
+            <p>Inspiring the next generation through technology and innovation</p>
+        </div>
+        <div class="contact-info">
+            <div>
+                <p>Work: (385) 646-1515</p>
+                <p>Cell: (801) 209-5262</p>
+                <p>Email: <a href="mailto:kkapptie@graniteschools.org">kkapptie@graniteschools.org</a></p>
+            </div>
+            <div>
+                <p>1953 S 1100 E #521431</p>
+                <p>Salt Lake City, UT 84152</p>
+            </div>
+        </div>
+        <div class="section">
+            <h2>Objective</h2>
+            <p>Inspire young people with the fulfilling promise that technology is meaningful in our world, fostering creativity and innovation through education.</p>
+        </div>
+        <div class="section">
+            <h2>Education & Licensure</h2>
+            <ul>
+                <li>Master of Arts in Education – University of Phoenix, Murray, UT – Feb. 2009</li>
+                <li>B.S., Information Technology, GPA: 3.8 – University of Phoenix, Taylorsville, UT – 2003-2007</li>
+                <li>Utah Level II Secondary Teaching License with Endorsements in Computer Science, Digital Media, Business, and Computer Programming</li>
+            </ul>
+        </div>
+        <div class="section">
+            <h2>Professional Experience</h2>
+            <div class="job">
+                <h3>Programming, Web, Digital Media, Yearbook, and Computer Tech Teacher – Skyline High, Salt Lake City, UT</h3>
+               率先
+
+                <p>2012 – Present</p>
+                <ul>
+                    <li>Developed and taught curriculum for computer science, digital media, and web development, impacting over 500 students annually.</li>
+                    <li>Served as Technology Student Association (TSA) Advisor, leading teams to win 12 state and 3 national awards since 2012.</li>
+                    <li>Managed production of the school yearbook with Jostens Inc., overseeing a team of 20 students to create a 200-page annual publication.</li>
+                    <li>Maintained and updated the Skyline High website as school webmaster, improving user engagement by 30% through modern design and functionality.</li>
+                    <li>Integrated emerging technologies like 3D modeling and game development into coursework, preparing students for industry trends.</li>
+                    <li>Supervised by Doug Bingham – (385) 646-5420</li>
+                </ul>
+            </div>
+            <div class="job">
+                <h3>Teacher/Adult Educator – Granite Peaks, Salt Lake City, UT</h3>
+                <p>2008 – 2011</p>
+                <ul>
+                    <li>Managed ESL, GED preparation, and adult high school programs, serving over 200 learners annually.</li>
+                    <li>Developed computer technology curriculum and led accreditation efforts.</li>
+                    <li>Supervised by Alison Milne – (385) 646-4666</li>
+                </ul>
+            </div>
+            <div class="job">
+                <h3>Computer Technology and Multimedia Teacher – Stillwater Academy, South Jordan, UT</h3>
+                <p>2006 – 2008</p>
+                <ul>
+                    <li>Taught multimedia and computer technology classes, helping students build digital portfolios.</li>
+                    <li>Supervised by Marilyn Prettyman – (801) 484-9911</li>
+                </ul>
+            </div>
+            <div class="job">
+                <h3>Software Developer and Network Administrator – Conexus Inc., Midvale, UT</h3>
+                <p>2005 – 2008</p>
+                <ul>
+                    <li>Developed C# .NET asset management software for the Department of Defense.</li>
+                    <li>Managed web, database, and client servers for operational efficiency.</li>
+                    <li>Supervised by Bry Fausett – (801) 984-6701</li>
+                </ul>
+            </div>
+            <div class="job">
+                <h3>Webmaster/Computer Lab Tech – East High School, Salt Lake City, UT</h3>
+                <p>2000 – 2005</p>
+                <ul>
+                    <li>Built and managed the school website and multiple databases for discipline and inventory.</li>
+                    <li>Taught community education courses on web development and graphics.</li>
+                    <li>Supervised by Ken Jones – (801) 583-1661</li>
+                </ul>
+            </div>
+        </div>
+        <div class="section">
+            <h2>IT Skills</h2>
+            <ul>
+                <li><strong>Web & Windows Forms Development:</strong> Proficient in Visual Studio (C#), SQL Server, Adobe Dreamweaver, Flash, Fireworks; basic experience with PHP, MySQL, ASP.</li>
+                <li><strong>Software:</strong> Expert in Microsoft Office (up to 2010), Adobe Photoshop, Acrobat, InDesign; some experience with ActionScript, Visual Basic, C, Java.</li>
+            </ul>
+        </div>
+        <div class="section">
+            <h2>Interests</h2>
+            <ul>
+                <li>Musician (guitar, bass, keyboards, flute).</li>
+                <li>Outdoor activities (biking, running), reading action thriller fiction, writing (philosophy, computer instruction, fiction).</li>
+                <li>Motorcycle enthusiast.</li>
+            </ul>
+        </div>
+    </div>
+    <script>
+        // Add subtle fade-in animation on page load
+        document.addEventListener('DOMContentLoaded', () => {
+            const container = document.querySelector('.container');
+            container.style.opacity = 0;
+            let opacity = 0;
+            const fadeIn = setInterval(() => {
+                if (opacity >= 1) clearInterval(fadeIn);
+                container.style.opacity = opacity;
+                opacity += 0.02;
+            }, 20);
+        });
+    </script>
+</body>
+</html>
