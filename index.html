@@ -1,4 +1,43 @@
-<!DOCTYPE html>
+<script type="text/javascript">
+        var gk_isXlsx = false;
+        var gk_xlsxFileLookup = {};
+        var gk_fileData = {};
+        function filledCell(cell) {
+          return cell !== '' && cell != null;
+        }
+        function loadFileData(filename) {
+        if (gk_isXlsx && gk_xlsxFileLookup[filename]) {
+            try {
+                var workbook = XLSX.read(gk_fileData[filename], { type: 'base64' });
+                var firstSheetName = workbook.SheetNames[0];
+                var worksheet = workbook.Sheets[firstSheetName];
+
+                // Convert sheet to JSON to filter blank rows
+                var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, blankrows: false, defval: '' });
+                // Filter out blank rows (rows where all cells are empty, null, or undefined)
+                var filteredData = jsonData.filter(row => row.some(filledCell));
+
+                // Heuristic to find the header row by ignoring rows with fewer filled cells than the next row
+                var headerRowIndex = filteredData.findIndex((row, index) =>
+                  row.filter(filledCell).length >= filteredData[index + 1]?.filter(filledCell).length
+                );
+                // Fallback
+                if (headerRowIndex === -1 || headerRowIndex > 25) {
+                  headerRowIndex = 0;
+                }
+
+                // Convert filtered JSON back to CSV
+                var csv = XLSX.utils.aoa_to_sheet(filteredData.slice(headerRowIndex)); // Create a new sheet from filtered array of arrays
+                csv = XLSX.utils.sheet_to_csv(csv, { header: 1 });
+                return csv;
+            } catch (e) {
+                console.error(e);
+                return "";
+            }
+        }
+        return gk_fileData[filename] || "";
+        }
+        </script><!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -26,7 +65,6 @@
             <li><a href="#awards" class="nav-button">Awards</a></li>
             <li><a href="#art" class="nav-button">Art</a></li>
             <li><a href="#music" class="nav-button">Music</a></li>
-            <!-- <li><a href="#blogs" class="nav-button">Blogs</a></li> -->
             <li>
                 <select id="theme-selector" aria-label="Select Theme and Style">
                     <optgroup label="Natural Theme">
@@ -51,6 +89,7 @@
     </nav>
 
     <div class="container">
+        <canvas id="line-animation" class="line-animation"></canvas>
         <header>
             <h1>The Work of Ken Kapptie: Crafting Clarity from Complexity</h1>
             <p>Computer Science Teacher | Educoder | Webmaster | TSA Adviser | Yearbook Adviser | VEX Robotics Coach</p>
@@ -118,7 +157,7 @@
             </div>
         </section>
 
-         <section id="projects">
+        <section id="projects">
             <h2>Projects</h2>
             <p><img src="images/art3.PNG" alt="Projects Icon" class="teaching-image" onerror="this.src='https://placehold.co/100x100?text=Projects';">Projects are the footprints of curiosity made visible. Each one—whether a digital build, a curriculum design, or a quiet experiment in structure and style—reflects a dialogue between idea and action. I approach projects as living things: not products to be perfected, but explorations to be refined, shaped, and sometimes abandoned when they have taught their lesson. In every endeavor, the aim is not merely completion, but deeper understanding—a way of folding experience back into itself, and growing sharper, braver, and more awake through the making.</p>
             <div class="project-gallery">
@@ -138,7 +177,7 @@
                     <p>Maybe as a freshman who just had a rough first year, you’re probably feeling stressed about your GPA and wondering if you can still hit a 3.5 or even a 3.2. Let’s break down the EstimateYourGrade app in a way that’s super clear and hopeful, focusing on how it can help you figure out if those goals are possible.</p>
                     <a href="https://github.com/kappter/estimateyourgrade" target="_blank" class="project-link">View on GitHub</a>
                 </div>
-                 <div class="project-card">
+                <div class="project-card">
                     <a href="https://kappter.github.io/rgbcolorvis/" target="_blank">
                         <img src="https://github.com/kappter/portfolio/blob/main/images/rgb.png?raw=true" alt="PairPal">
                     </a>
@@ -162,7 +201,7 @@
                     <p>After a comedian quipped he'd never met a '10' and only encountered three '9s' in his life, I was left pondering: What even is a 10? A year of single-life soul-searching later, I built the Perfect 10 Evaluator—a tongue-in-cheek, code-driven quest to quantify the unquantifiable. Whether you're sizing up a roommate, significant other, or even your mom, this tool playfully crunches the numbers on compatibility, charm, and that elusive '10' factor. Spoiler: It’s less about finding perfection and more about laughing at the absurdity of trying.</p>
                     <a href="https://github.com/kappter/perfect10" target="_blank" class="project-link">View on GitHub</a>
                 </div>
-                 <div class="project-card">
+                <div class="project-card">
                     <a href="https://kappter.github.io/masterysignature/" target="_blank">
                         <img src="https://github.com/kappter/portfolio/blob/main/images/sig.png?raw=true" alt="Mastery Signature">
                     </a>
@@ -196,7 +235,6 @@
                 </div>
             </div>
         </section>
-
 
         <section id="awards">
             <h2>Awards</h2>
@@ -242,35 +280,6 @@
                 <ul id="guitar-pieces-list" class="guitar-pieces"></ul>
             </div>
         </section>
-
-        <!-- 
-        <section id="blogs">
-            <h2>Blogs</h2>
-            <p>Here are some of my thoughts and experiences shared through blog posts:</p>
-            <div class="blog-container" id="blog-container">
-                <!-- Blog posts will be dynamically added here -->
-            </div>
-            <div class="blog-form-container">
-                <button id="toggle-blog-form" class="toggle-button">
-                    <span class="toggle-text">Add a New Blog Post</span>
-                    <i class="fas fa-chevron-down toggle-icon"></i>
-                </button>
-                <div id="blog-form-content" class="collapsible-content">
-                    <div class="form-container">
-                        <div class="blog-form">
-                            <label for="blog-title">Title:</label>
-                            <input type="text" id="blog-title" placeholder="Enter blog title" required>
-                            <label for="blog-text">Content:</label>
-                            <textarea id="blog-text" placeholder="Write your blog post here" required></textarea>
-                            <label for="blog-image">Upload Image:</label>
-                            <input type="file" id="blog-image" accept="image/*">
-                            <button onclick="addBlogPost()" class="button">Submit Blog Post</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-        -->
     </div>
 
     <footer class="footer">
@@ -293,5 +302,6 @@
     </footer>
 
     <script src="script.js"></script>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'93885fd99e067bb2',t:'MTc0NjAzMDEwOS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script>
 </body>
 </html>

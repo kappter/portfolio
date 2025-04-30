@@ -29,6 +29,58 @@ document.addEventListener('DOMContentLoaded', function () {
         navMenu.classList.toggle('active');
     });
 
+    // Canvas animation for drawing a horizontal line
+    const canvas = document.getElementById('line-animation');
+    const ctx = canvas.getContext('2d');
+    let width = Math.min(window.innerWidth, 960); // Match container max-width
+    const height = 30; // Canvas height
+    canvas.width = width;
+    canvas.height = height;
+
+    // Adjust canvas size on window resize
+    window.addEventListener('resize', () => {
+        width = Math.min(window.innerWidth, 960);
+        canvas.width = width;
+        canvas.height = height;
+        x = 0; // Reset animation
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+    });
+
+    let x = 0;
+    const speed = 3; // Pixels per frame
+    const baseY = height / 2;
+    let lastY = baseY;
+
+    function drawLine() {
+        ctx.beginPath();
+        ctx.moveTo(x, lastY);
+
+        // Increment x position
+        x += speed;
+        if (x > width) {
+            x = width; // Stop at canvas width
+        }
+
+        // Add randomness to y position for hand-drawn effect
+        const y = baseY + (Math.random() - 0.5) * 4; // ±2px randomness
+        ctx.lineTo(x, y);
+
+        // Randomize line width for felt pen effect
+        ctx.lineWidth = 2 + (Math.random() - 0.5) * 0.5; // 1.75–2.25px
+        ctx.strokeStyle = getComputedStyle(document.documentElement).getPropertyValue('--accent-color').trim();
+        ctx.lineCap = 'round';
+        ctx.stroke();
+
+        lastY = y; // Update last y position for smooth continuity
+
+        if (x < width) {
+            requestAnimationFrame(drawLine);
+        }
+    }
+
+    // Start animation
+    drawLine();
+
     // Function to load guitar pieces
     function loadGuitarPieces() {
         const guitarList = document.getElementById('guitar-pieces-list');
