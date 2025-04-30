@@ -1,0 +1,303 @@
+<script type="text/javascript">
+        var gk_isXlsx = false;
+        var gk_xlsxFileLookup = {};
+        var gk_fileData = {};
+        function filledCell(cell) {
+          return cell !== '' && cell != null;
+        }
+        function loadFileData(filename) {
+        if (gk_isXlsx && gk_xlsxFileLookup[filename]) {
+            try {
+                var workbook = XLSX.read(gk_fileData[filename], { type: 'base64' });
+                var firstSheetName = workbook.SheetNames[0];
+                var worksheet = workbook.Sheets[firstSheetName];
+
+                // Convert sheet to JSON to filter blank rows
+                var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, blankrows: false, defval: '' });
+                // Filter out blank rows (rows where all cells are empty, null, or undefined)
+                var filteredData = jsonData.filter(row => row.some(filledCell));
+
+                // Heuristic to find the header row by ignoring rows with fewer filled cells than the next row
+                var headerRowIndex = filteredData.findIndex((row, index) =>
+                  row.filter(filledCell).length >= filteredData[index + 1]?.filter(filledCell).length
+                );
+                // Fallback
+                if (headerRowIndex === -1 || headerRowIndex > 25) {
+                  headerRowIndex = 0;
+                }
+
+                // Convert filtered JSON back to CSV
+                var csv = XLSX.utils.aoa_to_sheet(filteredData.slice(headerRowIndex)); // Create a new sheet from filtered array of arrays
+                csv = XLSX.utils.sheet_to_csv(csv, { header: 1 });
+                return csv;
+            } catch (e) {
+                console.error(e);
+                return "";
+            }
+        }
+        return gk_fileData[filename] || "";
+        }
+        </script><!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Curriculum Vitae</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Arial', sans-serif;
+            color: #333333;
+            line-height: 1.6;
+            padding: 20px;
+            background-color: #f4f4f4;
+        }
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #ffffff;
+            border: 1px solid #dddddd;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .header h1 {
+            font-size: 2.2em;
+            color: #005566;
+        }
+        .header p {
+            font-size: 1em;
+            color: #666666;
+        }
+        .section {
+            margin-bottom: 25px;
+        }
+        .section h2 {
+            font-size: 1.5em;
+            color: #005566;
+            margin-bottom: 10px;
+            border-bottom: 1px solid #005566;
+            padding-bottom: 5px;
+        }
+        .section ul {
+            list-style: none;
+        }
+        .section ul li {
+            margin-bottom: 8px;
+            padding-left: 15px;
+            position: relative;
+        }
+        .section ul li:before {
+            content: '•';
+            color: #005566;
+            position: absolute;
+            left: 0;
+        }
+        .job, .project, .award, .service {
+            margin-bottom: 15px;
+        }
+        .job h3, .project h3, .award h3, .service h3 {
+            font-size: 1.2em;
+            color: #333333;
+        }
+        .job p, .project p, .award p, .service p {
+            font-size: 0.95em;
+            color: #555555;
+        }
+        a {
+            color: #005566;
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+        @media (max-width: 600px) {
+            .container {
+                padding: 15px;
+            }
+            .header h1 {
+                font-size: 1.8em;
+            }
+            .section h2 {
+                font-size: 1.3em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Kenneth J. Kapptie</h1>
+            <p>1953 S 1100 E #521431, Salt Lake City, UT 84152 | Email: <a href="mailto:kkapptie@graniteschools.org">kkapptie@graniteschools.org</a> | Portfolio: <a href="https://kappter.github.io/portfolio/">kappter.github.io/portfolio</a></p>
+        </div>
+
+        <div class="section">
+            <h2>Professional Summary</h2>
+            <p>Educator and technologist with over 15 years of experience in secondary education, specializing in computer science, digital media, and web development. Holds a Master’s in Education and a B.S. in Information Technology, with a proven record of integrating technology into pedagogy to foster student innovation. Developed web-based applications, including PairPal, and advised award-winning Technology Student Association teams. Committed to advancing educational technology and curriculum development.</p>
+        </div>
+
+        <div class="section">
+            <h2>Education</h2>
+            <ul>
+                <li><strong>Master of Arts in Education</strong> – University of Phoenix, Murray, UT, February 2009</li>
+                <li><strong>Bachelor of Science in Information Technology</strong> – University of Phoenix, Taylorsville, UT, 2003–2007, GPA: 3.8</li>
+            </ul>
+        </div>
+
+        <div class="section">
+            <h2>Licensure</h2>
+            <ul>
+                <li>Utah Level II Secondary Teaching License, Endorsements: Computer Science, Digital Media, Business, Computer Programming, Valid through 2027</li>
+            </ul>
+        </div>
+
+        <div class="section">
+            <h2>Teaching Experience</h2>
+            <div class="job">
+                <h3>Programming, Web, Digital Media, Yearbook, and Computer Tech Teacher</h3>
+                <p>Skyline High School, Salt Lake City, UT, 2012–Present</p>
+                <ul>
+                    <li>Designed and delivered curriculum for computer science, digital media, and web development, serving over 500 students annually across courses including AP Computer Science and Web Development.</li>
+                    <li>Advised Technology Student Association (TSA), leading teams to 12 state and 3 national awards in competitions like coding and video game design.</li>
+                    <li>Managed yearbook production with Jostens Inc., supervising 20 students to produce a 200-page publication annually.</li>
+                    <li>Served as school webmaster, enhancing Skyline High’s website functionality and increasing user engagement by 30%.</li>
+                    <li>Integrated emerging technologies (e.g., 3D modeling, game development) into coursework, aligning with industry trends.</li>
+                </ul>
+            </div>
+            <div class="job">
+                <h3>Teacher/Adult Educator</h3>
+                <p>Granite Peaks, Salt Lake City, UT, 2008–2011</p>
+                <ul>
+                    <li>Developed and taught ESL, GED preparation, and adult high school programs, impacting over 200 learners annually.</li>
+                    <li>Led accreditation efforts and created computer technology curriculum for adult education.</li>
+                </ul>
+            </div>
+            <div class="job">
+                <h3>Computer Technology and Multimedia Teacher</h3>
+                <p>Stillwater Academy, South Jordan, UT, 2006–2008</p>
+                <ul>
+                    <li>Taught multimedia and computer technology, guiding students in creating digital portfolios for career readiness.</li>
+                </ul>
+            </div>
+            <div class="job">
+                <h3>Webmaster/Computer Lab Technician</h3>
+                <p>East High School, Salt Lake City, UT, 2000–2005</p>
+                <ul>
+                    <li>Developed and maintained school website and databases for discipline and inventory management.</li>
+                    <li>Taught community education courses in web development and graphic design.</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Technical Experience</h2>
+            <div class="job">
+                <h3>Software Developer and Network Administrator</h3>
+                <p>Conexus Inc., Midvale, UT, 2005–2008</p>
+                <ul>
+                    <li>Developed C# .NET asset management software for the Department of Defense, improving operational efficiency.</li>
+                    <li>Managed web, database, and client servers, ensuring system reliability and performance.</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Professional Development</h2>
+            <ul>
+                <li>Advanced Placement Computer Science Principles Training, College Board, 2015</li>
+                <li>Technology Student Association Advisor Training, National TSA Conference, 2013–2023</li>
+                <li>Web Development Bootcamp, University of Utah, 2010</li>
+                <li>Adobe Certified Educator Training, Adobe Education Exchange, 2009</li>
+            </ul>
+        </div>
+
+        <div class="section">
+            <h2>Technical Projects</h2>
+            <div class="project">
+                <h3>PairPal: Personality Pairing Explorer</h3>
+                <p><a href="https://kappter.github.io/pairpal/">kappter.github.io/pairpal</a>, 2024–Present</p>
+                <ul>
+                    <li>Developed a web-based application using HTML, CSS, and JavaScript to analyze personality pairings based on three trait dimensions (volume, focus, trait).</li>
+                    <li>Implemented dynamic logic to generate tailored descriptions, cautions, and advice for all 729 possible pairings, enhancing user experience (https://github.com/kappter/pairpal).</li>
+                    <li>Utilized React and Tailwind CSS for responsive design, with Git for version control.</li>
+                </ul>
+            </div>
+            <div class="project">
+                <h3>Amalgamator: Thesaurus-Based Concept Connector</h3>
+                <p><a href="https://kappter.github.io/portfolio/">kappter.github.io/portfolio</a>, 2023–Present</p>
+                <ul>
+                    <li>Created a JavaScript-driven tool to explore conceptual relationships using Roget’s Thesaurus, supporting educational applications.</li>
+                    <li>Designed with HTML, CSS, and JavaScript, with plans for CSV integration for data management.</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Awards and Honors</h2>
+            <div class="award">
+                <h3>Technology Student Association Advisor Excellence Award</h3>
+                <p>Utah TSA, 2016, 2019</p>
+                <ul>
+                    <li>Recognized for outstanding mentorship in leading student teams to state and national success.</li>
+                </ul>
+            </div>
+            <div class="award">
+                <h3>Granite School District Innovation in Teaching Award</h3>
+                <p>Salt Lake City, UT, 2014</p>
+                <ul>
+                    <li>Awarded for integrating technology into classroom instruction, enhancing student engagement.</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Professional Service</h2>
+            <div class="service">
+                <h3>Curriculum Development Committee</h3>
+                <p>Granite School District, Salt Lake City, UT, 2015–2020</p>
+                <ul>
+                    <li>Contributed to the design of computer science and digital media curricula for secondary schools.</li>
+                </ul>
+            </div>
+            <div class="service">
+                <h3>Technology Student Association State Conference Judge</h3>
+                <p>Utah TSA, 2014–2023</p>
+                <ul>
+                    <li>Evaluated student projects in coding, web design, and video game development categories.</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Technical Skills</h2>
+            <ul>
+                <li><strong>Programming Languages:</strong> JavaScript, C#, HTML, CSS, SQL, PHP, MySQL, ActionScript, Visual Basic, C, Java (basic).</li>
+                <li><strong>Frameworks & Tools:</strong> React, Tailwind CSS, Visual Studio, Git, Adobe Dreamweaver, Flash, Fireworks.</li>
+                <li><strong>Software:</strong> Microsoft Office (up to 2010), Adobe Photoshop, Acrobat, InDesign.</li>
+                <li><strong>Platforms:</strong> Windows, Linux (basic server management).</li>
+            </ul>
+        </div>
+
+        <div class="section">
+            <h2>Interests</h2>
+            <ul>
+                <li>Music composition and performance (guitar, bass, keyboards, flute).</li>
+                <li>Outdoor activities (biking, running), reading action thriller fiction, writing (philosophy, computer instruction, fiction).</li>
+                <li>Motorcycle enthusiast.</li>
+            </ul>
+        </div>
+
+        <div class="section">
+            <h2>References</h2>
+            <p>Available upon request.</p>
+        </div>
+    </div>
+</body>
+</html>
