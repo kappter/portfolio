@@ -1,0 +1,1308 @@
+<script type="text/javascript">
+        var gk_isXlsx = false;
+        var gk_xlsxFileLookup = {};
+        var gk_fileData = {};
+        function filledCell(cell) {
+          return cell !== '' && cell != null;
+        }
+        function loadFileData(filename) {
+        if (gk_isXlsx && gk_xlsxFileLookup[filename]) {
+            try {
+                var workbook = XLSX.read(gk_fileData[filename], { type: 'base64' });
+                var firstSheetName = workbook.SheetNames[0];
+                var worksheet = workbook.Sheets[firstSheetName];
+
+                // Convert sheet to JSON to filter blank rows
+                var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, blankrows: false, defval: '' });
+                // Filter out blank rows (rows where all cells are empty, null, or undefined)
+                var filteredData = jsonData.filter(row => row.some(filledCell));
+
+                // Heuristic to find the header row by ignoring rows with fewer filled cells than the next row
+                var headerRowIndex = filteredData.findIndex((row, index) =>
+                  row.filter(filledCell).length >= filteredData[index + 1]?.filter(filledCell).length
+                );
+                // Fallback
+                if (headerRowIndex === -1 || headerRowIndex > 25) {
+                  headerRowIndex = 0;
+                }
+
+                // Convert filtered JSON back to CSV
+                var csv = XLSX.utils.aoa_to_sheet(filteredData.slice(headerRowIndex)); // Create a new sheet from filtered array of arrays
+                csv = XLSX.utils.sheet_to_csv(csv, { header: 1 });
+                return csv;
+            } catch (e) {
+                console.error(e);
+                return "";
+            }
+        }
+        return gk_fileData[filename] || "";
+        }
+        </script><!-- index.html updates -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ken Kapptie | Computer Science Portfolio</title>
+    <link rel="icon" href="images/kjklogo.png" type="image/png" sizes="32x32">
+    <link rel="apple-touch-icon" href="images/kjklogo.png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Montserrat:wght@400;500;600;700&family=Orbitron:wght@400;500;600;700&family=Cinzel:wght@400;700&display=swap">
+    <link id="theme-stylesheet" rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-logo">
+            <img src="images/kjklogo.png" alt="Ken Kapptie Logo" class="logo" onerror="this.src='https://placehold.co/100x100?text=Logo';">
+        </div>
+        <span class="nav-toggle">☰</span>
+        <ul class="nav-menu">
+            <li><a href="#education" class="nav-button">Education</a></li>
+            <li><a href="#teaching" class="nav-button">Teaching</a></li>
+            <li><a href="#hobbies" class="nav-button">Hobbies</a></li>
+            <li><a href="#interests" class="nav-button">Interests</a></li>
+            <li><a href="#skills" class="nav-button">Skills</a></li>
+            <li><a href="#projects" class="nav-button">Projects</a></li>
+            <li><a href="#awards" class="nav-button">Awards</a></li>
+            <li><a href="#art" class="nav-button">Art</a></li>
+            <li><a href="#music" class="nav-button">Music</a></li>
+            <li>
+                <select id="theme-selector" aria-label="Select Theme and Style">
+                    <optgroup label="Natural Theme">
+                        <option value="natural-light">Natural Light</option>
+                        <option value="natural-dark">Natural Dark</option>
+                    </optgroup>
+                    <optgroup label="Architectural Theme">
+                        <option value="architectural-light">Architectural Light</option>
+                        <option value="architectural-dark">Architectural Dark</option>
+                    </optgroup>
+                    <optgroup label="Space Theme">
+                        <option value="space-light">Space Light</option>
+                        <option value="space-dark">Space Dark</option>
+                    </optgroup>
+                    <optgroup label="Medieval Theme">
+                        <option value="medieval-light">Medieval Light</option>
+                        <option value="medieval-dark">Medieval Dark</option>
+                    </optgroup>
+                </select>
+            </li>
+        </ul>
+    </nav>
+
+    <div class="container">
+        <canvas id="line-animation" class="line-animation"></canvas>
+        <header>
+            <h1>The Work of Ken Kapptie: Crafting Clarity from Complexity</h1>
+            <p>Computer Science Teacher | Educoder | Webmaster | TSA Adviser | Yearbook Adviser | VEX Robotics Coach</p>
+        </header>
+
+        <section id="education">
+            <h2>Education</h2>
+            <p><img src="images/plate.png" alt="Teaching Icon" class="teaching-image" onerror="this.src='https://placehold.co/100x100?text=Education';">I began, quite fittingly, in a small place with a wide sky—Worland High School, where the mountains whispered and the teachers tried their best to shout over them. I was a thinker, perhaps a wanderer in denim, more attuned to the questions behind the questions than the answers on the quiz. But that was the beginning—not of knowledge, but of awareness.</p>
+            <p>Later, I found myself at the University of Phoenix, that curious digital agora where the self must be both student and steward. It was there that I gained a Bachelor of Science in Information Technology degree and a Master of Arts in Education degree and learned not just facts but flexibility—the kind of education that flows around life’s rocks rather than insisting they move.</p>
+            <p>Beyond that, my learning never stopped. Certifications, teaching credentials, workshops, late-night YouTube rabbit holes, existential books with too many footnotes—all bricks in a cathedral of ongoing curiosity. You see, I never pursued education to collect degrees, but to remember what I’d forgotten: that the journey itself is the lesson.</p>
+        </section>
+
+        <section id="teaching">
+            <h2>Teaching</h2>
+            <div class="teaching-content">
+                <p><img src="images/kk.jpg" alt="Teaching Icon" class="teaching-image" onerror="this.src='https://placehold.co/100x100?text=Teaching';">My teaching path—woven not as a ladder, but as a kind of mandala, spiraling through spaces where minds awaken at different tempos.</p>
+                <p>At East High, I first learned the rhythm of the classroom—a pulse not found in policy but in eye contact, curiosity, and chaos. Stillwater Academy brought something deeper: a place where healing and learning held hands, and where I had to teach with more than my mind—with my heart, and sometimes silence.</p>
+                <p><img src="images/IMG_4174.JPEG" alt="Teaching Icon" class="teaching-image" onerror="this.src='https://placehold.co/100x100?text=Teaching';">Granite Peaks Adult Ed revealed another truth: that it’s never too late to change one’s story. There, learners came with wrinkles and resilience, and I taught not to inform, but to remind. Community Ed web courses followed, where the classroom had no walls, and yet the human need for connection remained fully intact.</p>
+                <p>And then, Skyline High—a summit of sorts. Not just for teaching, but for becoming. Here, I don’t just instruct. I build books (16 Yearbooks now) and bridges. Sometimes with code. Sometimes with kindness.</p>
+            </div>
+        </section>
+
+        <section id="hobbies">
+            <h2>Hobbies</h2>
+            <p><img src="images/bike.jpg" alt="Hobbies Icon" class="teaching-image" onerror="this.src='https://placehold.co/100x100?text=Hobbies';">Hobbies—though I hesitate to call them that, as if they were quaint distractions. No, these are more like sacred rituals in disguise.</p>
+            <p>Take motorcycles, for instance. To ride is not merely to travel—it is to disappear into velocity, to become one with the machine, the wind, the curve of the road. There is no ego at 70 miles per hour on a lonely highway, only the hum of existence in perfect mechanical harmony.</p>
+            <p>Dictionaries, on the other hand, are my kind of stargazing turned inward. I lose hours to their pages like others lose themselves in constellations. Each word is a galaxy—some forgotten, some just being born—waiting to be charted. Language, to me, is the oldest magic.</p>
+            <p>And speaking of stars, astronomy reminds me that I am but a brief flicker in a vast, indifferent cosmos. Yet somehow, knowing this, I feel more alive. Curious, isn’t it?</p>
+        </section>
+
+        <section id="interests">
+            <h2>Interests</h2>
+            <p><img src="images/draw.jpg" alt="Interests Icon" class="teaching-image" onerror="this.src='https://placehold.co/100x100?text=Interests';">I am a curious ripple in the stream, equal parts circuitry and soul. By day, I teach young minds to dance with machines, not merely to command them, but to court them with elegance and logic. Yet beneath the keystrokes and lesson plans, I am a bard of feedback loops and frequencies, plucking strings in Aeolian winds and journaling with random words like some mad mystic with a thesaurus.</p>
+            <p>You see, I do not simply do things—I explore them. Relationships, riffs, regrets—all are worthy instruments, and I play them in hopes of harmony. I believe growth is not a climb but a spiral—returning with deeper understanding. Whether I’m guiding students, composing sonic allegories, or navigating the jagged terrain of human interaction, I remain a seeker of pattern, meaning, and presence.</p>
+        </section>
+
+        <section id="skills">
+            <h2>Skills</h2>
+            <div class="skills-container">
+                <div class="skill">
+                    <span>HTML</span>
+                    <div class="progress-bar"><div class="progress" style="width: 90%"></div></div>
+                    <a href="https://github.com/kappter/SongMaker" target="_blank" class="skill-link">View SongMaker Project</a>
+                </div>
+                <div class="skill">
+                    <span>CSS</span>
+                    <div class="progress-bar"><div class="progress" style="width: 85%"></div></div>
+                    <a href="https://github.com/kappter/SongMaker" target="_blank" class="skill-link">View SongMaker Project</a>
+                </div>
+                <div class="skill">
+                    <span>JavaScript</span>
+                    <div class="progress-bar"><div class="progress" style="width: 80%"></div></div>
+                    <a href="https://github.com/kappter/SongMaker" target="_blank" class="skill-link">View SongMaker Project</a>
+                </div>
+                <div class="skill">
+                    <span>Java</span>
+                    <div class="progress-bar"><div class="progress" style="width: 75%"></div></div>
+                    <a href="https://github.com/kappter/java-project" target="_blank" class="skill-link">View Java Project</a>
+                </div>
+                <div class="skill">
+                    <span>Python</span>
+                    <div class="progress-bar"><div class="progress" style="width: 70%"></div></div>
+                    <a href="https://github.com/kappter/python-project" target="_blank" class="skill-link">View Python Project</a>
+                </div>
+            </div>
+        </section>
+
+        <section id="projects">
+            <h2>Projects</h2>
+            <p><img src="images/art3.PNG" alt="Projects Icon" class="teaching-image" onerror="this.src='https://placehold.co/100x100?text=Projects';">Projects are the footprints of curiosity made visible. Each one—whether a digital build, a curriculum design, or a quiet experiment in structure and style—reflects a dialogue between idea and action. I approach projects as living things: not products to be perfected, but explorations to be refined, shaped, and sometimes abandoned when they have taught their lesson. In every endeavor, the aim is not merely completion, but deeper understanding—a way of folding experience back into itself, and growing sharper, braver, and more awake through the making.</p>
+            <div class="project-gallery">
+                <div class="project-card">
+                    <a href="https://kappter.github.io/SongMaker/" target="_blank">
+                        <img src="https://github.com/kappter/SongMaker/raw/main/tunepix.png?raw=true" alt="SongMaker Project">
+                    </a>
+                    <h3>SongMaker</h3>
+                    <p>Tired of wasting rehearsal time on half-baked song ideas? SongMaker’s your fix. This web app spits out song structures, lyric starters, and chord progressions based on your genre and vibe. Plug in “grunge” or “pop,” set a mood, and get a blueprint we can actually jam to. Share drafts, tweak on the fly, and cut the chaos.</p>
+                    <a href="https://github.com/kappter/SongMaker" target="_blank" class="project-link">View on GitHub</a>
+                </div>
+                <div class="project-card">
+                    <a href="https://kappter.github.io/estimateyourgrade/" target="_blank">
+                        <img src="https://github.com/kappter/portfolio/blob/main/images/cred.png?raw=true" alt="GPA Calculator">
+                    </a>
+                    <h3>GPA Calculator</h3>
+                    <p>Maybe as a freshman who just had a rough first year, you’re probably feeling stressed about your GPA and wondering if you can still hit a 3.5 or even a 3.2. Let’s break down the EstimateYourGrade app in a way that’s super clear and hopeful, focusing on how it can help you figure out if those goals are possible.</p>
+                    <a href="https://github.com/kappter/estimateyourgrade" target="_blank" class="project-link">View on GitHub</a>
+                </div>
+                <div class="project-card">
+                    <a href="https://kappter.github.io/amalgamator-app/index.html" target="_blank">
+                        <img src="https://github.com/kappter/amalgamator/raw/master/amalgamation.png" alt="Amalgamator">
+                    </a>
+                    <h3>Amalgamator</h3>
+                    <p>Very much a work in progress with HUGELY ambitious goals. Lemme know if you are a database person, hehe. A utility for combining and processing various data types.</p>
+                    <a href="https://github.com/kappter/amalgamator" target="_blank" class="project-link">View on GitHub</a>
+                </div>
+                <div class="project-card">
+                    <a href="https://kappter.github.io/perfect10/" target="_blank">
+                        <img src="https://github.com/kappter/perfect10/raw/main/images/perfect10.png?raw=true" alt="Perfect10 Project">
+                    </a>
+                    <h3>Perfect10</h3>
+                    <p>After a comedian quipped he'd never met a '10' and only encountered three '9s' in his life, I was left pondering: What even is a 10? A year of single-life soul-searching later, I built the Perfect 10 Evaluator—a tongue-in-cheek, code-driven quest to quantify the unquantifiable. Whether you're sizing up a roommate, significant other, or even your mom, this tool playfully crunches the numbers on compatibility, charm, and that elusive '10' factor. Spoiler: It’s less about finding perfection and more about laughing at the absurdity of trying.</p>
+                    <a href="https://github.com/kappter/perfect10" target="_blank" class="project-link">View on GitHub</a>
+                </div>
+                <div class="project-card">
+                    <a href="https://kappter.github.io/masterysignature/" target="_blank">
+                        <img src="https://github.com/kappter/portfolio/blob/main/images/sig.png?raw=true" alt="Mastery Signature">
+                    </a>
+                    <h3>Mastery Signature</h3>
+                    <p>Work in progress. Need a graphic designer good with web. Mastery Signature is a dynamic web app designed to help you visualize and track your journey toward mastery in any discipline. By answering a series of questions about the time you’ve invested and the challenges you’ve faced across seven levels of mastery—from initial exposure to innovation—you’ll create a unique "mastery signature."</p>
+                    <a href="https://github.com/kappter/masterysignature" target="_blank" class="project-link">View on GitHub</a>
+                </div>
+                <div class="project-card">
+                    <a href="https://kappter.github.io/corecraft/" target="_blank">
+                        <img src="https://github.com/kappter/portfolio/blob/main/images/core.png?raw=true" alt="Mastery Signature">
+                    </a>
+                    <h3>CoreCraft</h3>
+                    <p>CoreCraft is a web app for writers who want to build unforgettable characters from the inside out. Using HTML, JavaScript, and CSS, it generates a character’s core traits—like strength, shadow, or fracture—and visualizes them as layers, inspired by the Earth’s makeup. With guided questions, you explore their morality, history, and struggles, crafting a deep, tailored foundation for your story in just minutes. It’s the tool that turns a blank page into a living soul.</p>
+                    <a href="https://github.com/kappter/corecraft" target="_blank" class="project-link">View on GitHub</a>
+                </div>
+                <div class="project-card">
+                    <a href="https://kappter.github.io/numbers/" target="_blank">
+                        <img src="https://github.com/kappter/numbers/raw/master/55.png" alt="Numbers Project">
+                    </a>
+                    <h3>Numbers</h3>
+                    <p>A numerical analysis and visualization tool.</p>
+                    <a href="https://github.com/kappter/numbers" target="_blank" class="project-link">View on GitHub</a>
+                </div>
+                <div class="project-card">
+                    <a href="https://kappter.github.io/pairpal/index.html" target="_blank">
+                        <img src="https://github.com/kappter/portfolio/blob/main/images/pair.png?raw=true" alt="PairPal">
+                    </a>
+                    <h3>PairPal</h3>
+                    <p>PairPal is a simple, insightful tool designed to help you understand how different personality types interact—especially in moments like these. Whether it’s you and your partner, a friend, or even a colleague, PairPal offers a window into your unique pairing. It highlights how your styles mesh, where tensions might arise, and how to navigate them with care. Built with love and a touch of curiosity.</p>
+                    <a href="https://github.com/kappter/pairpal/tree/main" target="_blank" class="project-link">View on GitHub</a>
+                </div>
+                <div class="project-card">
+                    <a href="https://kappter.github.io/rgbcolorvis/" target="_blank">
+                        <img src="https://github.com/kappter/portfolio/blob/main/images/rgb.png?raw=true" alt="PairPal">
+                    </a>
+                    <h3>RGB Color Visualizer</h3>
+                    <p>The 24Bit RGB Color Visualizer is an interactive web application designed to help users understand and experiment with 24-bit RGB color values. It provides a hands-on way to manipulate the individual bits of the Red, Green, and Blue color channels (8 bits each, totaling 24 bits) to create colors. The app displays the decimal and hexadecimal values for each channel, the combined RGB and hex values, and a visual preview of the resulting color.</p>
+                    <a href="https://github.com/kappter/rgbcolorvis" target="_blank" class="project-link">View on GitHub</a>
+                </div>
+            </div>
+        </section>
+
+        <section id="awards">
+            <h2>Awards</h2>
+            <p><img src="images/award.jpg" alt="Awards Icon" class="teaching-image" onerror="this.src='https://placehold.co/100x100?text=Awards';">The path of teaching, creating, and exploring is rarely paved with applause. It winds quietly through late nights, unasked questions, silent triumphs, and unseen acts of faith. Recognition, when it comes, is not a finish line, but a mirror—a small, fleeting glimpse that says: yes, the work mattered. It touched something real.</p>
+            <p>Each of these honors is less a trophy and more a story—a moment where my efforts in technology education, leadership, artistry, and mentorship resonated beyond the classroom walls. They remind me that the best rewards are never held in hand, but in the lives and minds that were stirred to new beginnings.</p>
+            <div class="awards-container">
+                <div class="award-card">
+                    <h3>UITEA Teacher of the Year (2025)</h3>
+                    <p>Utah Information Technology Education Association Teacher of the Year awarded to a teacher that has an impact in computer science education and student leadership at Skyline High School.</p>
+                    <span class="button unavailable">Details TBD</span>
+                </div>
+                <div class="award-card">
+                    <h3>KSL Teacher Tribute Wall (October 2024)</h3>
+                    <p>Honored for dedication to teaching technology at Skyline High School.</p>
+                    <a href="https://www.graniteschools.org/blog/2024/10/22/congratulations-ken-kapptie-ksl-teacher-tribute-wall-october-2024/" target="_blank" class="button">Read Announcement</a>
+                </div>
+                <div class="award-card">
+                    <h3>Skyline Golden Talon (2024)</h3>
+                    <p>Awarded for outstanding contributions to Skyline High School community.</p>
+                    <span class="button unavailable">School Award - Details TBD</span>
+                </div>
+                <div class="award-card">
+                    <h3>U.S. Presidential Scholars Program Distinguished Teacher (2018 & 2023)</h3>
+                    <p>Recognized as one of three Utah educators honored for exceptional knowledge and impact in education.</p>
+                    <a href="https://www.ed.gov/sites/ed/files/programs/psp/2023/teachers.pdf" target="_blank" class="button">View Official List</a>
+                </div>
+            </div>
+        </section>
+
+        <section id="art">
+            <h2>Art</h2>
+            <p><img src="images/art2.PNG" alt="Art Icon" class="teaching-image" onerror="this.src='https://placehold.co/100x100?text=Art';">Art, for me, is not a matter of technique or accolades—it is a way of knowing without speaking, a bridge between the seen and the felt. Whether through visual design, soundscape, storytelling, or the arrangement of learning spaces, I create not to impose meaning but to invite it. I do not ask art to behave; I ask it to breathe. In every project, there is a trace of wonder, a tension between structure and freedom, a quiet revolution that says: here, for a moment, something real has happened.</p>
+            <p>Art has always been the quiet thread stitching my experience together—a way of seeing, not merely of making. Whether sketching rough forms, shaping digital landscapes, or studying the forgotten beauty of old typefaces, I move between mediums with the sense that creation itself is an extension of attention. To make art is to notice more deeply: to follow texture, light, and symbol into the places where words hesitate. It is a practice of encountering the world—and myself—again and again, without guarantee, without need for arrival. Each piece is a meditation in form, an invitation to hold something fleeting a little longer.</p>
+        </section>
+
+        <section id="music">
+            <h2>Music</h2>
+            <p><img src="images/guitar.jpg" alt="Music Icon" class="teaching-image" onerror="this.src='https://placehold.co/100x100?text=Music';">Music isn’t my way out; it’s where I dive in. Each note, each rhythm, weaves itself into a tapestry of emotion—sometimes raw, sometimes polished, but always true. I don’t play to put on a show; I play to reconnect, to touch those quiet corners where words fall short. Whether I’m exploring modes, crafting melodies, or layering rhythms, my music becomes a dialogue with the parts of life that don’t easily speak. Not every song finds closure, but each one uncovers something real.</p>
+            <p>For me, music is less about striving and more about rediscovery. My guitar is a trusted companion, transforming thoughts into vibrations that resonate. Whether I’m chasing the bold energy of a riff or gently tracing melodies that linger in the air, those six strings carry depths beyond mere sound. I often find myself drawn to modal explorations, rhythmic exchanges, or improvised lines, where the goal isn’t perfection but embracing the dynamic balance between chaos and harmony. The guitar serves as both a guide and an enigma—a way to converse with silence itself.</p>
+            <div class="music-container">
+                <h3>Guitar Pieces</h3>
+                <button onclick="loadGuitarPieces()" class="button">Refresh Guitar Pieces - All 1st Take Sketches</button>
+                <ul id="guitar-pieces-list" class="guitar-pieces"></ul>
+            </div>
+        </section>
+    </div>
+
+    <footer class="footer">
+        <div class="footer-content">
+            <span>© 2025 Ken Kapptie. All rights reserved.</span>
+            <div class="social-icons">
+                <a href="https://www.facebook.com/kappter/" target="_blank" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+                <a href="https://x.com/kappter" target="_blank" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+                <a href="https://www.instagram.com/kappter/?hl=en" target="_blank" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                <a href="https://github.com/kappter" target="_blank" aria-label="GitHub"><i class="fab fa-github"></i></a>
+                <a href="https://www.linkedin.com/in/ken-kapptie-0b19665" target="_blank" aria-label="LinkedIn"><i class="fab fa-linkedin"></i></a>
+            </div>
+            <div class="donation-links">
+                <a href="resume.html" target="_blank">Resume</a>
+                <a href="curriculum_vitae.html" target="_blank">CV</a>
+                <a href="https://buymeacoffee.com/kappterw" target="_blank">Buy Me a Coffee</a>
+                <a href="proposal.html">Want your own?</a>
+            </div>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'93876e0ebc27b02c',t:'MTc0NjAyMDIwNS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script>
+</body>
+</html>
+
+<!-- styles.css updates -->
+<style>
+:root {
+    /* Light theme variables (earth tones) */
+    --bg-color: #f5f3e7; /* Warm beige */
+    --text-color: #3a2f1f; /* Dark brown */
+    --header-bg: #fefcf5; /* Off-white */
+    --card-bg: #fefcf5; /* Off-white */
+    --border-color: #e6e2d3; /* Light tan */
+    --accent-color: #6b7d4b; /* Olive green */
+    --accent-hover: #5a6a3f; /* Darker olive green */
+    --secondary-text: #7a6f5e; /* Muted taupe */
+    --shadow-color: rgba(58, 47, 31, 0.1); /* Subtle brown */
+    --progress-bg: #e6e2d3; /* Light tan */
+}
+
+[data-theme=" cryo"] {
+    /* Dark theme variables (earth tones) */
+    --bg-color: #2a2518; /* Deep charcoal brown */
+    --text-color: #e8e4d2; /* Light beige */
+    --header-bg: #3c3526; /* Dark taupe */
+    --card-bg: #3c3526; /* Dark taupe */
+    --border-color: #5c5342; /* Dark tan */
+    --accent-color: #829465; /* Muted sage green */
+    --accent-hover: #6e7d53; /* Darker sage green */
+    --secondary-text: #a69f8e; /* Light taupe */
+    --shadow-color: rgba(0, 0, 0, 0.3); /* Darker brown */
+    --progress-bg: #5c5342; /* Dark tan */
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+html, body {
+    height: 100%;
+}
+
+body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Roboto', sans-serif;
+    font-size: 14px;
+    line-height: 1.5;
+    color: var(--text-color);
+    background-color: var(--bg-color);
+    transition: background-color 0.3s ease, color 0.3s ease;
+    display: flex;
+    flex-direction: column;
+}
+
+.container {
+    flex: 1 0 auto;
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 24px;
+    padding-top: 80px;
+    padding-bottom: 80px;
+}
+
+.line-animation {
+    display: block;
+    width: 100%;
+    height: 30px;
+    max-width: 960px;
+    margin: 16px auto 0;
+    background: transparent;
+}
+
+.navbar {
+    background-color: var(--header-bg);
+    padding: 12px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    box-shadow: 0 1px 3px var(--shadow-color);
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 1000;
+}
+
+.nav-logo .logo {
+    height: 24px;
+    width: auto;
+}
+
+.nav-menu {
+    list-style: none;
+    display: flex;
+    align-items: center;
+}
+
+.nav-menu li {
+    margin: 0 12px;
+}
+
+.nav-button {
+    color: var(--text-color);
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 13px;
+    border-radius: 4px;
+    transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.nav-button:hover {
+    background-color: var(--progress-bg);
+    color: var(--accent-color);
+}
+
+.nav-toggle {
+    display: none;
+    font-size: 1.2rem;
+    cursor: pointer;
+    color: var(--text-color);
+}
+
+.theme-toggle {
+    background: none;
+    border: none;
+    font-size: 13px;
+    color: var(--text-color);
+    cursor: pointer;
+    padding: 6px 12px;
+    border-radius: 4px;
+    transition: background-color 0.2s ease;
+}
+
+.theme-toggle:hover {
+    background-color: var(--progress-bg);
+}
+
+#theme-selector {
+    background-color: var(--card-bg);
+    border: 1px solid var(--border-color);
+    color: var(--text-color);
+    font-size: 13px;
+    padding: 6px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+
+#theme-selector:hover {
+    background-color: var(--progress-bg);
+    border-color: var(--accent-color);
+}
+
+#theme-selector:focus {
+    outline: none;
+    border-color: var(--accent-color);
+}
+
+header {
+    text-align: center;
+    padding: 32px 0;
+    background-color: var(--header-bg);
+    border-bottom: 1px solid var(--border-color);
+}
+
+h1 {
+    font-size: 28px;
+    font-weight: 600;
+    color: var(--text-color);
+    margin-bottom: 8px;
+}
+
+header p {
+    font-size: 14px;
+    color: var(--secondary-text);
+}
+
+section {
+    padding: 24px 0;
+    border-bottom: 2px dashed var(--border-color); /* Natural dashed line */
+}
+
+h2 {
+    font-size: 20px;
+    font-weight: 600;
+    color: var(--accent-color);
+    margin-bottom: 16px;
+}
+
+h3 {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--accent-color);
+    margin-bottom: 8px;
+}
+
+.teaching-image {
+    float: left; /* Left-aligned for natural theme */
+    width: 100px;
+    max-width: 100px;
+    height: auto;
+    margin: 0 12px 12px 0;
+    border: 2px solid var(--border-color);
+    border-radius: 4px;
+    transition: transform 0.3s ease;
+    position: relative;
+    z-index: 1;
+}
+
+.teaching-image:hover {
+    transform: scale(3); /* 100px * 3 = 300px */
+    z-index: 10;
+}
+
+.button {
+    display: inline-block;
+    padding: 6px 12px;
+    background-color: var(--accent-color);
+    color: #ffffff;
+    text-decoration: none;
+    font-size: 13px;
+    border-radius: 4px;
+    transition: background-color 0.2s ease;
+}
+
+.button:hover {
+    background-color: var(--accent-hover);
+}
+
+.button.unavailable {
+    background-color: #8c8373;
+    cursor: not-allowed;
+}
+
+.skills-container {
+    display: grid;
+    gap: 12px;
+}
+
+.skill {
+    margin-bottom: 12px;
+}
+
+.skill span {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text-color);
+    margin-bottom: 4px;
+    display: block;
+}
+
+.progress-bar {
+    background-color: var(--progress-bg);
+    height: 8px;
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.progress {
+    background-color: var(--accent-color);
+    height: 100%;
+    transition: width 0.8s ease;
+}
+
+.skill-link {
+    display: inline-block;
+    font-size: 12px;
+    color: var(--accent-color);
+    text-decoration: none;
+    margin-top: 4px;
+    transition: color 0.2s ease;
+}
+
+.skill-link:hover {
+    color: var(--accent-hover);
+}
+
+.project-gallery {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 16px;
+}
+
+.project-card {
+    background-color: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    padding: 16px;
+    transition: box-shadow 0.2s ease;
+}
+
+.project-card:hover {
+    box-shadow: 0 2px 8px var(--shadow-color);
+}
+
+.project-card img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 4px;
+    margin-bottom: 12px;
+    transition: transform 0.3s ease;
+    position: relative;
+    z-index: 1;
+}
+
+.project-card img:hover {
+    transform: scale(1.25); /* 240px * 1.25 = 300px */
+    z-index: 10;
+}
+
+.project-card p {
+    font-size: 13px;
+    color: var(--secondary-text);
+    margin-bottom: 12px;
+}
+
+.project-link {
+    font-size: 13px;
+    padding: 6px 12px;
+    background-color: var(--accent-color);
+    color: #ffffff;
+    text-decoration: none;
+    border-radius: 4px;
+    transition: background-color 0.2s ease;
+}
+
+.project-link:hover {
+    background-color: var(--accent-hover);
+}
+
+.awards-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 16px;
+}
+
+.award-card {
+    background-color: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    padding: 16px;
+    transition: box-shadow 0.2s ease;
+}
+
+.award-card:hover {
+    box-shadow: 0 2px 8px var(--shadow-color);
+}
+
+.award-card p {
+    font-size: 13px;
+    color: var(--secondary-text);
+    margin-bottom: 12px;
+}
+
+.teaching-content {
+    padding: 16px 0;
+}
+
+.teaching-resource {
+    background-color: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    padding: 16px;
+    margin-top: 16px;
+    transition: box-shadow 0.2s ease;
+}
+
+.teaching-resource:hover {
+    box-shadow: 0 2px 8px var(--shadow-color);
+}
+
+.teaching-resource p {
+    font-size: 13px;
+    color: var(--secondary-text);
+    margin-bottom: 12px;
+}
+
+.teaching-link {
+    font-size: 13px;
+    padding: 6px 12px;
+    background-color: var(--accent-color);
+    color: #ffffff;
+    text-decoration: none;
+    border-radius: 4px;
+    transition: background-color 0.2s ease;
+}
+
+.teaching-link:hover {
+    background-color: var(--accent-hover);
+}
+
+.music-container {
+    margin: 16px 0;
+}
+
+.guitar-pieces {
+    list-style: none;
+    padding: 0;
+}
+
+.guitar-piece {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px;
+    background-color: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    margin-bottom: 8px;
+    transition: box-shadow 0.2s ease;
+}
+
+.guitar-piece:hover {
+    box-shadow: 0 2px 8px var(--shadow-color);
+}
+
+.guitar-piece span {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text-color);
+}
+
+.guitar-piece audio {
+    max-width: 200px;
+}
+
+.footer {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background-color: var(--header-bg);
+    padding: 10px 20px;
+    text-align: center;
+    border-top: 1px solid var(--border-color);
+    box-shadow: 0 -1px 3px var(--shadow-color);
+    z-index: 1000;
+}
+
+.footer-content {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+    flex-wrap: wrap;
+    font-size: 13px;
+}
+
+.footer-content span {
+    color: var(--secondary-text);
+}
+
+.social-icons {
+    display: flex;
+    gap: 10px;
+}
+
+.social-icons a {
+    color: var(--text-color);
+    font-size: 18px;
+    text-decoration: none;
+    transition: color 0.2s ease;
+}
+
+.social-icons a:hover {
+    color: var(--accent-color);
+}
+
+.donation-links {
+    display: flex;
+    gap: 15px;
+}
+
+.donation-links a {
+    color: var(--accent-color);
+    text-decoration: none;
+    font-size: 13px;
+    transition: color 0.2s ease;
+}
+
+.donation-links a:hover {
+    color: var(--accent-hover);
+}
+
+/* Blog Styles */
+.blog-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 16px;
+    margin-bottom: 24px;
+}
+
+.blog-card {
+    background-color: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    padding: 16px;
+    transition: box-shadow 0.2s ease;
+}
+
+.blog-card:hover {
+    box-shadow: 0 2px 8px var(--shadow-color);
+}
+
+.blog-image {
+    max-width: 100%;
+    height: auto;
+    border-radius: 4px;
+    margin-bottom: 12px;
+    transition: transform 0.3s ease;
+    position: relative;
+    z-index: 1;
+}
+
+.blog-image:hover {
+    transform: scale(1.07); /* 280px * 1.07 ≈ 300px */
+    z-index: 10;
+}
+
+.blog-card p {
+    font-size: 13px;
+    color: var(--secondary-text);
+    margin-bottom: 12px;
+}
+
+.blog-form-container {
+    margin: 24px 0;
+}
+
+.toggle-button {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background-color: var(--accent-color);
+    color: #ffffff;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 500;
+    transition: background-color 0.2s ease, transform 0.2s ease;
+}
+
+.toggle-button:hover {
+    background-color: var(--accent-hover);
+}
+
+.toggle-icon {
+    transition: transform 0.3s ease;
+}
+
+.toggle-icon.active {
+    transform: rotate(180deg);
+}
+
+.collapsible-content {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease-out;
+}
+
+.collapsible-content.active {
+    max-height: 500px; /* Adjust based on content height */
+}
+
+.blog-form {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 16px 0;
+}
+
+.blog-form label {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text-color);
+}
+
+.blog-form input[type="text"],
+.blog-form textarea,
+.blog-form input[type="file"] {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    background-color: var(--card-bg);
+    color: var(--text-color);
+    font-size: 13px;
+    transition: border-color 0.2s ease;
+}
+
+.blog-form input[type="text"]:focus,
+.blog-form textarea:focus,
+.blog-form input[type="file"]:focus {
+    outline: none;
+    border-color: var(--accent-color);
+}
+
+.blog-form textarea {
+    min-height: 120px;
+    resize: vertical;
+}
+
+.blog-form button {
+    align-self: flex-start;
+    padding: 8px 16px;
+    background-color: var(--accent-color);
+    color: #ffffff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 13px;
+    transition: background-color 0.2s ease;
+}
+
+.blog-form button:hover {
+    background-color: var(--accent-hover);
+}
+
+/* Proposal Form Styles */
+.form-container {
+    margin: 16px 0;
+    text-align: center;
+}
+
+.proposal-iframe {
+    width: 100%;
+    height: 600px;
+    max-width: 640px;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    box-shadow: 0 2px 8px var(--shadow-color);
+}
+
+@media (max-width: 768px) {
+    .navbar {
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 12px;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+    }
+
+    .nav-logo {
+        margin: 0 auto;
+    }
+
+    .nav-menu {
+        display: none;
+        flex-direction: column;
+        width: 100%;
+        text-align: center;
+    }
+
+    .nav-menu.active {
+        display: flex;
+        margin-top: 48px;
+    }
+
+    .nav-toggle {
+        display: block;
+        position: absolute;
+        left: 24px;
+        top: 16px;
+    }
+
+    .nav-menu li {
+        margin: 8px 0;
+    }
+
+    .nav-button, .theme-toggle, #theme-selector {
+        width: 100%;
+        padding: 8px;
+    }
+
+    .container {
+        padding: 16px;
+        padding-top: 100px;
+        padding-bottom: 100px;
+    }
+
+    .line-animation {
+        height: 20px;
+        margin: 8px auto 0;
+    }
+
+    .teaching-image {
+        width: 80px;
+        max-width: 80px;
+        margin: 0 8px 8px 0;
+    }
+
+    .teaching-image:hover {
+        transform: scale(3.75); /* 80px * 3.75 = 300px */
+    }
+
+    .project-card img:hover {
+        transform: scale(1.25);
+    }
+
+    .blog-image:hover {
+        transform: scale(1.07);
+    }
+
+    h1 {
+        font-size: 24px;
+    }
+
+    h2 {
+        font-size: 18px;
+    }
+
+    .footer {
+        padding: 8px 16px;
+    }
+
+    .footer-content {
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    .social-icons {
+        gap: 8px;
+        font-size: 16px;
+    }
+
+    .donetail-links {
+        gap: 10px;
+    }
+
+    .proposal-iframe {
+        height: 500px;
+    }
+
+    .blog-form {
+        gap: 10px;
+    }
+
+    .blog-form textarea {
+        min-height: 100px;
+    }
+
+    .collapsible-content.active {
+        max-height: 600px; /* Adjust for mobile */
+    }
+}
+</style>
+
+<!-- script.js updates -->
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    // Theme switching logic
+    const themeSelector = document.getElementById('theme-selector');
+    const html = document.documentElement;
+
+    themeSelector.addEventListener('change', function () {
+        const theme = themeSelector.value;
+        html.setAttribute('data-theme', theme.includes('dark') ? 'dark' : 'light');
+
+        let stylesheet;
+        if (theme.includes('natural')) {
+            stylesheet = 'styles.css';
+        } else if (theme.includes('architectural')) {
+            stylesheet = 'architectural.css';
+        } else if (theme.includes('space')) {
+            stylesheet = 'space.css';
+        } else if (theme.includes('medieval')) {
+            stylesheet = 'medieval.css';
+        }
+
+        document.getElementById('theme-stylesheet').setAttribute('href', stylesheet);
+    });
+
+    // Mobile menu toggle
+    const navToggle = document.querySelector('.nav-toggle');
+    const navMenu = document.querySelector('.nav-menu');
+
+    navToggle.addEventListener('click', () => {
+        navMenu.classList.toggle('active');
+    });
+
+    // Canvas animation for drawing a horizontal line
+    const canvas = document.getElementById('line-animation');
+    const ctx = canvas.getContext('2d');
+    let width = Math.min(window.innerWidth, 960); // Match container max-width
+    const height = 30; // Canvas height
+    canvas.width = width;
+    canvas.height = height;
+
+    // Adjust canvas size on window resize
+    window.addEventListener('resize', () => {
+        width = Math.min(window.innerWidth, 960);
+        canvas.width = width;
+        canvas.height = height;
+        x = 0; // Reset animation
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+    });
+
+    let x = 0;
+    const speed = 3; // Pixels per frame
+    const baseY = height / 2;
+    let lastY = baseY;
+
+    function drawLine() {
+        ctx.beginPath();
+        ctx.moveTo(x, lastY);
+
+        // Increment x position
+        x += speed;
+        if (x > width) {
+            x = width; // Stop at canvas width
+        }
+
+        // Add randomness to y position for hand-drawn effect
+        const y = baseY + (Math.random() - 0.5) * 4; // ±2px randomness
+        ctx.lineTo(x, y);
+
+        // Randomize line width for felt pen effect
+        ctx.lineWidth = 2 + (Math.random() - 0.5) * 0.5; // 1.75–2.25px
+        ctx.strokeStyle = getComputedStyle(document.documentElement).getPropertyValue('--accent-color').trim();
+        ctx.lineCap = 'round';
+        ctx.stroke();
+
+        lastY = y; // Update last y position for smooth continuity
+
+        if (x < width) {
+            requestAnimationFrame(drawLine);
+        }
+    }
+
+    // Start animation
+    drawLine();
+
+    // Function to load guitar pieces
+    function loadGuitarPieces() {
+        const guitarList = document.getElementById('guitar-pieces-list');
+        guitarList.innerHTML = ''; // Clear existing list
+
+        fetch('guitar_pieces.json')
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Failed to load guitar_pieces.json');
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (!Array.isArray(data)) {
+                    throw new Error('guitar_pieces.json is not a valid array');
+                }
+                data.forEach(piece => {
+                    if (!piece.title || !piece.file) {
+                        console.warn('Invalid guitar piece entry:', piece);
+                        return;
+                    }
+                    const li = document.createElement('li');
+                    li.className = 'guitar-piece';
+                    const audioType = piece.file.toLowerCase().endsWith('.mp3') ? 'audio/mpeg' : 'audio/wav';
+                    li.innerHTML = `
+                        <span>${piece.title}</span>
+                        <audio controls>
+                            <source src="audio/guitar_pieces/${piece.file}" type="${audioType}">
+                            Your browser does not support the audio element.
+                        </audio>
+                    `;
+                    guitarList.appendChild(li);
+                });
+            })
+            .catch(error => {
+                console.error('Error loading guitar pieces:', error);
+                guitarList.innerHTML = '<li>Unable to load guitar pieces at this time.</li>';
+            });
+    }
+
+    // Initial load of guitar pieces
+    loadGuitarPieces();
+
+    // Blog posts array (simulating a CSV file client-side)
+    const blogPosts = [
+        {
+            title: "Teaching Technology in the Classroom",
+            text: "Reflections on integrating coding and robotics into high school education.",
+            image: "",
+            link: "https://example.com/blog/teaching-technology"
+        },
+        {
+            title: "The Art of Learning Through Music",
+            text: "Exploring how music can enhance learning and creativity in students.",
+            image: "",
+            link: "https://example.com/blog/music-learning"
+        }
+    ];
+
+    // Function to display blog posts
+    function displayBlogPosts() {
+        const blogContainer = document.getElementById('blog-container');
+        blogContainer.innerHTML = ''; // Clear existing posts
+        blogPosts.forEach(post => {
+            const blogCard = document.createElement('div');
+            blogCard.className = 'blog-card';
+            blogCard.innerHTML = `
+                ${post.image ? `<img src="${post.image}" alt="${post.title}" class="blog-image">` : ''}
+                <h3>${post.title}</h3>
+                <p>${post.text}</p>
+                <a href="${post.link}" target="_blank" class="button">Read More</a>
+            `;
+            blogContainer.appendChild(blogCard);
+        });
+    }
+
+    // Initial display of blog posts
+    displayBlogPosts();
+
+    // Toggle blog form visibility
+    const toggleButton = document.getElementById('toggle-blog-form');
+    const blogFormContent = document.getElementById('blog-form-content');
+    const toggleIcon = toggleButton.querySelector('.toggle-icon');
+
+    toggleButton.addEventListener('click', () => {
+        blogFormContent.classList.toggle('active');
+        toggleIcon.classList.toggle('active');
+    });
+
+    // Expose addBlogPost to global scope for onclick
+    window.addBlogPost = function () {
+        const title = document.getElementById('blog-title').value.trim();
+        const text = document.getElementById('blog-text').value.trim();
+        const imageInput = document.getElementById('blog-image');
+        const imageFile = imageInput.files[0];
+
+        if (!title || !text) {
+            alert('Please fill in the title and content.');
+            return;
+        }
+
+        // Simulate image upload (GitHub Pages doesn't allow file writing)
+        let imagePath = '';
+        if (imageFile) {
+            const fileName = imageFile.name;
+            imagePath = `blog/${fileName}`; // Simulated path
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                imagePath = e.target.result; // Use data URL for display
+                addPostToListAndCSV(title, text, imagePath);
+            };
+            reader.readAsDataURL(imageFile);
+        } else {
+            addPostToListAndCSV(title, text, imagePath);
+        }
+    };
+
+    // Function to add post to list and CSV
+    function addPostToListAndCSV(title, text, imagePath) {
+        // Add to blogPosts array
+        const newPost = {
+            title: title,
+            text: text,
+            image: imagePath,
+            link: "https://example.com/blog/" + title.toLowerCase().replace(/\s+/g, '-') // Generate a placeholder link
+        };
+        blogPosts.push(newPost);
+
+        // Update display
+        displayBlogPosts();
+
+        // Generate CSV entry
+        const csvRow = `"${title.replace(/"/g, '""')}","${text.replace(/"/g, '""')}","${imagePath.replace(/"/g, '""')}","${newPost.link}"\n`;
+        appendToCSV(csvRow);
+
+        // Clear the form
+        document.getElementById('blog-title').value = '';
+        document.getElementById('blog-text').value = '';
+        document.getElementById('blog-image').value = '';
+
+        // Optionally collapse the form after submission
+        blogFormContent.classList.remove('active');
+        toggleIcon.classList.remove('active');
+    }
+
+    // Function to append to CSV (simulated for client-side)
+    let csvContent = 'title,text,image,link\n'; // CSV header
+    blogPosts.forEach(post => {
+        csvContent += `"${post.title.replace(/"/g, '""')}","${post.text.replace(/"/g, '""')}","${post.image.replace(/"/g, '""')}","${post.link}"\n`;
+    });
+
+    function appendToCSV(row) {
+        csvContent += row;
+        // Create a downloadable CSV file
+        const blob = new Blob([csvContent], { type: 'text/csv' });
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'blogs.csv';
+        a.click();
+        window.URL.revokeObjectURL(url);
+    }
+});
+</script>
