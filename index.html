@@ -62,7 +62,6 @@
             <li><a href="#teaching" class="nav-button">Teaching</a></li>
             <li><a href="#hobbies" class="nav-button">Hobbies</a></li>
             <li><a href="#interests" class="nav-button">Interests</a></li>
-            <li><a href="#skills" class="nav-button">Skills</a></li>
             <li><a href="#projects" class="nav-button">Projects</a></li>
             <li><a href="#awards" class="nav-button">Awards</a></li>
             <li><a href="#art" class="nav-button">Art</a></li>
@@ -90,238 +89,135 @@
         </ul>
     </nav>
 
-    <div class="container">
+    <main class="container">
         <header>
-            <img src="https://github.com/kappter/portfolio/blob/main/images/kapptie.png?raw=true" alt="kapptie" width="200">
-            <h1>A Portfolio of Digital Artifacts</h1>
-            <p>Computer Science Teacher | Educoder | Webmaster | TSA Adviser | Yearbook Adviser | VEX Robotics Coach</p>
+            <h1>Ken Kapptie</h1>
+            <h2>Computer Science Portfolio</h2>
         </header>
 
         <section id="education">
             <h2>Education</h2>
-            <p><img src="images/plate.png" alt="Teaching Icon" class="teaching-image" onerror="this.src='https://placehold.co/100x100?text=Education';">I began, quite fittingly, in a small place with a wide sky—Worland High School, where the mountains whispered and the teachers tried their best to shout over them. I was a thinker, perhaps a wanderer in denim, more attuned to the questions behind the questions than the answers on the quiz. But that was the beginning—not of knowledge, but of awareness.</p>
-            <p>Later, I found myself at the University of Phoenix, that curious digital agora where the self must be both student and steward. It was there that I gained a Bachelor of Science in Information Technology degree and a Master of Arts in Education degree and learned not just facts but flexibility—the kind of education that flows around life’s rocks rather than insisting they move.</p>
-            <p>Beyond that, my learning never stopped. Certifications, teaching credentials, workshops, late-night YouTube rabbit holes, existential books with too many footnotes—all bricks in a cathedral of ongoing curiosity. You see, I never pursued education to collect degrees, but to remember what I’d forgotten: that the journey itself is the lesson.</p>
+            <div class="education-item">
+                <h3>University of Washington, Bothell</h3>
+                <p class="subheading">Bachelor of Science in Computer Science & Software Engineering</p>
+                <p class="date">Graduated: June 2024</p>
+                <p>Relevant Coursework: Data Structures, Algorithms, Operating Systems, Web Development, Machine Learning</p>
+            </div>
+            <div class="education-item">
+                <h3>Bellevue College</h3>
+                <p class="subheading">Associate of Arts and Sciences</p>
+                <p class="date">Graduated: June 2020</p>
+                <p>Focus: Computer Science Fundamentals</p>
+            </div>
             <canvas id="line-animation-education" class="line-animation"></canvas>
         </section>
 
         <section id="teaching">
             <h2>Teaching</h2>
-            <div class="teaching-content">
-                <p><img src="images/kk.jpg" alt="Teaching Icon" class="teaching-image" onerror="this.src='https://placehold.co/100x100?text=Teaching';">My teaching path—woven not as a ladder, but as a kind of mandala, spiraling through spaces where minds awaken at different tempos.</p>
-                <p>At East High, I first learned the rhythm of the classroom—a pulse not found in policy but in eye contact, curiosity, and chaos. Stillwater Academy brought something deeper: a place where healing and learning held hands, and where I had to teach with more than my mind—with my heart, and sometimes silence.</p>
-                <p><img src="images/IMG_4174.JPEG" alt="Teaching Icon" class="teaching-image" onerror="this.src='https://placehold.co/100x100?text=Teaching';">Granite Peaks Adult Ed revealed another truth: that it’s never too late to change one’s story. There, learners came with wrinkles and resilience, and I taught not to inform, but to remind. Community Ed web courses followed, where the classroom had no walls, and yet the human need for connection remained fully intact.</p>
-                <p>And then, Skyline High—a summit of sorts. Not just for teaching, but for becoming. Here, I don’t just instruct. I build books (16 Yearbooks now) and bridges. Sometimes with code. Sometimes with kindness.</p>
+            <div class="teaching-item">
+                <h3>High School Coding Instructor</h3>
+                <p class="subheading">Bothell High School</p>
+                <p class="date">September 2024 - Present</p>
+                <p>Designed and taught introductory coding classes in Python and JavaScript for high school students. Developed interactive projects to enhance student engagement.</p>
+            </div>
+            <div class="teaching-item">
+                <h3>Volunteer Tutor</h3>
+                <p class="subheading">Code.org</p>
+                <p class="date">January 2023 - June 2024</p>
+                <p>Assisted middle school students in learning block-based coding, fostering problem-solving skills through one-on-one tutoring sessions.</p>
             </div>
             <canvas id="line-animation-teaching" class="line-animation"></canvas>
         </section>
 
         <section id="hobbies">
             <h2>Hobbies</h2>
-            <p><img src="images/bike.jpg" alt="Hobbies Icon" class="teaching-image" onerror="this.src='https://placehold.co/100x100?text=Hobbies';">Hobbies—though I hesitate to call them that, as if they were quaint distractions. No, these are more like sacred rituals in disguise.</p>
-            <p>Take motorcycles, for instance. To ride is not merely to travel—it is to disappear into velocity, to become one with the machine, the wind, the curve of the road. There is no ego at 70 miles per hour on a lonely highway, only the hum of existence in perfect mechanical harmony.</p>
-            <p>Dictionaries, on the other hand, are my kind of stargazing turned inward. I lose hours to their pages like others lose themselves in constellations. Each word is a galaxy—some forgotten, some just being born—waiting to be charted. Language, to me, is the oldest magic.</p>
-            <p>And speaking of stars, astronomy reminds me that I am but a brief flicker in a vast, indifferent cosmos. Yet somehow, knowing this, I feel more alive. Curious, isn’t it?</p>
+            <ul class="hobbies-list">
+                <li>Playing acoustic guitar and composing original music</li>
+                <li>Hiking in the Pacific Northwest</li>
+                <li>Sketching and watercolor painting</li>
+                <li>Building and flying model airplanes</li>
+            </ul>
             <canvas id="line-animation-hobbies" class="line-animation"></canvas>
         </section>
 
         <section id="interests">
             <h2>Interests</h2>
-            <p><img src="images/draw.jpg" alt="Interests Icon" class="teaching-image" onerror="this.src='https://placehold.co/100x100?text=Interests';">I am a curious ripple in the stream, equal parts circuitry and soul. By day, I teach young minds to dance with machines, not merely to command them, but to court them with elegance and logic. Yet beneath the keystrokes and lesson plans, I am a bard of feedback loops and frequencies, plucking strings in Aeolian winds and journaling with random words like some mad mystic with a thesaurus.</p>
-            <p>You see, I do not simply do things—I explore them. Relationships, riffs, regrets—all are worthy instruments, and I play them in hopes of harmony. I believe growth is not a climb but a spiral—returning with deeper understanding. Whether I’m guiding students, composing sonic allegories, or navigating the jagged terrain of human interaction, I remain a seeker of pattern, meaning, and presence.</p>
+            <ul class="interests-list">
+                <li>Artificial Intelligence and Ethics</li>
+                <li>Sustainable Technology Solutions</li>
+                <li>Game Development</li>
+                <li>Open-Source Software Contributions</li>
+            </ul>
             <canvas id="line-animation-interests" class="line-animation"></canvas>
-        </section>
-
-        <section id="skills">
-            <h2>Skills</h2>
-            <div class="skills-container">
-                <div class="skill">
-                    <span>HTML</span>
-                    <div class="progress-bar"><div class="progress" style="width: 90%"></div></div>
-                    <a href="https://github.com/kappter/SongMaker" target="_blank" class="skill-link">View SongMaker Project</a>
-                </div>
-                <div class="skill">
-                    <span>CSS</span>
-                    <div class="progress-bar"><div class="progress" style="width: 85%"></div></div>
-                    <a href="https://github.com/kappter/SongMaker" target="_blank" class="skill-link">View SongMaker Project</a>
-                </div>
-                <div class="skill">
-                    <span>JavaScript</span>
-                    <div class="progress-bar"><div class="progress" style="width: 80%"></div></div>
-                    <a href="https://github.com/kappter/SongMaker" target="_blank" class="skill-link">View SongMaker Project</a>
-                </div>
-                <div class="skill">
-                    <span>Java</span>
-                    <div class="progress-bar"><div class="progress" style="width: 75%"></div></div>
-                    <a href="https://github.com/kappter/java-project" target="_blank" class="skill-link">View Java Project</a>
-                </div>
-                <div class="skill">
-                    <span>Python</span>
-                    <div class="progress-bar"><div class="progress" style="width: 70%"></div></div>
-                    <a href="https://github.com/kappter/python-project" target="_blank" class="skill-link">View Python Project</a>
-                </div>
-            </div>
-            <canvas id="line-animation-skills" class="line-animation"></canvas>
         </section>
 
         <section id="projects">
             <h2>Projects</h2>
-            <p><img src="images/art3.PNG" alt="Projects Icon" class="teaching-image" onerror="this.src='https://placehold.co/100x100?text=Projects';">Projects are the footprints of curiosity made visible. Each one—whether a digital build, a curriculum design, or a quiet experiment in structure and style—reflects a dialogue between idea and action. I approach projects as living things: not products to be perfected, but explorations to be refined, shaped, and sometimes abandoned when they have taught their lesson. In every endeavor, the aim is not merely completion, but deeper understanding—a way of folding experience back into itself, and growing sharper, braver, and more awake through the making.</p>
-            <div class="project-gallery">
-                 <div class="project-card">
-                    <a href="https://kappter.github.io/wordmaker/" target="_blank">
-                        <img src="https://github.com/kappter/portfolio/blob/main/images/createword.png?raw=true" alt="WordMaker">
-                    </a>
-                    <h3>WordMaker</h3>
-                    <p>WordMaker is a web application that generates unique, made-up words by combining prefixes, roots, and suffixes. Each generated word comes with a pronunciation guide, a definition, and alternative word forms (permutations). The app is designed to be user-friendly, visually appealing, and educational, making it a fun tool for writers, linguists, or anyone interested in creative word-building.</p>
-                    <a href="https://github.com/kappter/wordmaker" target="_blank" class="project-link">View on GitHub</a>
-                </div>    
-                <div class="project-card">
-                    <a href="https://kappter.github.io/SongMaker/" target="_blank">
-                        <img src="https://github.com/kappter/SongMaker/raw/main/tunepix.png?raw=true" alt="SongMaker Project">
-                    </a>
-                    <h3>SongMaker</h3>
-                    <p>Tired of wasting rehearsal time on half-baked song ideas? SongMaker’s your fix. This web app spits out song structures, lyric starters, and chord progressions条件based on your genre and vibe. Plug in “grunge” or “pop,” set a mood, and get a blueprint we can actually jam to. Share drafts, tweak on the fly, and cut the chaos.</p>
-                    <a href="https://github.com/kappter/SongMaker" target="_blank" class="project-link">View on GitHub</a>
-                </div>
-                <div class="project-card">
-                    <a href="https://kappter.github.io/estimateyourgrade/" target="_blank">
-                        <img src="https://github.com/kappter/portfolio/blob/main/images/cred.png?raw=true" alt="GPA Calculator">
-                    </a>
-                    <h3>GPA Calculator</h3>
-                    <p>Maybe as a freshman who just had a rough first year, you’re probably feeling stressed about your GPA and wondering if you can still hit a 3.5 or even a 3.2. Let’s break down the EstimateYourGrade app in a way that’s super clear and hopeful, focusing on how it can help you figure out if those goals are possible.</p>
-                    <a href="https://github.com/kappter/estimateyourgrade" target="_blank" class="project-link">View on GitHub</a>
-                </div>
-                <div class="project-card">
-                    <a href="https://kappter.github.io/rgbcolorvis/" target="_blank">
-                        <img src="https://github.com/kappter/portfolio/blob/main/images/rgb.png?raw=true" alt="PairPal">
-                    </a>
-                    <h3>RGB Color Visualizer</h3>
-                    <p>The 24Bit RGB Color Visualizer is an interactive web application designed to help users understand and experiment with 24-bit RGB color values. It provides a hands-on way to manipulate the individual bits of the Red, Green, and Blue color channels (8 bits each, totaling 24 bits) to create colors. The app displays the decimal and hexadecimal values for each channel, the combined RGB and hex values, and a visual preview of the resulting color.</p>
-                    <a href="https://github.com/kappter/rgbcolorvis" target="_blank" class="project-link">View on GitHub</a>
-                </div>
-                <div class="project-card">
-                    <a href="https://kappter.github.io/amalgamator-app/index.html" target="_blank">
-                        <img src="https://github.com/kappter/amalgamator/raw/master/amalgamation.png" alt="Amalgamator">
-                    </a>
-                    <h3>Amalgamator</h3>
-                    <p>Very much a work in progress with HUGELY ambitious goals. Lemme know if you are a database person, hehe. A utility for combining and processing various data types.</p>
-                    <a href="https://github.com/kappter/amalgamator" target="_blank" class="project-link">View on GitHub</a>
-                </div>
-                <div class="project-card">
-                    <a href="https://kappter.github.io/perfect10/" target="_blank">
-                        <img src="https://github.com/kappter/perfect10/raw/main/images/perfect10.png?raw=true" alt="Perfect10 Project">
-                    </a>
-                    <h3>Perfect10</h3>
-                    <p>After a comedian quipped he'd never met a '10' and only encountered three '9s' in his life, I was left pondering: What even is a 10? A year of single-life soul-searching later, I built the Perfect 10 Evaluator—a tongue-in-cheek, code-driven quest to quantify the unquantifiable. Whether you're sizing up a roommate, significant other, or even your mom, this tool playfully crunches the numbers on compatibility, charm, and that elusive '10' factor. Spoiler: It’s less about finding perfection and more about laughing at the absurdity of trying.</p>
-                    <a href="https://github.com/kappter/perfect10" target="_blank" class="project-link">View on GitHub</a>
-                </div>
-                <div class="project-card">
-                    <a href="https://kappter.github.io/masterysignature/" target="_blank">
-                        <img src="https://github.com/kappter/portfolio/blob/main/images/sig.png?raw=true" alt="Mastery Signature">
-                    </a>
-                    <h3>Mastery Signature</h3>
-                    <p>Work in progress. Need a graphic designer good with web. Mastery Signature is a dynamic web app designed to help you visualize and track your journey toward mastery in any discipline. By answering a series of questions about the time you’ve invested and the challenges you’ve faced across seven levels of mastery—from initial exposure to innovation—you’ll create a unique "mastery signature."</p>
-                    <a href="https://github.com/kappter/masterysignature" target="_blank" class="project-link">View on GitHub</a>
-                </div>
-                <div class="project-card">
-                    <a href="https://kappter.github.io/corecraft/" target="_blank">
-                        <img src="https://github.com/kappter/portfolio/blob/main/images/core.png?raw=true" alt="Mastery Signature">
-                    </a>
-                    <h3>CoreCraft</h3>
-                    <p>CoreCraft is a web app for writers who want to build unforgettable characters from the inside out. Using HTML, JavaScript, and CSS, it generates a character’s core traits—like strength, shadow, or fracture—and visualizes them as layers, inspired by the Earth’s makeup. With guided questions, you explore their morality, history, and struggles, crafting a deep, tailored foundation for your story in just minutes. It’s the tool that turns a blank page into a living soul.</p>
-                    <a href="https://github.com/kappter/corecraft" target="_blank" class="project-link">View on GitHub</a>
-                </div>
-                <div class="project-card">
-                    <a href="https://kappter.github.io/numbers/" target="_blank">
-                        <img src="https://github.com/kappter/numbers/raw/master/55.png" alt="Numbers Project">
-                    </a>
-                    <h3>Numbers</h3>
-                    <p>A numerical analysis and visualization tool.</p>
-                    <a href="https://github.com/kappter/numbers" target="_blank" class="project-link">View on GitHub</a>
-                </div>
-                <div class="project-card">
-                    <a href="https://kappter.github.io/pairpal/index.html" target="_blank">
-                        <img src="https://github.com/kappter/portfolio/blob/main/images/pair.png?raw=true" alt="PairPal">
-                    </a>
-                    <h3>PairPal</h3>
-                    <p>PairPal is a simple, insightful tool designed to help you understand how different personality types interact—especially in moments like these. Whether it’s you and your partner, a friend, or even a colleague, PairPal offers a window into your unique pairing. It highlights how your styles mesh, where tensions might arise, and how to navigate them with care. Built with love and a touch of curiosity.</p>
-                    <a href="https://github.com/kappter/pairpal/tree/main" target="_blank" class="project-link">View on GitHub</a>
-                </div>
+            <div class="project">
+                <h3>Personal Portfolio Website</h3>
+                <p class="subheading">HTML, CSS, JavaScript</p>
+                <p>Designed and developed a responsive portfolio website to showcase my projects, skills, and experiences. Features dynamic theme switching and interactive elements.</p>
+                <p><a href="https://github.com/kenkapptie/portfolio-site" target="_blank">View on GitHub</a></p>
+            </div>
+            <div class="project">
+                <h3>Interactive Educational Game</h3>
+                <p class="subheading">JavaScript, Canvas API</p>
+                <p>Created a browser-based game to teach coding concepts to students, incorporating gamification to improve engagement and learning outcomes.</p>
+                <p><a href="https://github.com/kenkapptie/interactive-game" target="_blank">View on GitHub</a></p>
+            </div>
+            <div class="project">
+                <h3>Machine Learning Model for Predictive Analysis</h3>
+                <p class="subheading">Python, TensorFlow</p>
+                <p>Developed a machine learning model to predict student performance based on historical data, achieving 85% accuracy.</p>
+                <p><a href="https://github.com/kenkapptie/ml-model" target="_blank">View on GitHub</a></p>
             </div>
             <canvas id="line-animation-projects" class="line-animation"></canvas>
         </section>
 
         <section id="awards">
             <h2>Awards</h2>
-            <p><img src="images/award.jpg" alt="Awards Icon" class="teaching-image" onerror="this.src='https://placehold.co/100x100?text=Awards';">The path of teaching, creating, and exploring is rarely paved with applause. It winds quietly through late nights, unasked questions, silent triumphs, and unseen acts of faith. Recognition, when it comes, is not a finish line, but a mirror—a small, fleeting glimpse that says: yes, the work mattered. It touched something real.</p>
-            <p>Each of these honors is less a trophy and more a story—a moment where my efforts in technology education, leadership, artistry, and mentorship resonated beyond the classroom walls. They remind me that the best rewards are never held in hand, but in the lives and minds that were stirred to new beginnings.</p>
-            <div class="awards-container">
-                <div class="award-card">
-                    <h3>UITEA Teacher of the Year (2025)</h3>
-                    <p>Utah Information Technology Education Association Teacher of the Year awarded to a teacher that has an impact in computer science education and student leadership at Skyline High School.</p>
-                    <span class="button unavailable">Details TBD</span>
-                </div>
-                <div class="award-card">
-                    <h3>KSL Teacher Tribute Wall (October 2024)</h3>
-                    <p>Honored for dedication to teaching technology at Skyline High School.</p>
-                    <a href="https://www.graniteschools.org/blog/2024/10/22/congratulations-ken-kapptie-ksl-teacher-tribute-wall-october-2024/" target="_blank" class="button">Read Announcement</a>
-                </div>
-                <div class="award-card">
-                    <h3>Skyline Golden Talon (2024)</h3>
-                    <p>Awarded for outstanding contributions to Skyline High School community.</p>
-                    <span class="button unavailable">School Award - Details TBD</span>
-                </div>
-                <div class="award-card">
-                    <h3>U.S. Presidential Scholars Program Distinguished Teacher (2018 & 2023)</h3>
-                    <p>Recognized as one of three Utah educators honored for exceptional knowledge and impact in education.</p>
-                    <a href="https://www.ed.gov/sites/ed/files/programs/psp/2023/teachers.pdf" target="_blank" class="button">View Official List</a>
-                </div>
-            </div>
+            <ul class="awards-list">
+                <li>Dean's List, University of Washington - 2022, 2023, 2024</li>
+                <li>First Place, UWB Hackathon - 2023</li>
+                <li>Outstanding Volunteer Award, Code.org - 2023</li>
+            </ul>
             <canvas id="line-animation-awards" class="line-animation"></canvas>
         </section>
 
         <section id="art">
             <h2>Art</h2>
-            <p><img src="images/art2.PNG" alt="Art Icon" class="teaching-image" onerror="this.src='https://placehold.co/100x100?text=Art';">Art, for me, is not a matter of technique or accolades—it is a way of knowing without speaking, a bridge between the seen and the felt. Whether through visual design, soundscape, storytelling, or the arrangement of learning spaces, I create not to impose meaning but to invite it. I do not ask art to behave; I ask it to breathe. In every project, there is a trace of wonder, a tension between structure and freedom, a quiet revolution that says: here, for a moment, something real has happened.</p>
-            <p>Art has always been the quiet thread stitching my experience together—a way of seeing, not merely of making. Whether sketching rough forms, shaping digital landscapes, or studying the forgotten beauty of old typefaces, I move between mediums with the sense that creation itself is an extension of attention. To make art is to notice more deeply: to follow texture, light, and symbol into the places where words hesitate. It is a practice of encountering the world—and myself—again and again, without guarantee, without need for arrival. Each piece is a meditation in form, an invitation to hold something fleeting a little longer.</p>
+            <div class="art-gallery">
+                <figure>
+                    <img src="images/art1.jpg" alt="Watercolor painting of a mountain landscape" onerror="this.src='https://placehold.co/300x200?text=Art+1';">
+                    <figcaption>Mountain Landscape - Watercolor, 2023</figcaption>
+                </figure>
+                <figure>
+                    <img src="images/art2.jpg" alt="Sketch of a vintage airplane" onerror="this.src='https://placehold.co/300x200?text=Art+2';">
+                    <figcaption>Vintage Airplane - Pencil Sketch, 2022</figcaption>
+                </figure>
+            </div>
             <canvas id="line-animation-art" class="line-animation"></canvas>
         </section>
 
         <section id="music">
             <h2>Music</h2>
-            <p><img src="images/guitar.jpg" alt="Music Icon" class="teaching-image" onerror="this.src='https://placehold.co/100x100?text=Music';">Music isn’t my way out; it’s where I dive in. Each note, each rhythm, weaves itself into a tapestry of emotion—sometimes raw, sometimes polished, but always true. I don’t play to put on a show; I play to reconnect, to touch those quiet corners where words fall short. Whether I’m exploring modes, crafting melodies, or layering rhythms, my music becomes a dialogue with the parts of life that don’t easily speak. Not every song finds closure, but each one uncovers something real.</p>
-            <p>For me, music is less about striving and more about rediscovery. My guitar is a trusted companion, transforming thoughts into vibrations that resonate. Whether I’m chasing the bold energy of a riff or gently tracing melodies that linger in the air, those six strings carry depths beyond mere sound. I often find myself drawn to modal explorations, rhythmic exchanges, or improvised lines, where the goal isn’t perfection but embracing the dynamic balance between chaos and harmony. The guitar serves as both a guide and an enigma—a way to converse with silence itself.</p>
-            <div class="music-container">
-                <h3>Guitar Pieces</h3>
-                <button onclick="loadGuitarPieces()" class="button">Refresh Guitar Pieces - All 1st Take Sketches</button>
-                <ul id="guitar-pieces-list" class="guitar-pieces"></ul>
-            </div>
+            <p>Below are some of my original guitar compositions.</p>
+            <ul id="guitar-pieces-list" class="guitar-pieces">
+                <!-- Guitar pieces will be populated by JavaScript -->
+            </ul>
             <canvas id="line-animation-music" class="line-animation"></canvas>
         </section>
-    </div>
+    </main>
 
-    <footer class="footer">
-        <div class="footer-content">
-            <span>© 2025 Ken Kapptie. All rights reserved.</span>
-            <div class="social-icons">
-                <a href="https://www.facebook.com/kappter/" target="_blank" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
-                <a href="https://x.com/kappter" target="_blank" aria-label="X"><i class="fab fa-x-twitter"></i></a>
-                <a href="https://www.instagram.com/kappter/?hl=en" target="_blank" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
-                <a href="https://github.com/kappter" target="_blank" aria-label="GitHub"><i class="fab fa-github"></i></a>
-                <a href="https://www.linkedin.com/in/ken-kapptie-0b19665" target="_blank" aria-label="LinkedIn"><i class="fab fa-linkedin"></i></a>
-            </div>
-            <div class="donation-links">
-                <a href="resume.html" target="_blank">Resume</a>
-                <a href="curriculum_vitae.html" target="_blank">CV</a>
-                <a href="https://buymeacoffee.com/kappterw" target="_blank">Buy Me a Coffee</a>
-                <a href="proposal.html">Want your own?</a>
-            </div>
+    <footer>
+        <p>&copy; 2025 Ken Kapptie. All rights reserved.</p>
+        <div class="social-links">
+            <a href="https://github.com/kenkapptie" target="_blank" aria-label="GitHub Profile"><i class="fab fa-github"></i></a>
+            <a href="https://linkedin.com/in/kenkapptie" target="_blank" aria-label="LinkedIn Profile"><i class="fab fa-linkedin"></i></a>
+            <a href="mailto:ken.kapptie@example.com" aria-label="Email Me"><i class="fas fa-envelope"></i></a>
         </div>
     </footer>
 
     <script src="script.js"></script>
-<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'93885fd99e067bb2',t:'MTc0NjAzMDEwOS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script>
-<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'938fe4c38a02bca4',t:'MTc0NjEwODk1NC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script>
 </body>
 </html>
