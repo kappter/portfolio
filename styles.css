@@ -157,21 +157,42 @@ body {
 
 header {
     text-align: center;
-    padding: 32px 0;
+    padding: 16px 0; /* Reduced from 32px to 16px to consolidate vertical space */
     background-color: var(--header-bg);
     border-bottom: 1px solid var(--border-color);
+}
+
+.header-content {
+    position: relative;
+    display: inline-block;
+    text-align: center;
+}
+
+.header-image {
+    width: 200px;
+    height: auto;
+    display: block;
+    margin: 0 auto;
+    position: relative;
+    z-index: 1;
+}
+
+.header-text {
+    position: relative;
+    top: -20px; /* Adjust this value to control the overlap amount */
 }
 
 h1 {
     font-size: 28px;
     font-weight: 600;
     color: var(--text-color);
-    margin-bottom: 8px;
+    margin-bottom: 4px; /* Reduced from 8px to 4px to consolidate space */
 }
 
 header p {
     font-size: 14px;
     color: var(--secondary-text);
+    margin-bottom: 0; /* Ensure no extra space below the subtitle */
 }
 
 section {
@@ -747,5 +768,21 @@ h3 {
 
     .collapsible-content.active {
         max-height: 600px; /* Adjust for mobile */
+    }
+
+    .header-image {
+        width: 150px; /* Reduced size for mobile */
+    }
+
+    .header-text {
+        top: -15px; /* Adjust overlap for smaller image */
+    }
+
+    h1 {
+        font-size: 20px; /* Reduced font size for mobile */
+    }
+
+    header p {
+        font-size: 12px; /* Reduced font size for mobile */
     }
 }
