@@ -29,41 +29,50 @@ document.addEventListener('DOMContentLoaded', function () {
         navMenu.classList.toggle('active');
     });
 
-    // Canvas animation for drawing a horizontal line
-    const canvas = document.getElementById('line-animation');
-    const ctx = canvas.getContext('2d');
-    let width = Math.min(window.innerWidth, 960); // Match container max-width
-    const height = 30; // Canvas height
-    canvas.width = width;
-    canvas.height = height;
-
-    // Adjust canvas size on window resize
-    window.addEventListener('resize', () => {
-        width = Math.min(window.innerWidth, 960);
+    // Canvas animation for drawing a horizontal line for each section
+    const canvasElements = document.querySelectorAll('.line-animation');
+    const canvases = Array.from(canvasElements).map((canvas, index) => {
+        const ctx = canvas.getContext('2d');
+        let width = Math.min(window.innerWidth, 960); // Match container max-width
+        const height = 30; // Canvas height
         canvas.width = width;
         canvas.height = height;
-        x = 0; // Reset animation
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        return { canvas, ctx, width, height, x: width, lastY: height / 2 }; // Start x at width for right-to-left drawing
     });
 
-    let x = 0;
-    const speed = 3; // Pixels per frame
-    const baseY = height / 2;
-    let lastY = baseY;
+    // Adjust canvas sizes on window resize
+    window.addEventListener('resize', () => {
+        canvases.forEach(item => {
+            const { canvas, ctx } = item;
+            item.width = Math.min(window.innerWidth, 960);
+            canvas.width = item.width;
+            canvas.height = item.height;
+            item.x = item.width; // Reset x to width for right-to-left
+            item.lastY = item.height / 2;
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+        });
+    });
 
-    function drawLine() {
+    // Animation settings
+    const baseSpeed = 1; // Base speed (slower than original 3 pixels per frame)
+    const speedVariation = 0.5; // Random speed variation (±0.5 pixels)
+
+    function drawLine(item) {
+        const { canvas, ctx, width, height } = item;
         ctx.beginPath();
-        ctx.moveTo(x, lastY);
+        ctx.moveTo(item.x, item.lastY);
 
-        // Increment x position
-        x += speed;
-        if (x > width) {
-            x = width; // Stop at canvas width
+        // Decrease x position for right-to-left drawing
+        const speed = baseSpeed + (Math.random() - 0.5) * speedVariation; // Random speed between 0.5 and 1.5
+        item.x -= speed;
+        if (item.x < 0) {
+            item.x = 0; // Stop at canvas left edge
         }
 
         // Add randomness to y position for hand-drawn effect
-        const y = baseY + (Math.random() - 0.5) * 4; // ±2px randomness
-        ctx.lineTo(x, y);
+        const y = (height / 2) + (Math.random() - 0.5) * 6; // Increased randomness to ±3px for smoother effect
+        ctx.lineTo(item.x, y);
 
         // Randomize line width for felt pen effect
         ctx.lineWidth = 2 + (Math.random() - 0.5) * 0.5; // 1.75–2.25px
@@ -71,15 +80,17 @@ document.addEventListener('DOMContentLoaded', function () {
         ctx.lineCap = 'round';
         ctx.stroke();
 
-        lastY = y; // Update last y position for smooth continuity
+        item.lastY = y; // Update last y position for smooth continuity
 
-        if (x < width) {
-            requestAnimationFrame(drawLine);
+        if (item.x > 0) {
+            requestAnimationFrame(() => drawLine(item));
         }
     }
 
-    // Start animation
-    drawLine();
+    // Start animation for each canvas
+    canvases.forEach(item => {
+        drawLine(item);
+    });
 
     // Function to load guitar pieces
     function loadGuitarPieces() {
