@@ -38,43 +38,50 @@ document.addEventListener('DOMContentLoaded', function () {
         canvas.width = width;
         canvas.height = height;
 
+        // Random direction: true for left-to-right, false for right-to-left
+        const leftToRight = Math.random() > 0.5;
+        let x = leftToRight ? 0 : width;
+        // Random speed between 1 and 4 pixels per frame
+        const speed = leftToRight ? (1 + Math.random() * 3) : -(1 + Math.random() * 3);
+        const baseY = height / 2;
+        let lastY = baseY;
+
         // Adjust canvas size on window resize
         window.addEventListener('resize', () => {
             width = Math.min(window.innerWidth, 960);
             canvas.width = width;
             canvas.height = height;
-            x = 0; // Reset animation
+            x = leftToRight ? 0 : width; // Reset animation based on direction
             ctx.clearRect(0, 0, canvas.width, canvas.height);
+            lastY = baseY;
         });
-
-        let x = 0;
-        const speed = 3; // Pixels per frame
-        const baseY = height / 2;
-        let lastY = baseY;
 
         function drawLine() {
             ctx.beginPath();
             ctx.moveTo(x, lastY);
 
-            // Increment x position
+            // Update x position based on direction
             x += speed;
-            if (x > width) {
-                x = width; // Stop at canvas width
+            if (leftToRight) {
+                if (x > width) x = width; // Stop at canvas width
+            } else {
+                if (x < 0) x = 0; // Stop at canvas start
             }
 
-            // Add randomness to y position for hand-drawn effect
-            const y = baseY + (Math.random() - 0.5) * 4; // ±2px randomness
+            // Add smaller randomness to y position for smoother hand-drawn effect
+            const y = lastY + (Math.random() - 0.5) * 1; // ±0.5px randomness for smoother transitions
             ctx.lineTo(x, y);
 
-            // Randomize line width for felt pen effect
-            ctx.lineWidth = 2 + (Math.random() - 0.5) * 0.5; // 1.75–2.25px
+            // Subtle line width variation for felt pen effect
+            ctx.lineWidth = 2 + (Math.random() - 0.5) * 0.2; // 1.9–2.1px
             ctx.strokeStyle = getComputedStyle(document.documentElement).getPropertyValue('--accent-color').trim();
             ctx.lineCap = 'round';
             ctx.stroke();
 
             lastY = y; // Update last y position for smooth continuity
 
-            if (x < width) {
+            // Continue animation until the line reaches the end
+            if (leftToRight ? (x < width) : (x > 0)) {
                 requestAnimationFrame(drawLine);
             }
         }
@@ -96,7 +103,9 @@ document.addEventListener('DOMContentLoaded', function () {
                 return response.json();
             })
             .then(data => {
-                if (!Array.isArray(data)) {
+                if (!
+
+Array.isArray(data)) {
                     throw new Error('guitar_pieces.json is not a valid array');
                 }
                 data.forEach(piece => {
@@ -125,124 +134,4 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Initial load of guitar pieces
     loadGuitarPieces();
-
-    // Blog posts array (simulating a CSV file client-side)
-    const blogPosts = [
-        {
-            title: "Teaching Technology in the Classroom",
-            text: "Reflections on integrating coding and robotics into high school education.",
-            image: "",
-            link: "https://example.com/blog/teaching-technology"
-        },
-        {
-            title: "The Art of Learning Through Music",
-            text: "Exploring how music can enhance learning and creativity in students.",
-            image: "",
-            link: "https://example.com/blog/music-learning"
-        }
-    ];
-
-    // Function to display blog posts
-    function displayBlogPosts() {
-        const blogContainer = document.getElementById('blog-container');
-        blogContainer.innerHTML = ''; // Clear existing posts
-        blogPosts.forEach(post => {
-            const blogCard = document.createElement('div');
-            blogCard.className = 'blog-card';
-            blogCard.innerHTML = `
-                ${post.image ? `<img src="${post.image}" alt="${post.title}" class="blog-image">` : ''}
-                <h3>${post.title}</h3>
-                <p>${post.text}</p>
-                <a href="${post.link}" target="_blank" class="button">Read More</a>
-            `;
-            blogContainer.appendChild(blogCard);
-        });
-    }
-
-    // Initial display of blog posts
-    displayBlogPosts();
-
-    // Toggle blog form visibility
-    const toggleButton = document.getElementById('toggle-blog-form');
-    const blogFormContent = document.getElementById('blog-form-content');
-    const toggleIcon = toggleButton.querySelector('.toggle-icon');
-
-    toggleButton.addEventListener('click', () => {
-        blogFormContent.classList.toggle('active');
-        toggleIcon.classList.toggle('active');
-    });
-
-    // Expose addBlogPost to global scope for onclick
-    window.addBlogPost = function () {
-        const title = document.getElementById('blog-title').value.trim();
-        const text = document.getElementById('blog-text').value.trim();
-        const imageInput = document.getElementById('blog-image');
-        const imageFile = imageInput.files[0];
-
-        if (!title || !text) {
-            alert('Please fill in the title and content.');
-            return;
-        }
-
-        // Simulate image upload (GitHub Pages doesn't allow file writing)
-        let imagePath = '';
-        if (imageFile) {
-            const fileName = imageFile.name;
-            imagePath = `blog/${fileName}`; // Simulated path
-            const reader = new FileReader();
-            reader.onload = function (e) {
-                imagePath = e.target.result; // Use data URL for display
-                addPostToListAndCSV(title, text, imagePath);
-            };
-            reader.readAsDataURL(imageFile);
-        } else {
-            addPostToListAndCSV(title, text, imagePath);
-        }
-    };
-
-    // Function to add post to list and CSV
-    function addPostToListAndCSV(title, text, imagePath) {
-        // Add to blogPosts array
-        const newPost = {
-            title: title,
-            text: text,
-            image: imagePath,
-            link: "https://example.com/blog/" + title.toLowerCase().replace(/\s+/g, '-') // Generate a placeholder link
-        };
-        blogPosts.push(newPost);
-
-        // Update display
-        displayBlogPosts();
-
-        // Generate CSV entry
-        const csvRow = `"${title.replace(/"/g, '""')}","${text.replace(/"/g, '""')}","${imagePath.replace(/"/g, '""')}","${newPost.link}"\n`;
-        appendToCSV(csvRow);
-
-        // Clear the form
-        document.getElementById('blog-title').value = '';
-        document.getElementById('blog-text').value = '';
-        document.getElementById('blog-image').value = '';
-
-        // Optionally collapse the form after submission
-        blogFormContent.classList.remove('active');
-        toggleIcon.classList.remove('active');
-    }
-
-    // Function to append to CSV (simulated for client-side)
-    let csvContent = 'title,text,image,link\n'; // CSV header
-    blogPosts.forEach(post => {
-        csvContent += `"${post.title.replace(/"/g, '""')}","${post.text.replace(/"/g, '""')}","${post.image.replace(/"/g, '""')}","${post.link}"\n`;
-    });
-
-    function appendToCSV(row) {
-        csvContent += row;
-        // Create a downloadable CSV file
-        const blob = new Blob([csvContent], { type: 'text/csv' });
-        const url = window.URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = 'blogs.csv';
-        a.click();
-        window.URL.revokeObjectURL(url);
-    }
 });
