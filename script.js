@@ -38,17 +38,22 @@ document.addEventListener('DOMContentLoaded', function () {
         canvas.width = width;
         canvas.height = height;
 
-        return { canvas, ctx, width, height, x: width, lastY: height / 2 }; // Start x at width for right-to-left drawing
+        // Determine direction based on index: odd indices (0, 2, 4, ...) go left-to-right, even go right-to-left
+        const leftToRight = index % 2 === 0;
+        const x = leftToRight ? 0 : width; // Start position based on direction
+        const lastY = height / 2;
+
+        return { canvas, ctx, width, height, x, lastY, leftToRight };
     });
 
     // Adjust canvas sizes on window resize
     window.addEventListener('resize', () => {
         canvases.forEach(item => {
-            const { canvas, ctx } = item;
+            const { canvas, ctx, leftToRight } = item;
             item.width = Math.min(window.innerWidth, 960);
             canvas.width = item.width;
             canvas.height = item.height;
-            item.x = item.width; // Reset x to width for right-to-left
+            item.x = leftToRight ? 0 : item.width; // Reset x based on direction
             item.lastY = item.height / 2;
             ctx.clearRect(0, 0, canvas.width, canvas.height);
         });
@@ -57,21 +62,33 @@ document.addEventListener('DOMContentLoaded', function () {
     // Animation settings
     const baseSpeed = 1; // Base speed (slower than original 3 pixels per frame)
     const speedVariation = 0.5; // Random speed variation (±0.5 pixels)
+    let frameCounter = 0; // To control the frequency of y-variations
 
     function drawLine(item) {
-        const { canvas, ctx, width, height } = item;
+        const { canvas, ctx, width, height, leftToRight } = item;
         ctx.beginPath();
         ctx.moveTo(item.x, item.lastY);
 
-        // Decrease x position for right-to-left drawing
+        // Update x position based on direction
         const speed = baseSpeed + (Math.random() - 0.5) * speedVariation; // Random speed between 0.5 and 1.5
-        item.x -= speed;
-        if (item.x < 0) {
-            item.x = 0; // Stop at canvas left edge
+        if (leftToRight) {
+            item.x += speed;
+            if (item.x > width) {
+                item.x = width; // Stop at canvas right edge
+            }
+        } else {
+            item.x -= speed;
+            if (item.x < 0) {
+                item.x = 0; // Stop at canvas left edge
+            }
         }
 
-        // Add randomness to y position for hand-drawn effect
-        const y = (height / 2) + (Math.random() - 0.5) * 6; // Increased randomness to ±3px for smoother effect
+        // Add subtle, less frequent randomness to y position for hand-drawn effect
+        frameCounter++;
+        let y = item.lastY;
+        if (frameCounter % 10 === 0) { // Change y every 10 frames for less frequent variations
+            y = (height / 2) + (Math.random() - 0.5) * 2; // Subtle randomness ±1px
+        }
         ctx.lineTo(item.x, y);
 
         // Randomize line width for felt pen effect
@@ -82,7 +99,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
         item.lastY = y; // Update last y position for smooth continuity
 
-        if (item.x > 0) {
+        // Continue animation until the line reaches the end
+        if (leftToRight ? item.x < width : item.x > 0) {
             requestAnimationFrame(() => drawLine(item));
         }
     }
@@ -156,8 +174,7 @@ document.addEventListener('DOMContentLoaded', function () {
         const blogContainer = document.getElementById('blog-container');
         blogContainer.innerHTML = ''; // Clear existing posts
         blogPosts.forEach(post => {
-            const blogCard = document.createElement('div');
-            blogCard.className = 'blog-card';
+            const blog perspective = 'blog-card';
             blogCard.innerHTML = `
                 ${post.image ? `<img src="${post.image}" alt="${post.title}" class="blog-image">` : ''}
                 <h3>${post.title}</h3>
