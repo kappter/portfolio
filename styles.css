@@ -1,353 +1,204 @@
 :root {
-    --background-color: #f5f5f5;
-    --text-color: #333;
-    --accent-color: #6b7280;
-    --header-color: #1f2937;
-    --nav-bg-color: #e5e7eb;
-    --nav-text-color: #4b5563;
-    --nav-hover-bg: #d1d5db;
-    --button-bg: #6b7280;
-    --button-text: #ffffff;
-    --button-hover-bg: #4b5563;
-    --link-color: #2563eb;
-    --link-hover-color: #1e40af;
-    --section-bg: #ffffff;
-    --footer-bg: #e5e7eb;
-    --footer-text: #4b5563;
+    /* Light theme variables (earth tones) */
+    --bg-color: #f5f3e7; /* Warm beige */
+    --text-color: #3a2f1f; /* Dark brown */
+    --header-bg: #fefcf5; /* Off-white */
+    --card-bg: #fefcf5; /* Off-white */
+    --border-color: #e6e2d3; /* Light tan */
+    --accent-color: #6b7d4b; /* Olive green */
+    --accent-hover: #5a6a3f; /* Darker olive green */
+    --secondary-text: #7a6f5e; /* Muted taupe */
+    --shadow-color: rgba(58, 47, 31, 0.1); /* Subtle brown */
+    --progress-bg: #e6e2d3; /* Light tan */
 }
 
 [data-theme="dark"] {
-    --background-color: #1f2937;
-    --text-color: #d1d5db;
-    --accent-color: #9ca3af;
-    --header-color: #f3f4f6;
-    --nav-bg-color: #374151;
-    --nav-text-color: #9ca3af;
-    --nav-hover-bg: #4b5563;
-    --button-bg: #9ca3af;
-    --button-text: #1f2937;
-    --button-hover-bg: #6b7280;
-    --link-color: #60a5fa;
-    --link-hover-color: #3b82f6;
-    --section-bg: #374151;
-    --footer-bg: #374151;
-    --footer-text: #9ca3af;
+    /* Dark theme variables (earth tones) */
+    --bg-color: #2a2518; /* Deep charcoal brown */
+    --text-color: #e8e4d2; /* Light beige */
+    --header-bg: #3c3526; /* Dark taupe */
+    --card-bg: #3c3526; /* Dark taupe */
+    --border-color: #5c5342; /* Dark tan */
+    --accent-color: #829465; /* Muted sage green */
+    --accent-hover: #6e7d53; /* Darker sage green */
+    --secondary-text: #a69f8e; /* Light taupe */
+    --shadow-color: rgba(0, 0, 0, 0.3); /* Darker brown */
+    --progress-bg: #5c5342; /* Dark tan */
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+html, body {
+    height: 100%;
 }
 
 body {
-    margin: 0;
-    font-family: 'Inter', sans-serif;
-    background-color: var(--background-color);
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Roboto', sans-serif;
+    font-size: 14px;
+    line-height: 1.5;
     color: var(--text-color);
-    line-height: 1.6;
+    background-color: var(--bg-color);
+    transition: background-color 0.3s ease, color 0.3s ease;
+    display: flex;
+    flex-direction: column;
 }
 
 .container {
+    flex: 1 0 auto;
     max-width: 960px;
     margin: 0 auto;
-    padding: 0 20px;
-}
-
-header {
-    text-align: center;
-    padding: 40px 0;
-}
-
-h1 {
-    font-family: 'Montserrat', sans-serif;
-    color: var(--header-color);
-    font-size: 2.5em;
-    margin: 0;
-}
-
-h2 {
-    font-family: 'Montserrat', sans-serif;
-    color: var(--header-color);
-    font-size: 1.8em;
-    margin-bottom: 20px;
-}
-
-h3 {
-    font-family: 'Inter', sans-serif;
-    color: var(--header-color);
-    font-size: 1.2em;
-    margin-bottom: 5px;
-}
-
-.navbar {
-    background-color: var(--nav-bg-color);
-    padding: 15px 0;
-    position: sticky;
-    top: 0;
-    z-index: 1000;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-}
-
-.nav-logo .logo {
-    height: 40px;
-    vertical-align: middle;
-}
-
-.nav-menu {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 20px;
-}
-
-.nav-menu li {
-    display: inline-block;
-}
-
-.nav-button {
-    text-decoration: none;
-    color: var(--nav-text-color);
-    font-weight: 500;
-    padding: 10px 15px;
-    border-radius: 5px;
-    transition: background-color 0.3s;
-}
-
-.nav-button:hover {
-    background-color: var(--nav-hover-bg);
-}
-
-.nav-toggle {
-    display: none;
-    font-size: 1.5em;
-    cursor: pointer;
-    color: var(--nav-text-color);
-}
-
-#theme-selector {
-    padding: 5px;
-    border-radius: 5px;
-    background-color: var(--section-bg);
-    color: var(--text-color);
-    border: 1px solid var(--accent-color);
-}
-
-section {
-    background-color: var(--section-bg);
-    padding: 30px;
-    margin: 20px 0;
-    border-radius: 8px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
-}
-
-.subheading {
-    font-style: italic;
-    color: var(--accent-color);
-    margin: 5px 0;
-}
-
-.date {
-    font-size: 0.9em;
-    color: var(--accent-color);
-    margin: 5px 0;
-}
-
-ul {
-    padding-left: 20px;
-    margin: 10px 0;
-}
-
-li {
-    margin-bottom: 10px;
-}
-
-.hobbies-list, .interests-list, .awards-list {
-    list-style-type: disc;
-}
-
-.art-gallery {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 20px;
-    justify-content: center;
-}
-
-.art-gallery figure {
-    margin: 0;
-    text-align: center;
-}
-
-.art-gallery img {
-    max-width: 300px;
-    height: auto;
-    border-radius: 5px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-}
-
-.art-gallery figcaption {
-    margin-top: 10px;
-    font-size: 0.9em;
-    color: var(--accent-color);
-}
-
-.guitar-pieces {
-    list-style: none;
-    padding: 0;
-}
-
-.guitar-piece {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    margin-bottom: 15px;
-}
-
-.guitar-piece span {
-    flex: 1;
-}
-
-.guitar-piece audio {
-    max-width: 100%;
+    padding: 24px;
+    padding-top: 80px;
+    padding-bottom: 80px;
 }
 
 .line-animation {
     display: block;
     width: 100%;
     height: 30px;
-    margin-top: 20px;
+    max-width: 960px;
+    margin: 16px auto 0;
+    background: transparent;
 }
 
-a {
-    color: var(--link-color);
-    text-decoration: none;
-    transition: color 0.3s;
-}
-
-a:hover {
-    color: var(--link-hover-color);
-    text-decoration: underline;
-}
-
-.button {
-    display: inline-block;
-    padding: 10px 20px;
-    background-color: var(--button-bg);
-    color: var(--button-text);
-    border-radius: 5px;
-    text-align: center;
-    transition: background-color 0.3s;
-}
-
-.button:hover {
-    background-color: var(--button-hover-bg);
-    text-decoration: none;
-}
-
-footer {
-    background-color: var(--footer-bg);
-    color: var(--footer-text);
-    text-align: center;
-    padding: 20px 0;
-    margin-top: 40px;
-}
-
-.social-links {
-    margin-top: 10px;
-}
-
-.social-links a {
-    color: var(--footer-text);
-    margin: 0 10px;
-    font-size: 1.5em;
-    transition: color 0.3s;
-}
-
-.social-links a:hover {
-    color: var(--link-hover-color);
-}
-
-@media (max-width: 768px) {
-    .nav-menu {
-        display: none;
-        flex-direction: column;
-        position: absolute;
-        top: 60px;
-        left: 0;
-        width: 100%;
-        background-color: var(--nav-bg-color);
-        padding: 20px 0;
-        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    }
-
-    .nav-menu.active {
-        display: flex;
-    }
-
-    .nav-menu li {
-        display: block;
-        text-align: center;
-        margin: 10px 0;
-    }
-
-    .nav-toggle {
-        display: block;
-        position: absolute;
-        top: 15px;
-        right: 20px;
-    }
-
-    #theme-selector {
-        width: 100%;
-        max-width: 200px;
-        margin: 0 auto;
-        display: block;
-    }
-
-    .art-gallery {
-        flex-direction: column;
-        align-items: center;
-    }
-}
-
-@media (max-width: 480px) {
-    h1 {
-        font-size: 2em;
-    }
-
-    h2 {
-        font-size: 1.5em;
-    }
-
-    .container {
-        padding: 0 15px;
-    }
-
-    section {
-        padding: 20px;
-    }
-}
-
-/* Updated styles for the new Skills section */
-.skills-container {
+.navbar {
+    background-color: var(--header-bg);
+    padding: 12px 24px;
     display: flex;
-    flex-direction: column;
-    gap: 20px;
+    align-items: center;
+    justify-content: space-between;
+    box-shadow: 0 1px 3px var(--shadow-color);
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 1000;
 }
 
-.skill-category {
-    background-color: var(--background-color);
-    padding: 15px;
-    border-radius: 5px;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+.nav-logo .logo {
+    height: 24px;
+    width: auto;
 }
 
-.skill-category h3 {
-    margin-top: 0;
-    font-size: 1.1em;
+.nav-menu {
+    list-style: none;
+    display: flex;
+    align-items: center;
 }
 
-.skill-category p {
-    margin: 5px 0;
+.nav-menu li {
+    margin: 0 12px;
 }
 
-[data-theme="dark"] .skill-category {
-    background-color: #4b5563;
+.nav-button {
+    color: var(--text-color);
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 13px;
+    border-radius: 4px;
+    transition: background-color 0.2s ease, color 0.2s ease;
 }
+
+.nav-button:hover {
+    background-color: var(--progress-bg);
+    color: var(--accent-color);
+}
+
+.nav-toggle {
+    display: none;
+    font-size: 1.2rem;
+    cursor: pointer;
+    color: var(--text-color);
+}
+
+.theme-toggle {
+    background: none;
+    border: none;
+    font-size: 13px;
+    color: var(--text-color);
+    cursor: pointer;
+    padding: 6px 12px;
+    border-radius: 4px;
+    transition: background-color 0.2s ease;
+}
+
+.theme-toggle:hover {
+    background-color: var(--progress-bg);
+}
+
+#theme-selector {
+    background-color: var(--card-bg);
+    border: 1px solid var(--border-color);
+    color: var(--text-color);
+    font-size: 13px;
+    padding: 6px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+
+#theme-selector:hover {
+    background-color: var(--progress-bg);
+    border-color: var(--accent-color);
+}
+
+#theme-selector:focus {
+    outline: none;
+    border-color: var(--accent-color);
+}
+
+header {
+    text-align: center;
+    padding: 32px 0;
+    background-color: var(--header-bg);
+    border-bottom: 1px solid var(--border-color);
+}
+
+h1 {
+    font-size: 28px;
+    font-weight: 600;
+    color: var(--text-color);
+    margin-bottom: 8px;
+}
+
+header p {
+    font-size: 14px;
+    color: var(--secondary-text);
+}
+
+section {
+    padding: 24px 0;
+    /* Removed border-bottom to eliminate static dashed lines */
+}
+
+h2 {
+    font-size: 20px;
+    font-weight: 600;
+    color: var(--accent-color);
+    margin-bottom: 16px;
+}
+
+h3 {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--accent-color);
+    margin-bottom: 8px;
+}
+
+.teaching-image {
+    float: left; /* Left-aligned for natural theme */
+    width: 100px;
+    max-width: 100px;
+    height: auto;
+    margin: 0 12px 12px 0;
+    border: 2px solid var(--border-color);
+    border-radius: 4px;
+    transition: transform
