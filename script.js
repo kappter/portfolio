@@ -41,8 +41,8 @@ document.addEventListener('DOMContentLoaded', function () {
         // Random direction: true for left-to-right, false for right-to-left
         const leftToRight = Math.random() > 0.5;
         let x = leftToRight ? 0 : width;
-        // Random speed between 1 and 4 pixels per frame
-        const speed = leftToRight ? (1 + Math.random() * 3) : -(1 + Math.random() * 3);
+        // Random speed between 0.5 and 2 pixels per frame (slower)
+        const speed = leftToRight ? (0.5 + Math.random() * 1.5) : -(0.5 + Math.random() * 1.5);
         const baseY = height / 2;
         let lastY = baseY;
         let pathPoints = []; // Store points for fading tail
@@ -66,8 +66,8 @@ document.addEventListener('DOMContentLoaded', function () {
             // Add current point to path
             pathPoints.push({ x, y: lastY });
 
-            // Calculate fade distance (quarter of canvas width)
-            const fadeDistance = width / 4;
+            // Calculate fade distance (third of canvas width)
+            const fadeDistance = width / 3;
             const fadeStartX = leftToRight ? x - fadeDistance : x + fadeDistance;
 
             // Draw the path with fading tail
