@@ -195,4 +195,113 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Initial load of guitar pieces
     loadGuitarPieces();
+
+    // Art Carousel Logic
+    const carouselImage = document.getElementById('carousel-image');
+    const carouselCaption = document.getElementById('carousel-caption');
+    const prevButton = document.querySelector('.carousel-prev');
+    const nextButton = document.querySelector('.carousel-next');
+    const carouselContainer = document.querySelector('.art-carousel');
+    let images = [];
+    let currentIndex = 0;
+    let autoAdvanceInterval = null;
+    const AUTO_ADVANCE_INTERVAL = 5000; // 5 seconds
+
+    // Function to format filename into a caption
+    function formatCaption(filename) {
+        // Remove extension and replace underscores/hyphens with spaces
+        const name = filename.replace(/\.[^/.]+$/, '').replace(/[_-]/g, ' ');
+        // Capitalize first letter of each word
+        return name.replace(/\w\S*/g, txt => txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase());
+    }
+
+    // Function to change image with fade effect
+    function changeImage(index) {
+        if (index < 0) index = images.length - 1;
+        if (index >= images.length) index = 0;
+        currentIndex = index;
+
+        carouselImage.classList.add('fade-out');
+        setTimeout(() => {
+            carouselImage.src = images[currentIndex].url;
+            carouselImage.alt = formatCaption(images[currentIndex].file);
+            carouselCaption.textContent = formatCaption(images[currentIndex].file);
+            carouselImage.classList.remove('fade-out');
+        }, 500); // Match CSS transition duration
+    }
+
+    // Function to start auto-advance
+    function startAutoAdvance() {
+        stopAutoAdvance();
+        autoAdvanceInterval = setInterval(() => {
+            changeImage(currentIndex + 1);
+        }, AUTO_ADVANCE_INTERVAL);
+    }
+
+    // Function to stop auto-advance
+    function stopAutoAdvance() {
+        if (autoAdvanceInterval) {
+            clearInterval(autoAdvanceInterval);
+            autoAdvanceInterval = null;
+        }
+    }
+
+    // Load images from art_images.json
+    fetch('art_images.json')
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Failed to load art_images.json');
+            }
+            return response.json();
+        })
+        .then(data => {
+            if (!Array.isArray(data)) {
+                throw new Error('art_images.json is not a valid array');
+            }
+            images = data.filter(item => item.file && /\.(jpg|jpeg|png|gif)$/i.test(item.file)).map(item => ({
+                file: item.file,
+                url: `art/${item.file}`
+            }));
+            if (images.length === 0) {
+                carouselCaption.textContent = 'No images found in art folder.';
+                return;
+            }
+            // Initialize carousel
+            changeImage(0);
+            startAutoAdvance();
+        })
+        .catch(error => {
+            console.error('Error loading art images:', error);
+            carouselCaption.textContent = 'Unable to load images at this time.';
+        });
+
+    // Event listeners for buttons
+    prevButton.addEventListener('click', () => {
+        stopAutoAdvance();
+        changeImage(currentIndex - 1);
+        startAutoAdvance();
+    });
+
+    nextButton.addEventListener('click', () => {
+        stopAutoAdvance();
+        changeImage(currentIndex + 1);
+        startAutoAdvance();
+    });
+
+    // Pause auto-advance on hover
+    carouselContainer.addEventListener('mouseenter', stopAutoAdvance);
+    carouselContainer.addEventListener('mouseleave', startAutoAdvance);
+
+    // Keyboard navigation
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'ArrowLeft') {
+            stopAutoAdvance();
+            changeImage(currentIndex - 1);
+            startAutoAdvance();
+        } else if (e.key === 'ArrowRight') {
+            stopAutoAdvance();
+            changeImage(currentIndex + 1);
+            startAutoAdvance();
+        }
+    });
 });

@@ -655,6 +655,78 @@ h3 {
     box-shadow: 0 2px 8px var(--shadow-color);
 }
 
+/* Carousel Styles */
+.art-carousel {
+    position: relative;
+    max-width: 600px;
+    margin: 16px auto;
+    background-color: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    padding: 16px;
+    box-shadow: 0 2px 8px var(--shadow-color);
+    overflow: hidden;
+}
+
+.carousel-image-container {
+    position: relative;
+    width: 100%;
+    height: 400px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+}
+
+.carousel-image {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+    border-radius: 4px;
+    opacity: 1;
+    transition: opacity 0.5s ease;
+}
+
+.carousel-image.fade-out {
+    opacity: 0;
+}
+
+.carousel-caption {
+    text-align: center;
+    font-size: 13px;
+    color: var(--secondary-text);
+    margin-top: 12px;
+}
+
+.carousel-arrow {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background-color: rgba(0, 0, 0, 0.3);
+    color: var(--text-color);
+    border: none;
+    border-radius: 4px;
+    padding: 8px;
+    font-size: 16px;
+    cursor: pointer;
+    opacity: 0.5;
+    transition: opacity 0.2s ease, background-color 0.2s ease;
+}
+
+.carousel-arrow:hover {
+    opacity: 1;
+    background-color: var(--accent-color);
+    color: #ffffff;
+}
+
+.carousel-prev {
+    left: 16px;
+}
+
+.carousel-next {
+    right: 16px;
+}
+
 @media (max-width: 768px) {
     .navbar {
         flex-direction: column;
@@ -783,5 +855,27 @@ h3 {
 
     header p {
         font-size: 12px;
+    }
+
+    .art-carousel {
+        max-width: 100%;
+        padding: 12px;
+    }
+
+    .carousel-image-container {
+        height: 300px;
+    }
+
+    .carousel-arrow {
+        padding: 6px;
+        font-size: 14px;
+    }
+
+    .carousel-prev {
+        left: 12px;
+    }
+
+    .carousel-next {
+        right: 12px;
     }
 }
