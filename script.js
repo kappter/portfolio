@@ -207,12 +207,20 @@ document.addEventListener('DOMContentLoaded', function () {
     let autoAdvanceInterval = null;
     const AUTO_ADVANCE_INTERVAL = 5000; // 5 seconds
 
+    // Define images array for art01.png to art23.png
+    for (let i = 1; i <= 23; i++) {
+        const fileName = `art${i.toString().padStart(2, '0')}.png`;
+        images.push({
+            file: fileName,
+            url: `art/${fileName}`
+        });
+    }
+
     // Function to format filename into a caption
     function formatCaption(filename) {
-        // Remove extension and replace underscores/hyphens with spaces
-        const name = filename.replace(/\.[^/.]+$/, '').replace(/[_-]/g, ' ');
-        // Capitalize first letter of each word
-        return name.replace(/\w\S*/g, txt => txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase());
+        // Remove extension and capitalize
+        const name = filename.replace(/\.[^/.]+$/, '').replace(/^art/, 'Art ');
+        return name;
     }
 
     // Function to change image with fade effect
@@ -246,34 +254,13 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
 
-    // Load images from art_images.json
-    fetch('art_images.json')
-        .then(response => {
-            if (!response.ok) {
-                throw new Error('Failed to load art_images.json');
-            }
-            return response.json();
-        })
-        .then(data => {
-            if (!Array.isArray(data)) {
-                throw new Error('art_images.json is not a valid array');
-            }
-            images = data.filter(item => item.file && /\.(jpg|jpeg|png|gif)$/i.test(item.file)).map(item => ({
-                file: item.file,
-                url: `art/${item.file}`
-            }));
-            if (images.length === 0) {
-                carouselCaption.textContent = 'No images found in art folder.';
-                return;
-            }
-            // Initialize carousel
-            changeImage(0);
-            startAutoAdvance();
-        })
-        .catch(error => {
-            console.error('Error loading art images:', error);
-            carouselCaption.textContent = 'Unable to load images at this time.';
-        });
+    // Initialize carousel
+    if (images.length > 0) {
+        changeImage(0);
+        startAutoAdvance();
+    } else {
+        carouselCaption.textContent = 'No images found.';
+    }
 
     // Event listeners for buttons
     prevButton.addEventListener('click', () => {
