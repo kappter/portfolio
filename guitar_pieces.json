@@ -1,5 +1,8 @@
 [
-    {"title": "Morning Breeze", "file": "morning_breeze.mp3"},
-    {"title": "Desert Echoes", "file": "desert_echoes.mp3"},
-    {"title": "Twilight Riff", "file": "twilight_riff.mp3"}
+    {"title": "Bee's Melody", "file": "bee.wav"},
+    {"title": "Bop Rhythm", "file": "bop.wav"},
+    {"title": "Hip Pulse", "file": "hipp.wav"},
+    {"title": "Hop Beat", "file": "hopp.wav"},
+    {"title": "Tick Tock", "file": "tick.wav"},
+    {"title": "Tock Echo", "file": "tock.wav"}
 ]
