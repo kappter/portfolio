@@ -197,37 +197,39 @@ document.addEventListener('DOMContentLoaded', function () {
     loadGuitarPieces();
 
     // Art Carousel Logic
-    const carouselImage = document.getElementById('carousel-image');
-    const carouselCaption = document.getElementById('carousel-caption');
-    const prevButton = document.querySelector('.carousel-prev');
-    const nextButton = document.querySelector('.carousel-next');
-    const carouselContainer = document.querySelector('.art-carousel');
-    let images = [];
-    let currentIndex = 0;
-    let autoAdvanceInterval = null;
+    const artCarouselImage = document.getElementById('carousel-image');
+    const artCarouselCaption = document.getElementById('carousel-caption');
+    const artPrevButton = document.querySelector('.art-carousel .carousel-prev');
+    const artNextButton = document.querySelector('.art-carousel .carousel-next');
+    const artCarouselContainer = document.querySelector('.art-carousel');
+    let artImages = [];
+    let artCurrentIndex = 0;
+    let artAutoAdvanceInterval = null;
     const AUTO_ADVANCE_INTERVAL = 5000; // 5 seconds
 
-    // Define images array for art01.png to art23.png
-    for (let i = 1; i <= 23; i++) {
-        const fileName = `art${i.toString().padStart(2, '0')}.png`;
-        images.push({
-            file: fileName,
-            url: `art/${fileName}`
-        });
-    }
+    // Photography Carousel Logic
+    const photographyCarouselImage = document.getElementById('photography-carousel-image');
+    const photographyCarouselCaption = document.getElementById('photography-carousel-caption');
+    const photographyPrevButton = document.querySelector('.photography-carousel .carousel-prev');
+    const photographyNextButton = document.querySelector('.photography-carousel .carousel-next');
+    const photographyCarouselContainer = document.querySelector('.photography-carousel');
+    let photographyImages = [];
+    let photographyCurrentIndex = 0;
+    let photographyAutoAdvanceInterval = null;
 
     // Function to format filename into a caption
     function formatCaption(filename) {
-        // Remove extension and capitalize
-        const name = filename.replace(/\.[^/.]+$/, '').replace(/^art/, 'Art ');
-        return name;
+        // Remove extension and replace underscores/hyphens with spaces
+        const name = filename.replace(/\.[^/.]+$/, '').replace(/[_-]/g, ' ');
+        // Capitalize first letter of each word
+        return name.replace(/\w\S*/g, txt => txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase());
     }
 
-    // Function to change image with fade effect
-    function changeImage(index) {
-        if (index < 0) index = images.length - 1;
-        if (index >= images.length) index = 0;
-        currentIndex = index;
+    // Function to change image with fade effect (generic for both carousels)
+    function changeImage(carouselImage, carouselCaption, images, currentIndex, setIndex) {
+        if (currentIndex < 0) currentIndex = images.length - 1;
+        if (currentIndex >= images.length) currentIndex = 0;
+        setIndex(currentIndex);
 
         carouselImage.classList.add('fade-out');
         setTimeout(() => {
@@ -238,57 +240,83 @@ document.addEventListener('DOMContentLoaded', function () {
         }, 500); // Match CSS transition duration
     }
 
-    // Function to start auto-advance
-    function startAutoAdvance() {
-        stopAutoAdvance();
-        autoAdvanceInterval = setInterval(() => {
-            changeImage(currentIndex + 1);
-        }, AUTO_ADVANCE_INTERVAL);
+    // Function to start auto-advance (generic)
+    function startAutoAdvance(interval, changeFunction) {
+        stopAutoAdvance(interval);
+        interval = setInterval(changeFunction, AUTO_ADVANCE_INTERVAL);
+        return interval;
     }
 
-    // Function to stop auto-advance
-    function stopAutoAdvance() {
-        if (autoAdvanceInterval) {
-            clearInterval(autoAdvanceInterval);
-            autoAdvanceInterval = null;
+    // Function to stop auto-advance (generic)
+    function stopAutoAdvance(interval) {
+        if (interval) {
+            clearInterval(interval);
+            interval = null;
         }
+        return interval;
     }
 
-    // Initialize carousel
-    if (images.length > 0) {
-        changeImage(0);
-        startAutoAdvance();
-    } else {
-        carouselCaption.textContent = 'No images found.';
-    }
+    // Load art images from art_images.json
+    fetch('art_images.json')
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Failed to load art_images.json');
+            }
+            return response.json();
+        })
+        .then(data => {
+            if (!Array.isArray(data)) {
+                throw new Error('art_images.json is not a valid array');
+            }
+            artImages = data.filter(item => item.file && /\.(jpg|jpeg|png|gif)$/i.test(item.file)).map(item => ({
+                file: item.file,
+                url: `art/${item.file}`
+            }));
+            if (artImages.length === 0) {
+                artCarouselCaption.textContent = 'No images found in art folder.';
+                return;
+            }
+            // Initialize art carousel
+            changeImage(artCarouselImage, artCarouselCaption, artImages, artCurrentIndex, index => artCurrentIndex = index);
+            artAutoAdvanceInterval = startAutoAdvance(artAutoAdvanceInterval, () => {
+                changeImage(artCarouselImage, artCarouselCaption, artImages, artCurrentIndex + 1, index => artCurrentIndex = index);
+            });
+        })
+        .catch(error => {
+            console.error('Error loading art images:', error);
+            artCarouselCaption.textContent = 'Unable to load images at this time.';
+        });
 
-    // Event listeners for buttons
-    prevButton.addEventListener('click', () => {
-        stopAutoAdvance();
-        changeImage(currentIndex - 1);
-        startAutoAdvance();
-    });
+    // Load photography images from photography_images.json
+    fetch('photography_images.json')
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Failed to load photography_images.json');
+            }
+            return response.json();
+        })
+        .then(data => {
+            if (!Array.isArray(data)) {
+                throw new Error('photography_images.json is not a valid array');
+            }
+            photographyImages = data.filter(item => item.file && /\.(jpg|jpeg|png|gif)$/i.test(item.file)).map(item => ({
+                file: item.file,
+                url: `photography/${item.file}`
+            }));
+            if (photographyImages.length === 0) {
+                photographyCarouselCaption.textContent = 'No images found in photography folder.';
+                return;
+            }
+            // Initialize photography carousel
+            changeImage(photographyCarouselImage, photographyCarouselCaption, photographyImages, photographyCurrentIndex, index => photographyCurrentIndex = index);
+            photographyAutoAdvanceInterval = startAutoAdvance(photographyAutoAdvanceInterval, () => {
+                changeImage(photographyCarouselImage, photographyCarouselCaption, photographyImages, photographyCurrentIndex + 1, index => photographyCurrentIndex = index);
+            });
+        })
+        .catch(error => {
+            console.error('Error loading photography images:', error);
+            photographyCarouselCaption.textContent = 'Unable to load images at this time.';
+        });
 
-    nextButton.addEventListener('click', () => {
-        stopAutoAdvance();
-        changeImage(currentIndex + 1);
-        startAutoAdvance();
-    });
-
-    // Pause auto-advance on hover
-    carouselContainer.addEventListener('mouseenter', stopAutoAdvance);
-    carouselContainer.addEventListener('mouseleave', startAutoAdvance);
-
-    // Keyboard navigation
-    document.addEventListener('keydown', (e) => {
-        if (e.key === 'ArrowLeft') {
-            stopAutoAdvance();
-            changeImage(currentIndex - 1);
-            startAutoAdvance();
-        } else if (e.key === 'ArrowRight') {
-            stopAutoAdvance();
-            changeImage(currentIndex + 1);
-            startAutoAdvance();
-        }
-    });
-});
+    // Event listeners for art carousel buttons
+    artPrevButton.addEventListener

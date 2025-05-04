@@ -104,6 +104,8 @@
             <li><a href="#projects" class="nav-button">Projects</a></li>
             <li><a href="#awards" class="nav-button">Awards</a></li>
             <li><a href="#art" class="nav-button">Art</a></li>
+            <li><a href="#photography" class="nav-button">Photos</a></li>
+            <li><a href="#pros" class="nav-button">Next</a></li>
             <li><a href="#music" class="nav-button">Music</a></li>
             <li>
                 <select id="theme-selector" aria-label="Select Theme and Style">
@@ -304,6 +306,54 @@
                 <button class="carousel-arrow carousel-next" aria-label="Next Image"><i class="fas fa-chevron-right"></i></button>
             </div>
             <canvas id="line-animation-art" class="line-animation"></canvas>
+        </section>
+
+        <section id="photography">
+            <h2>Photography</h2>
+            <p><img src="images/camera.png" alt="Photography Icon" class="teaching-image" onerror="this.src='https://placehold.co/100x100?text=Photos';">Photography is my way of capturing the world’s quiet moments, where light and shadow tell stories that words cannot. Each frame is a pause, a breath, a chance to see the ordinary as extraordinary—whether it’s the curve of a desert horizon or the texture of a weathered wall.</p>
+            <p>Through the lens, I chase not just images but understanding, seeking the interplay of form and feeling. My camera is a companion in wanderlust, from rugged trails to urban edges, preserving fleeting glimpses of beauty that might otherwise slip away unnoticed.</p>
+            <div class="photography-carousel">
+                <button class="carousel-arrow carousel-prev" aria-label="Previous Image"><i class="fas fa-chevron-left"></i></button>
+                <div class="carousel-image-container">
+                    <img id="photography-carousel-image" src="" alt="Photography Piece" class="carousel-image">
+                    <p id="photography-carousel-caption" class="carousel-caption"></p>
+                </div>
+                <button class="carousel-arrow carousel-next" aria-label="Next Image"><i class="fas fa-chevron-right"></i></button>
+            </div>
+            <canvas id="line-animation-photography" class="line-animation"></canvas>
+        </section>
+
+        <section id="pros">
+            <h2>Upcoming Projects</h2>
+            <p><img src="images/book.png" alt="Projects Icon" class="teaching-image" onerror="this.src='https://placehold.co/100x100?text=Next';">My upcoming projects are sparks of curiosity, each a story waiting to be told through words, code, or design. They are not just tasks but invitations to explore new ways of thinking, creating, and connecting with others.</p>
+            <p>From books that weave narrative and insight to digital tools that simplify complexity, these works-in-progress reflect my belief that creation is a dialogue with possibility. They are my next steps in a lifelong journey of making meaning.</p>
+            <div class="book-gallery">
+                <div class="book-card">
+                    <a href="#" target="_blank">
+                        <img src="https://placehold.co/300x200?text=Book+1" alt="Book 1">
+                    </a>
+                    <h3>Code and Canvas</h3>
+                    <p>A book exploring the intersection of programming and visual art, with practical guides for creating generative designs using JavaScript and HTML5 Canvas.</p>
+                    <a href="#" class="project-link">Coming Soon</a>
+                </div>
+                <div class="book-card">
+                    <a href="#" target="_blank">
+                        <img src="https://placehold.co/300x200?text=Book+2" alt="Book 2">
+                    </a>
+                    <h3>Words in the Wild</h3>
+                    <p>A collection of essays blending technology, nature, and philosophy, reflecting on how digital tools shape our relationship with the world.</p>
+                    <a href="#" class="project-link">Coming Soon</a>
+                </div>
+                <div class="book-card">
+                    <a href="#" target="_blank">
+                        <img src="https://placehold.co/300x200?text=Book+3" alt="Book 3">
+                    </a>
+                    <h3>Teaching the Future</h3>
+                    <p>A guide for educators on integrating coding and robotics into classrooms, with lesson plans and real-world examples from my teaching experience.</p>
+                    <a href="#" class="project-link">Coming Soon</a>
+                </div>
+            </div>
+            <canvas id="line-animation-pros" class="line-animation"></canvas>
         </section>
 
         <section id="music">
