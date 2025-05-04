@@ -53,22 +53,19 @@ document.addEventListener('DOMContentLoaded', function () {
             canvas.width = width;
             canvas.height = height;
             x = leftToRight ? 0 : width; // Reset animation based on direction
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.clearRect(0, 0, canvas.width, canvas.height); // Clear on resize to reset
             lastY = baseY;
             pathPoints = []; // Clear path points
         });
 
         function drawLine() {
-            // Clear canvas with slight opacity to create fading effect
-            ctx.fillStyle = 'rgba(245, 243, 231, 0.1)'; // Match --bg-color light theme (f5f3e7)
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            // No background clear, rely on CSS background
 
             // Add current point to path
             pathPoints.push({ x, y: lastY });
 
             // Calculate fade distance (third of canvas width)
             const fadeDistance = width / 3;
-            const fadeStartX = leftToRight ? x - fadeDistance : x + fadeDistance;
 
             // Draw the path with fading tail
             ctx.beginPath();
