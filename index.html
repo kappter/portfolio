@@ -37,45 +37,6 @@
         }
         return gk_fileData[filename] || "";
         }
-        </script><script type="text/javascript">
-        var gk_isXlsx = false;
-        var gk_xlsxFileLookup = {};
-        var gk_fileData = {};
-        function filledCell(cell) {
-          return cell !== '' && cell != null;
-        }
-        function loadFileData(filename) {
-        if (gk_isXlsx && gk_xlsxFileLookup[filename]) {
-            try {
-                var workbook = XLSX.read(gk_fileData[filename], { type: 'base64' });
-                var firstSheetName = workbook.SheetNames[0];
-                var worksheet = workbook.Sheets[firstSheetName];
-
-                // Convert sheet to JSON to filter blank rows
-                var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, blankrows: false, defval: '' });
-                // Filter out blank rows (rows where all cells are empty, null, or undefined)
-                var filteredData = jsonData.filter(row => row.some(filledCell));
-
-                // Heuristic to find the header row by ignoring rows with fewer filled cells than the next row
-                var headerRowIndex = filteredData.findIndex((row, index) =>
-                  row.filter(filledCell).length >= filteredData[index + 1]?.filter(filledCell).length
-                );
-                // Fallback
-                if (headerRowIndex === -1 || headerRowIndex > 25) {
-                  headerRowIndex = 0;
-                }
-
-                // Convert filtered JSON back to CSV
-                var csv = XLSX.utils.aoa_to_sheet(filteredData.slice(headerRowIndex)); // Create a new sheet from filtered array of arrays
-                csv = XLSX.utils.sheet_to_csv(csv, { header: 1 });
-                return csv;
-            } catch (e) {
-                console.error(e);
-                return "";
-            }
-        }
-        return gk_fileData[filename] || "";
-        }
         </script><!DOCTYPE html>
 <html lang="en">
 <head>
@@ -193,7 +154,7 @@
                         <img src="https://github.com/kappter/SongMaker/raw/main/tunepix.png?raw=true" alt="SongMaker Project">
                     </a>
                     <h3>SongMaker</h3>
-                    <p>Tired of wasting rehearsal time on half-baked song ideas? SongMaker’s your fix. This web app spits out song structures, lyric starters, and chord progressions条件based on your genre and vibe. Plug in “grunge” or “pop,” set a mood, and get a blueprint we can actually jam to. Share drafts, tweak on the fly, and cut the chaos.</p>
+                    <p>Tired of wasting rehearsal time on half-baked song ideas? SongMaker’s your fix. This web app spits out song structures, lyric starters, and chord progressions based on your genre and vibe. Plug in “grunge” or “pop,” set a mood, and get a blueprint we can actually jam to. Share drafts, tweak on the fly, and cut the chaos.</p>
                     <a href="https://github.com/kappter/SongMaker" target="_blank" class="project-link">View on GitHub</a>
                 </div>
                 <div class="project-card">
@@ -238,7 +199,7 @@
                 </div>
                 <div class="project-card">
                     <a href="https://kappter.github.io/corecraft/" target="_blank">
-                        <img src="images/core.png" alt="Mastery Signature">
+                        <img src="images/core.png" alt="CoreCraft">
                     </a>
                     <h3>CoreCraft</h3>
                     <p>CoreCraft is a web app for writers who want to build unforgettable characters from the inside out. Using HTML, JavaScript, and CSS, it generates a character’s core traits—like strength, shadow, or fracture—and visualizes them as layers, inspired by the Earth’s makeup. With guided questions, you explore their morality, history, and struggles, crafting a deep, tailored foundation for your story in just minutes. It’s the tool that turns a blank page into a living soul.</p>
@@ -389,5 +350,5 @@
     </footer>
 
     <script src="script.js"></script>
-<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'93a21a0eca77e58e',t:'MTc0NjI5OTg4MC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</body>
 </html>
