@@ -1,446 +1,441 @@
-// Function to parse CSV content with handling for quoted fields
-function parseCSV(csvText) {
-    const lines = csvText.trim().split("\n");
-    if (lines.length < 2) {
-        console.error("CSV file is empty or only contains headers.");
-        return [];
-    }
-    const headers = lines[0].split(",").map(h => h.trim().toLowerCase());
-    const result = [];
-    const expectedColumns = headers.length;
+document.addEventListener('DOMContentLoaded', function () {
+    // Theme switching logic
+    const themeSelector = document.getElementById('theme-selector');
+    const html = document.documentElement;
 
-    if (!headers.includes("type") || !headers.includes("part") || !headers.includes("term") || !headers.includes("definition")) {
-        console.error("CSV file is missing required headers (type, part, term, definition).");
-        alert("CSV file is missing required headers (type, part, term, definition).");
-        return [];
-    }
+    themeSelector.addEventListener('change', function () {
+        const theme = themeSelector.value;
+        html.setAttribute('data-theme', theme.includes('dark') ? 'dark' : 'light');
 
-    const regex = /(?:"([^"]*(?:""[^"]*)*)"|([^,]*))(?:,|$)/g;
-
-    for (let i = 1; i < lines.length; i++) {
-        const currentLine = lines[i].trim();
-        if (!currentLine) continue;
-
-        let columns = [];
-        let match;
-        regex.lastIndex = 0; // Reset regex index for each line
-
-        while ((match = regex.exec(currentLine))) {
-            let value = match[1] !== undefined ? match[1].replace(/""/g, '"') : match[2];
-            columns.push((value || "").trim());
-            if (match[0].endsWith(",")) continue;
-            if (match[0] === "" && regex.lastIndex === currentLine.length) break;
-            if (regex.lastIndex === currentLine.length) break;
-        }
-        if (columns.length > expectedColumns && columns[columns.length - 1] === "") {
-             columns.pop();
+        let stylesheet;
+        if (theme.includes('natural')) {
+            stylesheet = 'styles.css';
+        } else if (theme.includes('architectural')) {
+            stylesheet = 'architectural.css';
+        } else if (theme.includes('space')) {
+            stylesheet = 'space.css';
+        } else if (theme.includes('medieval')) {
+            stylesheet = 'medieval.css';
         }
 
-        if (columns.length === expectedColumns) {
-            const entry = {};
-            let validEntry = true;
-            headers.forEach((header, index) => {
-                const value = columns[index];
-                if ((header === "type" || header === "part" || header === "term") && !value) {
-                    validEntry = false;
-                }
-                entry[header] = value;
-            });
-
-            if (validEntry && entry.type) {
-                 entry.type = entry.type.toLowerCase();
-                 if (!entry.type) {
-                     validEntry = false;
-                 }
-            } else if (validEntry && !entry.type) {
-                 validEntry = false;
-            }
-
-            if (validEntry) {
-                const validParts = ["prefix", "root", "suffix"];
-                if (!entry.part || !validParts.includes(entry.part.toLowerCase())) {
-                     validEntry = false;
-                } else {
-                    entry.part = entry.part.toLowerCase();
-                }
-            }
-
-            if (validEntry) {
-                 if (!entry.term) {
-                     validEntry = false;
-                 }
-            }
-
-            if (validEntry) {
-                result.push(entry);
-            }
-        } else {
-             if (currentLine.trim()) {
-             }
-        }
-    }
-    console.log(`Successfully parsed ${result.length} valid entries from CSV.`);
-    return result;
-}
-
-// Themes object (will be populated dynamically from CSV)
-const themes = {};
-let themesLoadedPromise = null; // Promise to track theme loading
-
-// Function to load and organize data from word_parts.csv
-async function loadWordParts() {
-    if (themesLoadedPromise) {
-        console.log("Theme loading already in progress or completed.");
-        return themesLoadedPromise;
-    }
-
-    themesLoadedPromise = new Promise(async (resolve, reject) => {
-        const loadingElement = document.getElementById("loading");
-        if (loadingElement) loadingElement.classList.remove("hidden");
-
-        try {
-            console.log("Fetching word_parts.csv...");
-            const response = await fetch("data/word_parts.csv");
-            console.log("Fetch Response Status:", response.status);
-            if (!response.ok) {
-                throw new Error(`Failed to load word_parts.csv: ${response.status} ${response.statusText}`);
-            }
-            const csvText = await response.text();
-            const data = parseCSV(csvText);
-            console.log(`Parsed ${data.length} valid entries from CSV.`);
-
-            for (const key in themes) {
-                delete themes[key];
-            }
-
-            data.forEach(({ type, part, term, definition }) => {
-                if (!themes[type]) {
-                    themes[type] = { prefixes: [], prefixDefs: [], roots: [], rootDefs: [], suffixes: [], suffixDefs: [] };
-                }
-                let cleanedTerm = term;
-                if (part === "prefix") {
-                    cleanedTerm = term.replace(/-+$/, "");
-                } else if (part === "suffix") {
-                    cleanedTerm = term.replace(/^-+/, "");
-                }
-                if (cleanedTerm) {
-                    if (part === "prefix") {
-                        themes[type].prefixes.push(cleanedTerm);
-                        themes[type].prefixDefs.push(definition || "");
-                    } else if (part === "root") {
-                        themes[type].roots.push(cleanedTerm);
-                        themes[type].rootDefs.push(definition || "");
-                    } else if (part === "suffix") {
-                        themes[type].suffixes.push(cleanedTerm);
-                        themes[type].suffixDefs.push(definition || "");
-                    }
-                }
-            });
-
-            console.log("Populated themes:", Object.keys(themes));
-            Object.keys(themes).forEach(theme => {
-                const themeData = themes[theme];
-                if (!themeData.prefixes.length || !themeData.roots.length || !themeData.suffixes.length) {
-                    console.warn(`Theme '${theme}' is missing some word parts (prefixes, roots, or suffixes). Word generation for this theme might fail.`);
-                }
-            });
-
-            console.log("Dispatching themesLoaded event...");
-            document.dispatchEvent(new CustomEvent('themesLoaded')); // Dispatch event
-            resolve(themes); // Resolve the promise with the loaded themes
-
-        } catch (error) {
-            console.error("Error loading or processing word parts:", error);
-            alert("Failed to load word parts data. Please check the console and ensure data/word_parts.csv is accessible and correctly formatted.");
-            reject(error); // Reject the promise on error
-        } finally {
-            if (loadingElement) loadingElement.classList.add("hidden");
-        }
+        document.getElementById('theme-stylesheet').setAttribute('href', stylesheet);
     });
 
-    return themesLoadedPromise;
-}
+    // Mobile menu toggle
+    const navToggle = document.querySelector('.nav-toggle');
+    const navMenu = document.querySelector('.nav-menu');
 
-// Function to populate theme dropdown dynamically (used by both index.html and game.html)
-function populateThemeDropdown() {
-    let themeDropdown = document.getElementById("themeType") || document.getElementById("gameThemeType");
-
-    if (!themeDropdown) {
-        console.error("Theme dropdown element not found on this page!");
-        return;
-    }
-
-    const currentSelectedValue = themeDropdown.value;
-    themeDropdown.innerHTML = ''; // Clear existing options
-
-    const allOption = document.createElement("option");
-    allOption.value = "all";
-    allOption.text = "All";
-    themeDropdown.appendChild(allOption);
-
-    const sortedThemes = Object.keys(themes).sort();
-    console.log("Themes to populate dropdown:", ["All", ...sortedThemes]);
-    sortedThemes.forEach((themeKey) => {
-        const themeData = themes[themeKey];
-        if (themeData && themeData.prefixes.length > 0 && themeData.roots.length > 0 && themeData.suffixes.length > 0) {
-            const option = document.createElement("option");
-            option.value = themeKey;
-            option.text = themeKey.charAt(0).toUpperCase() + themeKey.slice(1);
-            themeDropdown.appendChild(option);
-        } else {
-            console.warn(`Theme '${themeKey}' not added to dropdown because it lacks sufficient parts.`);
-        }
+    navToggle.addEventListener('click', () => {
+        navMenu.classList.toggle('active');
     });
 
-    // Try to restore the previous selection, otherwise default to 'all'
-    if (currentSelectedValue && themeDropdown.querySelector(`option[value="${currentSelectedValue}"]`)) {
-        themeDropdown.value = currentSelectedValue;
-    } else {
-        themeDropdown.value = "all";
-    }
-    console.log(`Theme dropdown populated. Current value: ${themeDropdown.value}`);
-}
+    // Canvas animation for drawing a horizontal line that disappears
+    const canvases = document.querySelectorAll('.line-animation');
+    canvases.forEach(canvas => {
+        const ctx = canvas.getContext('2d');
+        let width = Math.min(window.innerWidth, 960); // Match container max-width
+        const height = 20; // Canvas height (adjusted to match CSS)
+        canvas.width = width;
+        canvas.height = height;
 
-// Get a random element from an array
-function getRandomElement(arr) {
-    if (!arr || arr.length === 0) return { element: null, index: -1 };
-    const index = Math.floor(Math.random() * arr.length);
-    return { element: arr[index], index: index };
-}
+        // Random direction: true for left-to-right, false for right-to-left
+        const leftToRight = Math.random() > 0.5;
+        let x = leftToRight ? 0 : width;
+        // Random speed between 0.5 and 2 pixels per frame (slower)
+        const speed = leftToRight ? (0.5 + Math.random() * 1.5) : -(0.5 + Math.random() * 1.5);
+        const baseY = height / 2;
+        let lastY = baseY;
+        let pathPoints = []; // Store points for tail
+        let frameCount = 0; // For controlling y-position updates
+        const yUpdateInterval = 5; // Update y every 5 frames for smoother transitions
 
-// Generate word and definition based on selected types
-function generateWordAndDefinition(wordType, themeKey, options = { removeHyphens: false }) {
-    let prefix = '', root1 = '', root2 = '', suffix = '';
-    let prefixDef = '', rootDef1 = '', rootDef2 = '', suffixDef = '';
-    let prefixIndex = -1, root1Index = -1, root2Index = -1, suffixIndex = -1;
-
-    const allPrefixes = [], allPrefixDefs = [];
-    const allRoots = [], allRootDefs = [];
-    const allSuffixes = [], allSuffixDefs = [];
-
-    if (themeKey === 'all') {
-        Object.values(themes).forEach(themeData => {
-            allPrefixes.push(...themeData.prefixes);
-            allPrefixDefs.push(...themeData.prefixDefs);
-            allRoots.push(...themeData.roots);
-            allRootDefs.push(...themeData.rootDefs);
-            allSuffixes.push(...themeData.suffixes);
-            allSuffixDefs.push(...themeData.suffixDefs);
+        // Adjust canvas size on window resize
+        window.addEventListener('resize', () => {
+            width = Math.min(window.innerWidth, 960);
+            canvas.width = width;
+            canvas.height = height;
+            x = leftToRight ? 0 : width; // Reset animation based on direction
+            ctx.clearRect(0, 0, canvas.width, canvas.height); // Clear on resize to reset
+            lastY = baseY;
+            pathPoints = []; // Clear path points
         });
-        if (allPrefixes.length === 0 || allRoots.length === 0 || allSuffixes.length === 0) {
-            console.error("Cannot generate word for 'All' theme: Insufficient parts across all themes.");
-            return { word: "Error", definition: "Insufficient parts for 'All' theme.", pronunciation: "" };
-        }
-    } else {
-        if (!themes[themeKey] || !themes[themeKey].prefixes.length || !themes[themeKey].roots.length || !themes[themeKey].suffixes.length) {
-            console.error(`Selected theme '${themeKey}' not found or has insufficient parts.`);
-            if (themes['normal'] && themes['normal'].prefixes.length && themes['normal'].roots.length && themes['normal'].suffixes.length) {
-                console.warn(`Defaulting to 'normal' theme.`);
-                themeKey = 'normal';
+
+        function drawLine() {
+            // Calculate fade distance: at least 60% of canvas width
+            const fadeDistance = Math.min(width, width * 0.6);
+
+            // Clear only the area behind the tail to prevent trails during animation
+            const clearStart = leftToRight ? Math.max(0, x - fadeDistance - 10) : Math.min(width, x + fadeDistance + 10);
+            const clearWidth = fadeDistance + 20; // Slightly larger to ensure full clear
+            ctx.clearRect(clearStart, 0, clearWidth, height);
+
+            // Add current point to path
+            pathPoints.push({ x, y: lastY });
+
+            // Draw the path with fading tail
+            ctx.beginPath();
+            pathPoints.forEach((point, index) => {
+                const distance = leftToRight ? x - point.x : point.x - x;
+                let opacity = 1;
+                if (distance > 0 && distance <= fadeDistance) {
+                    opacity = 1 - (distance / fadeDistance); // Linear fade
+                } else if (distance > fadeDistance) {
+                    opacity = 0; // Fully transparent beyond fade distance
+                }
+
+                ctx.strokeStyle = `rgba(${getRGBValues(getComputedStyle(document.documentElement).getPropertyValue('--accent-color').trim())}, ${opacity})`;
+                ctx.lineWidth = 2 + (Math.random() - 0.5) * 0.2; // 1.9–2.1px
+                ctx.lineCap = 'round';
+
+                if (index === 0) {
+                    ctx.moveTo(point.x, point.y);
+                } else {
+                    ctx.lineTo(point.x, point.y);
+                    ctx.stroke();
+                    ctx.beginPath();
+                    ctx.moveTo(point.x, point.y);
+                }
+            });
+
+            // Update x position based on direction
+            x += speed;
+            let reachedEnd = false;
+            if (leftToRight) {
+                if (x >= width) {
+                    reachedEnd = true;
+                }
             } else {
-                 return { word: "Error", definition: `Theme '${themeKey}' has missing parts.`, pronunciation: "" };
+                if (x <= 0) {
+                    reachedEnd = true;
+                }
             }
-        }
-    }
 
-    const getParts = (partType) => {
-        const source = themeKey === 'all' ? { prefixes: allPrefixes, prefixDefs: allPrefixDefs, roots: allRoots, rootDefs: allRootDefs, suffixes: allSuffixes, suffixDefs: allSuffixDefs } : themes[themeKey];
-        switch (partType) {
-            case 'prefix': return { elements: source.prefixes, defs: source.prefixDefs };
-            case 'root': return { elements: source.roots, defs: source.rootDefs };
-            case 'suffix': return { elements: source.suffixes, defs: source.suffixDefs };
-            default: return { elements: [], defs: [] };
-        }
-    };
+            // Update y position less frequently and with less randomness for smoother effect
+            frameCount++;
+            let y = lastY;
+            if (frameCount % yUpdateInterval === 0) {
+                y = lastY + (Math.random() - 0.5) * 0.3; // Reduced randomness to ±0.3px
+            }
+            ctx.lineTo(x, y);
 
-    if (wordType === 'pre-root-suf' || wordType === 'pre-root') {
-        const { elements, defs } = getParts('prefix');
-        const result = getRandomElement(elements);
-        prefix = result.element;
-        prefixIndex = result.index;
-        prefixDef = defs[prefixIndex] || '';
-    }
-    if (wordType.includes('root')) {
-        const { elements, defs } = getParts('root');
-        const result1 = getRandomElement(elements);
-        root1 = result1.element;
-        root1Index = result1.index;
-        rootDef1 = defs[root1Index] || '';
+            // Draw the latest segment
+            ctx.strokeStyle = getComputedStyle(document.documentElement).getPropertyValue('--accent-color').trim();
+            ctx.lineWidth = 2 + (Math.random() - 0.5) * 0.2;
+            ctx.lineCap = 'round';
+            ctx.stroke();
 
-        if (wordType === 'pre-root-root-suf' || wordType === 'root-root' || wordType === 'pre-root-root') {
-            const result2 = getRandomElement(elements);
-            root2 = result2.element;
-            root2Index = result2.index;
-            rootDef2 = defs[root2Index] || '';
-        }
-    }
-    if (wordType.endsWith('suf')) {
-        const { elements, defs } = getParts('suffix');
-        const result = getRandomElement(elements);
-        suffix = result.element;
-        suffixIndex = result.index;
-        suffixDef = defs[suffixIndex] || '';
-    }
+            lastY = y; // Update last y position
 
-    const parts = [prefix, root1, root2, suffix].filter(part => part && part.trim() !== '');
-    let word = options.removeHyphens ? parts.join('') : parts.join('-');
-    if (!options.removeHyphens) {
-        word = word.replace(/--+/g, '-'); // Clean up double hyphens only if hyphenated
-    }
+            // Clean up old points beyond fade distance
+            pathPoints = pathPoints.filter(point => {
+                const distance = leftToRight ? x - point.x : point.x - x;
+                return distance <= fadeDistance;
+            });
 
-    const definition = generateSentenceDefinition(wordType, prefixDef, rootDef1, rootDef2, suffixDef, suffixIndex, themeKey === 'all' ? 'normal' : themeKey);
-    const pronunciation = generatePronunciation(word, options.removeHyphens);
+            // Clear entire canvas and reset when reaching the end
+            if (reachedEnd) {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                x = leftToRight ? 0 : width; // Reset to initial position
+                pathPoints = [];
+                lastY = baseY; // Reset y to base for new path
+                frameCount = 0; // Reset frame count for y updates
+            }
 
-    return { word, definition, pronunciation };
-}
-
-// Simplified pronunciation generator
-function generatePronunciation(word, removeHyphens = false) {
-    if (removeHyphens) {
-        return `/${word}/`; // Simplified pronunciation for unhyphenated words
-    }
-    return `/${word.replace(/-/g, ' / ')}/`;
-}
-
-// Determine part of speech (basic placeholder)
-function getPartOfSpeech(type, suffixIndex, theme) {
-    if (type.endsWith('suf') && suffixIndex !== -1) {
-        let suffix = '';
-        const source = theme === 'all' ? null : themes[theme]; // Cannot reliably get suffix for 'all'
-        if (source && source.suffixes.length > suffixIndex) {
-            suffix = source.suffixes[suffixIndex];
+            // Continue animation
+            requestAnimationFrame(drawLine);
         }
 
-        if (['ly', 'th'].includes(suffix)) return 'adverb';
-        if (['ize', 'ify', 'en', 'ate'].includes(suffix)) return 'verb';
-        if (['ous', 'al', 'an', 'ile', 'ic', 'esque', 'ful', 'ious', 'ar', 'able', 'ible', 'ish', 'ive', 'less', 'some', 'y'].includes(suffix)) return 'adjective';
-        if (['ics', 'ism', 'ist', 'ity', 'ty', 'ment', 'ness', 'ion', 'tion', 'sion', 'ship', 'dom', 'hood', 'logy', 'ology', 'phobia', 'philia', 'er', 'or', 'ant', 'ent', 'ard', 'ry', 'cy', 'tude'].includes(suffix)) return 'noun';
-    }
-    // Default or if no suffix/match
-    return 'noun';
-}
-
-// Enhanced definition generator (simplified version)
-function generateSentenceDefinition(type, preDef, rootDef1, rootDef2, sufDef, suffixIndex, theme) {
-    let definition = '';
-    const partOfSpeech = getPartOfSpeech(type, suffixIndex, theme);
-    const partsDefs = [preDef, rootDef1, rootDef2, sufDef].filter(def => def && def.trim() !== '');
-
-    definition = `(${partOfSpeech}) `;
-
-    if (partsDefs.length === 0) {
-        definition += "A generated word.";
-    } else if (partsDefs.length === 1) {
-        definition += `Related to ${partsDefs[0]}.`;
-    } else {
-        let combined = partsDefs[0];
-        for (let i = 1; i < partsDefs.length; i++) {
-            combined += (i === partsDefs.length - 1 ? ' and ' : ', ') + partsDefs[i];
+        // Helper function to parse CSS color to RGB
+        function getRGBValues(color) {
+            if (color.startsWith('#')) {
+                const r = parseInt(color.slice(1, 3), 16);
+                const g = parseInt(color.slice(3, 5), 16);
+                const b = parseInt(color.slice(5, 7), 16);
+                return `${r}, ${g}, ${b}`;
+            }
+            return '107, 125, 75'; // Fallback to --accent-color (olive green)
         }
-        definition += `Pertaining to ${combined}.`;
-    }
 
-    // Capitalize first letter of the main definition part
-    const firstCharIndex = definition.indexOf(')') + 2;
-    if (firstCharIndex < definition.length) {
-       definition = definition.substring(0, firstCharIndex) + definition.charAt(firstCharIndex).toUpperCase() + definition.slice(firstCharIndex + 1);
-    }
-
-    return definition;
-}
-
-// Function to update the display with the generated word (for index.html)
-function updateDisplay() {
-    const generatedWordEl = document.getElementById('generatedWord');
-    const pronunciationEl = document.getElementById('pronunciation');
-    const wordDefinitionEl = document.getElementById('wordDefinition');
-    const permutationType = document.getElementById('permutationType');
-    const themeType = document.getElementById("themeType");
-
-    // Ensure elements exist before proceeding (only run if on index.html)
-    if (!permutationType || !themeType || !generatedWordEl || !pronunciationEl || !wordDefinitionEl) {
-        return;
-    }
-
-    const selectedWordType = permutationType.value;
-    const selectedTheme = themeType.value;
-
-    console.log(`Generating word for index.html - type: ${selectedWordType}, theme: ${selectedTheme}`);
-
-    if (Object.keys(themes).length === 0 && selectedTheme !== 'all') {
-        console.warn("Themes not loaded yet for index.html.");
-        generatedWordEl.textContent = "Loading...";
-        pronunciationEl.textContent = "";
-        wordDefinitionEl.textContent = "Please wait for data to load.";
-        return;
-    }
-
-    const { word, definition, pronunciation } = generateWordAndDefinition(selectedWordType, selectedTheme);
-
-    generatedWordEl.textContent = word;
-    pronunciationEl.textContent = pronunciation;
-    wordDefinitionEl.textContent = definition;
-}
-
-// Function to copy word and definition to clipboard (for index.html)
-function copyToClipboard() {
-    const generatedWord = document.getElementById('generatedWord')?.textContent || '';
-    const wordDefinition = document.getElementById('wordDefinition')?.textContent || '';
-    if (!generatedWord) {
-        console.warn("No word generated to copy.");
-        return;
-    }
-    const textToCopy = `Word: ${generatedWord}\nDefinition: ${wordDefinition}`;
-
-    navigator.clipboard.writeText(textToCopy).then(() => {
-        const copyButton = document.getElementById('copyButton');
-        if (copyButton) {
-            const originalText = copyButton.textContent;
-            copyButton.textContent = 'Copied!';
-            setTimeout(() => {
-                copyButton.textContent = originalText;
-            }, 1500);
-        }
-    }).catch(err => {
-        console.error('Failed to copy text: ', err);
-        alert('Failed to copy text.');
+        // Start animation
+        drawLine();
     });
-}
 
-// --- Initialization --- //
+    // Function to load guitar pieces
+    function loadGuitarPieces() {
+        const guitarList = document.getElementById('guitar-pieces-list');
+        if (!guitarList) {
+            console.error('Guitar pieces list element not found (#guitar-pieces-list)');
+            return;
+        }
+        guitarList.innerHTML = ''; // Clear existing list
 
-document.addEventListener("DOMContentLoaded", async () => {
-    console.log("DOM fully loaded and parsed");
-
-    // Start loading themes immediately and wait for it to complete
-    try {
-        await loadWordParts();
-    } catch (error) {
-        console.error("Failed to initialize due to theme loading error:", error);
-        return; // Stop initialization if themes failed to load
+        fetch('https://raw.githubusercontent.com/kappter/portfolio/main/guitar_pieces.json')
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`Failed to load guitar_pieces.json: ${response.status} ${response.statusText}`);
+                }
+                return response.json();
+            })
+            .then(data => {
+                console.log('Guitar pieces data:', data);
+                if (!Array.isArray(data)) {
+                    throw new Error('guitar_pieces.json is not a valid array');
+                }
+                if (data.length === 0) {
+                    guitarList.innerHTML = '<li>No guitar pieces available.</li>';
+                    return;
+                }
+                data.forEach(piece => {
+                    if (!piece.title || !piece.file) {
+                        console.warn('Invalid guitar piece entry:', piece);
+                        return;
+                    }
+                    const li = document.createElement('li');
+                    li.className = 'guitar-piece';
+                    const audioType = piece.file.toLowerCase().endsWith('.mp3') ? 'audio/mpeg' : 'audio/wav';
+                    li.innerHTML = `
+                        <span>${piece.title}</span>
+                        <audio controls>
+                            <source src="https://raw.githubusercontent.com/kappter/portfolio/main/audio/guitar_pieces/${piece.file}" type="${audioType}">
+                            Your browser does not support the audio element.
+                        </audio>
+                    `;
+                    guitarList.appendChild(li);
+                });
+            })
+            .catch(error => {
+                console.error('Error loading guitar pieces:', error.message);
+                guitarList.innerHTML = '<li>Unable to load guitar pieces at this time. Please try again later.</li>';
+            });
     }
 
-    // Now that themes are loaded, check which page we are on and initialize accordingly
+    // Initial load of guitar pieces
+    loadGuitarPieces();
 
-    // Check for index.html elements
-    const generateButton = document.getElementById("generateButton");
-    const copyButton = document.getElementById("copyButton");
-    const permutationType = document.getElementById("permutationType");
-    const themeType = document.getElementById("themeType");
+    // Art Carousel Logic
+    const artCarouselImage = document.getElementById('carousel-image');
+    const artCarouselCaption = document.getElementById('carousel-caption');
+    const artPrevButton = document.querySelector('.art-carousel .carousel-prev');
+    const artNextButton = document.querySelector('.art-carousel .carousel-next');
+    const artCarouselContainer = document.querySelector('.art-carousel');
+    let artImages = [];
+    let artCurrentIndex = 0;
+    let artAutoAdvanceInterval = null;
+    const AUTO_ADVANCE_INTERVAL = 5000; // 5 seconds
 
-    if (generateButton && copyButton && permutationType && themeType) {
-        console.log("Initializing index.html UI...");
-        // Setup listeners for index.html elements
-        generateButton.addEventListener("click", updateDisplay);
-        copyButton.addEventListener("click", copyToClipboard);
-        permutationType.addEventListener("change", updateDisplay);
-        themeType.addEventListener("change", updateDisplay);
+    // Photography Carousel Logic
+    const photographyCarouselImage = document.getElementById('photography-carousel-image');
+    const photographyCarouselCaption = document.getElementById('photography-carousel-caption');
+    const photographyPrevButton = document.querySelector('.photography-carousel .carousel-prev');
+    const photographyNextButton = document.querySelector('.photography-carousel .carousel-next');
+    const photographyCarouselContainer = document.querySelector('.photography-carousel');
+    let photographyImages = [];
+    let photographyCurrentIndex = 0;
+    let photographyAutoAdvanceInterval = null;
 
-        populateThemeDropdown(); // Populates #themeType
-        updateDisplay(); // Initial word generation for index.html
+    // Function to format filename into a caption
+    function formatCaption(filename) {
+        // Remove extension and replace underscores/hyphens with spaces
+        const name = filename.replace(/\.[^/.]+$/, '').replace(/[_-]/g, ' ');
+        // Capitalize first letter of each word
+        return name.replace(/\w\S*/g, txt => txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase());
+    }
+
+    // Function to change image with fade effect (generic for both carousels)
+    function changeImage(carouselImage, carouselCaption, images, currentIndex, setIndex) {
+        if (!carouselImage || !carouselCaption) {
+            console.error('Carousel elements not found');
+            return;
+        }
+        if (images.length === 0) {
+            console.warn('No images available for carousel');
+            return;
+        }
+        if (currentIndex < 0) currentIndex = images.length - 1;
+        if (currentIndex >= images.length) currentIndex = 0;
+        setIndex(currentIndex);
+
+        carouselImage.classList.add('fade-out');
+        setTimeout(() => {
+            carouselImage.src = images[currentIndex].url;
+            carouselImage.alt = formatCaption(images[currentIndex].file);
+            carouselCaption.textContent = formatCaption(images[currentIndex].file);
+            carouselImage.classList.remove('fade-out');
+        }, 500); // Match CSS transition duration
+    }
+
+    // Function to start auto-advance (generic)
+    function startAutoAdvance(interval, changeFunction) {
+        interval = stopAutoAdvance(interval);
+        interval = setInterval(changeFunction, AUTO_ADVANCE_INTERVAL);
+        return interval;
+    }
+
+    // Function to stop auto-advance (generic)
+    function stopAutoAdvance(interval) {
+        if (interval) {
+            clearInterval(interval);
+            interval = null;
+        }
+        return interval;
+    }
+
+    // Load art images from art_images.json
+    fetch('https://raw.githubusercontent.com/kappter/portfolio/main/art_images.json')
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`Failed to load art_images.json: ${response.status} ${response.statusText}`);
+            }
+            return response.json();
+        })
+        .then(data => {
+            console.log('Art images data:', data);
+            if (!Array.isArray(data)) {
+                throw new Error('art_images.json is not a valid array');
+            }
+            artImages = data.filter(item => item.file && /\.(jpg|jpeg|png|gif)$/i.test(item.file)).map(item => ({
+                file: item.file,
+                url: `https://raw.githubusercontent.com/kappter/portfolio/main/art/${item.file}`
+            }));
+            if (artImages.length === 0) {
+                artCarouselCaption.textContent = 'No images found in art folder.';
+                console.warn('No valid images found in art_images.json');
+                return;
+            }
+            console.log(`Loaded ${artImages.length} art images`);
+            // Initialize art carousel
+            changeImage(artCarouselImage, artCarouselCaption, artImages, artCurrentIndex, index => artCurrentIndex = index);
+            artAutoAdvanceInterval = startAutoAdvance(artAutoAdvanceInterval, () => {
+                changeImage(artCarouselImage, artCarouselCaption, artImages, artCurrentIndex + 1, index => artCurrentIndex = index);
+            });
+        })
+        .catch(error => {
+            console.error('Error loading art images:', error.message);
+            artCarouselCaption.textContent = 'Unable to load art images at this time. Please try again later.';
+        });
+
+    // Load photography images from photography_images.json
+    fetch('https://raw.githubusercontent.com/kappter/portfolio/main/photography_images.json')
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`Failed to load photography_images.json: ${response.status} ${response.statusText}`);
+            }
+            return response.json();
+        })
+        .then(data => {
+            console.log('Photography images data:', data);
+            if (!Array.isArray(data)) {
+                throw new Error('photography_images.json is not a valid array');
+            }
+            photographyImages = data.filter(item => item.file && /\.(jpg|jpeg|png|gif)$/i.test(item.file)).map(item => ({
+                file: item.file,
+                url: `https://raw.githubusercontent.com/kappter/portfolio/main/photography/${item.file}`
+            }));
+            if (photographyImages.length === 0) {
+                photographyCarouselCaption.textContent = 'No images found in photography folder.';
+                console.warn('No valid images found in photography_images.json');
+                return;
+            }
+            console.log(`Loaded ${photographyImages.length} photography images`);
+            // Initialize photography carousel
+            changeImage(photographyCarouselImage, photographyCarouselCaption, photographyImages, photographyCurrentIndex, index => photographyCurrentIndex = index);
+            photographyAutoAdvanceInterval = startAutoAdvance(photographyAutoAdvanceInterval, () => {
+                changeImage(photographyCarouselImage, photographyCarouselCaption, photographyImages, photographyCurrentIndex + 1, index => photographyCurrentIndex = index);
+            });
+        })
+        .catch(error => {
+            console.error('Error loading photography images:', error.message);
+            photographyCarouselCaption.textContent = 'Unable to load photography images at this time. Please try again later.';
+        });
+
+    // Event listeners for art carousel buttons
+    if (artPrevButton && artNextButton) {
+        artPrevButton.addEventListener('click', () => {
+            artAutoAdvanceInterval = stopAutoAdvance(artAutoAdvanceInterval);
+            changeImage(artCarouselImage, artCarouselCaption, artImages, artCurrentIndex - 1, index => artCurrentIndex = index);
+            artAutoAdvanceInterval = startAutoAdvance(artAutoAdvanceInterval, () => {
+                changeImage(artCarouselImage, artCarouselCaption, artImages, artCurrentIndex + 1, index => artCurrentIndex = index);
+            });
+        });
+
+        artNextButton.addEventListener('click', () => {
+            artAutoAdvanceInterval = stopAutoAdvance(artAutoAdvanceInterval);
+            changeImage(artCarouselImage, artCarouselCaption, artImages, artCurrentIndex + 1, index => artCurrentIndex = index);
+            artAutoAdvanceInterval = startAutoAdvance(artAutoAdvanceInterval, () => {
+                changeImage(artCarouselImage, artCarouselCaption, artImages, artCurrentIndex + 1, index => artCurrentIndex = index);
+            });
+        });
+
+        // Pause art carousel auto-advance on hover
+        artCarouselContainer.addEventListener('mouseenter', () => {
+            artAutoAdvanceInterval = stopAutoAdvance(artAutoAdvanceInterval);
+        });
+        artCarouselContainer.addEventListener('mouseleave', () => {
+            artAutoAdvanceInterval = startAutoAdvance(artAutoAdvanceInterval, () => {
+                changeImage(artCarouselImage, artCarouselCaption, artImages, artCurrentIndex + 1, index => artCurrentIndex = index);
+            });
+        });
     } else {
-        console.log("Not on index.html or missing elements, skipping index.html UI initialization.");
-        // Game page initialization is handled by game.js, which listens for 'themesLoaded'
-        // No need to explicitly check for game.html here, as game.js handles its own setup.
+        console.error('Art carousel buttons not found');
     }
+
+    // Event listeners for photography carousel buttons
+    if (photographyPrevButton && photographyNextButton) {
+        photographyPrevButton.addEventListener('click', () => {
+            photographyAutoAdvanceInterval = stopAutoAdvance(photographyAutoAdvanceInterval);
+            changeImage(photographyCarouselImage, photographyCarouselCaption, photographyImages, photographyCurrentIndex - 1, index => photographyCurrentIndex = index);
+            photographyAutoAdvanceInterval = startAutoAdvance(photographyAutoAdvanceInterval, () => {
+                changeImage(photographyCarouselImage, photographyCarouselCaption, photographyImages, photographyCurrentIndex + 1, index => photographyCurrentIndex = index);
+            });
+        });
+
+        photographyNextButton.addEventListener('click', () => {
+            photographyAutoAdvanceInterval = stopAutoAdvance(photographyAutoAdvanceInterval);
+            changeImage(photographyCarouselImage, photographyCarouselCaption, photographyImages, photographyCurrentIndex + 1, index => photographyCurrentIndex = index);
+            photographyAutoAdvanceInterval = startAutoAdvance(photographyAutoAdvanceInterval, () => {
+                changeImage(photographyCarouselImage, photographyCarouselCaption, photographyImages, photographyCurrentIndex + 1, index => photographyCurrentIndex = index);
+            });
+        });
+
+        // Pause photography carousel auto-advance on hover
+        photographyCarouselContainer.addEventListener('mouseenter', () => {
+            photographyAutoAdvanceInterval = stopAutoAdvance(photographyAutoAdvanceInterval);
+        });
+        photographyCarouselContainer.addEventListener('mouseleave', () => {
+            photographyAutoAdvanceInterval = startAutoAdvance(photographyAutoAdvanceInterval, () => {
+                changeImage(photographyCarouselImage, photographyCarouselCaption, photographyImages, photographyCurrentIndex + 1, index => photographyCurrentIndex = index);
+            });
+        });
+    } else {
+        console.error('Photography carousel buttons not found');
+    }
+
+    // Keyboard navigation for both carousels
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'ArrowLeft') {
+            artAutoAdvanceInterval = stopAutoAdvance(artAutoAdvanceInterval);
+            changeImage(artCarouselImage, artCarouselCaption, artImages, artCurrentIndex - 1, index => artCurrentIndex = index);
+            artAutoAdvanceInterval = startAutoAdvance(artAutoAdvanceInterval, () => {
+                changeImage(artCarouselImage, artCarouselCaption, artImages, artCurrentIndex + 1, index => artCurrentIndex = index);
+            });
+
+            photographyAutoAdvanceInterval = stopAutoAdvance(photographyAutoAdvanceInterval);
+            changeImage(photographyCarouselImage, photographyCarouselCaption, photographyImages, photographyCurrentIndex - 1, index => photographyCurrentIndex = index);
+            photographyAutoAdvanceInterval = startAutoAdvance(photographyAutoAdvanceInterval, () => {
+                changeImage(photographyCarouselImage, photographyCarouselCaption, photographyImages, photographyCurrentIndex + 1, index => photographyCurrentIndex = index);
+            });
+        } else if (e.key === 'ArrowRight') {
+            artAutoAdvanceInterval = stopAutoAdvance(artAutoAdvanceInterval);
+            changeImage(artCarouselImage, artCarouselCaption, artImages, artCurrentIndex + 1, index => artCurrentIndex = index);
+            artAutoAdvanceInterval = startAutoAdvance(artAutoAdvanceInterval, () => {
+                changeImage(artCarouselImage, artCarouselCaption, artImages, artCurrentIndex + 1, index => artCurrentIndex = index);
+            });
+
+            photographyAutoAdvanceInterval = stopAutoAdvance(photographyAutoAdvanceInterval);
+            changeImage(photographyCarouselImage, photographyCarouselCaption, photographyImages, photographyCurrentIndex + 1, index => photographyCurrentIndex = index);
+            photographyAutoAdvanceInterval = startAutoAdvance(photographyAutoAdvanceInterval, () => {
+                changeImage(photographyCarouselImage, photographyCarouselCaption, photographyImages, photographyCurrentIndex + 1, index => photographyCurrentIndex = index);
+            });
+        }
+    });
 });
