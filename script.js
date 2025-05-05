@@ -46,6 +46,8 @@ document.addEventListener('DOMContentLoaded', function () {
         const baseY = height / 2;
         let lastY = baseY;
         let pathPoints = []; // Store points for fading tail
+        let frameCount = 0; // For controlling y-position updates
+        const yUpdateInterval = 5; // Update y every 5 frames for smoother transitions
 
         // Adjust canvas size on window resize
         window.addEventListener('resize', () => {
@@ -59,13 +61,16 @@ document.addEventListener('DOMContentLoaded', function () {
         });
 
         function drawLine() {
-            // No background clear, rely on CSS background
+            // Calculate fade distance (third of canvas width)
+            const fadeDistance = width / 3;
+
+            // Clear only the area behind the tail to prevent trails
+            const clearStart = leftToRight ? Math.max(0, x - fadeDistance - 10) : Math.min(width, x + fadeDistance + 10);
+            const clearWidth = fadeDistance + 20; // Slightly larger to ensure full clear
+            ctx.clearRect(clearStart, 0, clearWidth, height);
 
             // Add current point to path
             pathPoints.push({ x, y: lastY });
-
-            // Calculate fade distance (third of canvas width)
-            const fadeDistance = width / 3;
 
             // Draw the path with fading tail
             ctx.beginPath();
@@ -107,8 +112,12 @@ document.addEventListener('DOMContentLoaded', function () {
                 }
             }
 
-            // Add smaller randomness to y position for smoother hand-drawn effect
-            const y = lastY + (Math.random() - 0.5) * 1; // ±0.5px randomness
+            // Update y position less frequently and with less randomness for smoother effect
+            frameCount++;
+            let y = lastY;
+            if (frameCount % yUpdateInterval === 0) {
+                y = lastY + (Math.random() - 0.5) * 0.3; // Reduced randomness to ±0.3px
+            }
             ctx.lineTo(x, y);
 
             // Draw the latest segment
