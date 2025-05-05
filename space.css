@@ -130,21 +130,42 @@ body {
 
 header {
     text-align: center;
-    padding: 32px 0;
+    padding: 16px 0;
     background: var(--header-bg);
     border-bottom: 1px solid var(--border-color);
+}
+
+.header-content {
+    position: relative;
+    display: inline-block;
+    text-align: center;
+}
+
+.header-image {
+    width: 200px;
+    height: auto;
+    display: block;
+    margin: 0 auto;
+    position: relative;
+    z-index: 1;
+}
+
+.header-text {
+    position: relative;
+    top: -20px;
 }
 
 h1 {
     font-size: 28px;
     font-weight: 600;
     color: var(--text-color);
-    margin-bottom: 8px;
+    margin-bottom: 4px;
 }
 
 header p {
     font-size: 14px;
     color: var(--secondary-text);
+    margin-bottom: 0;
 }
 
 section {
