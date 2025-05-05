@@ -60,14 +60,14 @@
         <ul class="nav-menu">
             <li><a href="#education" class="nav-button">Education</a></li>
             <li><a href="#teaching" class="nav-button">Teaching</a></li>
-            <li><a href="#hobbies" class="nav-button">Hobbies</a></li>
-            <li><a href="#interests" class="nav-button">Interests</a></li>
             <li><a href="#projects" class="nav-button">Projects</a></li>
-            <li><a href="#awards" class="nav-button">Awards</a></li>
             <li><a href="#art" class="nav-button">Art</a></li>
             <li><a href="#photography" class="nav-button">Photos</a></li>
-            <li><a href="#pros" class="nav-button">Next</a></li>
             <li><a href="#music" class="nav-button">Music</a></li>
+            <li><a href="#hobbies" class="nav-button">Hobbies</a></li>
+            <li><a href="#interests" class="nav-button">Interests</a></li>
+            <li><a href="#awards" class="nav-button">Awards</a></li>
+            <li><a href="#pros" class="nav-button">Next</a></li>
             <li>
                 <select id="theme-selector" aria-label="Select Theme and Style">
                     <optgroup label="Natural Theme">
@@ -350,6 +350,46 @@
         </div>
     </footer>
 
+    <script type="text/javascript">
+        var gk_isXlsx = false;
+        var gk_xlsxFileLookup = {};
+        var gk_fileData = {};
+        function filledCell(cell) {
+          return cell !== '' && cell != null;
+        }
+        function loadFileData(filename) {
+        if (gk_isXlsx && gk_xlsxFileLookup[filename]) {
+            try {
+                var workbook = XLSX.read(gk_fileData[filename], { type: 'base64' });
+                var firstSheetName = workbook.SheetNames[0];
+                var worksheet = workbook.Sheets[firstSheetName];
+
+                // Convert sheet to JSON to filter blank rows
+                var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, blankrows: false, defval: '' });
+                // Filter out blank rows (rows where all cells are empty, null, or undefined)
+                var filteredData = jsonData.filter(row => row.some(filledCell));
+
+                // Heuristic to find the header row by ignoring rows with fewer filled cells than the next row
+                var headerRowIndex = filteredData.findIndex((row, index) =>
+                  row.filter(filledCell).length >= filteredData[index + 1]?.filter(filledCell).length
+                );
+                // Fallback
+                if (headerRowIndex === -1 || headerRowIndex > 25) {
+                  headerRowIndex = 0;
+                }
+
+                // Convert filtered JSON back to CSV
+                var csv = XLSX.utils.aoa_to_sheet(filteredData.slice(headerRowIndex)); // Create a new sheet from filtered array of arrays
+                csv = XLSX.utils.sheet_to_csv(csv, { header: 1 });
+                return csv;
+            } catch (e) {
+                console.error(e);
+                return "";
+            }
+        }
+        return gk_fileData[filename] || "";
+        }
+    </script>
     <script src="script.js"></script>
-</body>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'93ac730e4b8fbfa7',t:'MTc0NjQwODM4My4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
