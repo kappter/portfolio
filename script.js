@@ -61,8 +61,8 @@ document.addEventListener('DOMContentLoaded', function () {
         });
 
         function drawLine() {
-            // Calculate fade distance (third of canvas width)
-            const fadeDistance = width / 3;
+            // Calculate fade distance: min of 600px and width/3
+            const fadeDistance = Math.min(600, width / 3);
 
             // Clear only the area behind the tail to prevent trails
             const clearStart = leftToRight ? Math.max(0, x - fadeDistance - 10) : Math.min(width, x + fadeDistance + 10);
