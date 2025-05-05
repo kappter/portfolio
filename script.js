@@ -29,7 +29,7 @@ document.addEventListener('DOMContentLoaded', function () {
         navMenu.classList.toggle('active');
     });
 
-    // Canvas animation for drawing a looping horizontal line with fading tail
+    // Canvas animation for drawing a horizontal line with fading tail
     const canvases = document.querySelectorAll('.line-animation');
     canvases.forEach(canvas => {
         const ctx = canvas.getContext('2d');
@@ -61,8 +61,8 @@ document.addEventListener('DOMContentLoaded', function () {
         });
 
         function drawLine() {
-            // Calculate fade distance: min of 600px and width/3
-            const fadeDistance = Math.min(600, width / 3);
+            // Calculate fade distance: at least 60% of canvas width
+            const fadeDistance = Math.min(width, width * 0.6);
 
             // Clear only the area behind the tail to prevent trails during animation
             const clearStart = leftToRight ? Math.max(0, x - fadeDistance - 10) : Math.min(width, x + fadeDistance + 10);
@@ -102,12 +102,10 @@ document.addEventListener('DOMContentLoaded', function () {
             let reachedEnd = false;
             if (leftToRight) {
                 if (x >= width) {
-                    x = 0; // Reset to start
                     reachedEnd = true;
                 }
             } else {
                 if (x <= 0) {
-                    x = width; // Reset to end
                     reachedEnd = true;
                 }
             }
@@ -134,11 +132,13 @@ document.addEventListener('DOMContentLoaded', function () {
                 return distance <= fadeDistance;
             });
 
-            // Clear entire canvas and reset path when looping to prevent flash
+            // Clear entire canvas and reset when reaching the end
             if (reachedEnd) {
                 ctx.clearRect(0, 0, canvas.width, canvas.height);
+                x = leftToRight ? 0 : width; // Reset to initial position
                 pathPoints = [];
                 lastY = baseY; // Reset y to base for new path
+                frameCount = 0; // Reset frame count for y updates
             }
 
             // Continue animation
