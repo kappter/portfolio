@@ -64,7 +64,7 @@ document.addEventListener('DOMContentLoaded', function () {
             // Calculate fade distance: min of 600px and width/3
             const fadeDistance = Math.min(600, width / 3);
 
-            // Clear only the area behind the tail to prevent trails
+            // Clear only the area behind the tail to prevent trails during animation
             const clearStart = leftToRight ? Math.max(0, x - fadeDistance - 10) : Math.min(width, x + fadeDistance + 10);
             const clearWidth = fadeDistance + 20; // Slightly larger to ensure full clear
             ctx.clearRect(clearStart, 0, clearWidth, height);
@@ -134,8 +134,9 @@ document.addEventListener('DOMContentLoaded', function () {
                 return distance <= fadeDistance;
             });
 
-            // Reset path points on loop
+            // Clear entire canvas and reset path when looping to prevent flash
             if (reachedEnd) {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
                 pathPoints = [];
                 lastY = baseY; // Reset y to base for new path
             }
