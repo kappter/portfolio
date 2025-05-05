@@ -29,7 +29,7 @@ document.addEventListener('DOMContentLoaded', function () {
         navMenu.classList.toggle('active');
     });
 
-    // Canvas animation for drawing a looping horizontal line with fading tail
+    // Canvas animation for drawing a horizontal line that disappears
     const canvases = document.querySelectorAll('.line-animation');
     canvases.forEach(canvas => {
         const ctx = canvas.getContext('2d');
@@ -45,7 +45,7 @@ document.addEventListener('DOMContentLoaded', function () {
         const speed = leftToRight ? (0.5 + Math.random() * 1.5) : -(0.5 + Math.random() * 1.5);
         const baseY = height / 2;
         let lastY = baseY;
-        let pathPoints = []; // Store points for fading tail
+        let pathPoints = []; // Store points for tail
         let frameCount = 0; // For controlling y-position updates
         const yUpdateInterval = 5; // Update y every 5 frames for smoother transitions
 
@@ -61,14 +61,13 @@ document.addEventListener('DOMContentLoaded', function () {
         });
 
         function drawLine() {
-            // Get theme-based background color with low opacity for fading effect
-            const theme = getComputedStyle(html).getPropertyValue('data-theme').trim();
-            const bgColor = theme === 'dark' ? 'rgba(30, 30, 30, 0.1)' : 'rgba(245, 243, 231, 0.1)';
-            ctx.fillStyle = bgColor;
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
-
             // Calculate fade distance: at least 60% of canvas width
             const fadeDistance = Math.min(width, width * 0.6);
+
+            // Clear only the area behind the tail to prevent trails during animation
+            const clearStart = leftToRight ? Math.max(0, x - fadeDistance - 10) : Math.min(width, x + fadeDistance + 10);
+            const clearWidth = fadeDistance + 20; // Slightly larger to ensure full clear
+            ctx.clearRect(clearStart, 0, clearWidth, height);
 
             // Add current point to path
             pathPoints.push({ x, y: lastY });
@@ -100,10 +99,15 @@ document.addEventListener('DOMContentLoaded', function () {
 
             // Update x position based on direction
             x += speed;
+            let reachedEnd = false;
             if (leftToRight) {
-                if (x >= width) x = 0; // Loop back to start
+                if (x >= width) {
+                    reachedEnd = true;
+                }
             } else {
-                if (x <= 0) x = width; // Loop back to end
+                if (x <= 0) {
+                    reachedEnd = true;
+                }
             }
 
             // Update y position less frequently and with less randomness for smoother effect
@@ -127,6 +131,15 @@ document.addEventListener('DOMContentLoaded', function () {
                 const distance = leftToRight ? x - point.x : point.x - x;
                 return distance <= fadeDistance;
             });
+
+            // Clear entire canvas and reset when reaching the end
+            if (reachedEnd) {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                x = leftToRight ? 0 : width; // Reset to initial position
+                pathPoints = [];
+                lastY = baseY; // Reset y to base for new path
+                frameCount = 0; // Reset frame count for y updates
+            }
 
             // Continue animation
             requestAnimationFrame(drawLine);
