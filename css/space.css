@@ -330,8 +330,9 @@ h3 {
 }
 
 .project-card img {
-    max-width: 100%;
+    width: 100%;
     height: 150px;
+    max-height: 150px;
     object-fit: cover;
     border-radius: 8px;
     margin-bottom: 12px;
@@ -373,4 +374,339 @@ h3 {
 
 .award-card {
     background-color: var(--card-bg);
-    border: 1px solid var(--
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 16px;
+    transition: box-shadow 0.2s ease;
+}
+
+.award-card:hover {
+    box-shadow: 0 2px 8px var(--shadow-color);
+}
+
+.award-card p {
+    font-size: 13px;
+    color: var(--secondary-text);
+    margin-bottom: 12px;
+}
+
+.teaching-content {
+    padding: 16px 0;
+}
+
+.teaching-resource {
+    background-color: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 16px;
+    margin-top: 16px;
+    transition: box-shadow 0.2s ease;
+}
+
+.teaching-resource:hover {
+    box-shadow: 0 2px 8px var(--shadow-color);
+}
+
+.teaching-resource p {
+    font-size: 13px;
+    color: var(--secondary-text);
+    margin-bottom: 12px;
+}
+
+.teaching-link {
+    font-size: 13px;
+    padding: 6px 12px;
+    background-color: var(--accent-color);
+    color: #ffffff;
+    text-decoration: none;
+    border-radius: 8px;
+    transition: background-color 0.2s ease;
+}
+
+.teaching-link:hover {
+    background-color: var(--accent-hover);
+}
+
+.music-container {
+    margin: 16px 0;
+}
+
+.guitar-pieces {
+    list-style: none;
+    padding: 0;
+}
+
+.guitar-piece {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px;
+    background-color: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    margin-bottom: 8px;
+    transition: box-shadow 0.2s ease;
+}
+
+.guitar-piece:hover {
+    box-shadow: 0 2px 8px var(--shadow-color);
+}
+
+.guitar-piece span {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-color);
+}
+
+.guitar-piece audio {
+    max-width: 200px;
+}
+
+.footer {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background: var(--header-bg);
+    padding: 10px 20px;
+    text-align: center;
+    border-top: 1px solid var(--border-color);
+    box-shadow: 0 -1px 3px var(--shadow-color);
+    z-index: 1000;
+}
+
+.footer-content {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+    flex-wrap: wrap;
+    font-size: 13px;
+}
+
+.footer-content span {
+    color: var(--secondary-text);
+}
+
+.social-icons {
+    display: flex;
+    gap: 10px;
+}
+
+.social-icons a {
+    color: var(--text-color);
+    font-size: 18px;
+    text-decoration: none;
+    transition: color 0.2s ease;
+}
+
+.social-icons a:hover {
+    color: var(--accent-color);
+}
+
+.donation-links {
+    display: flex;
+    gap: 15px;
+}
+
+.donation-links a {
+    color: var(--accent-color);
+    text-decoration: none;
+    font-size: 13px;
+    transition: color 0.2s ease;
+}
+
+.donation-links a:hover {
+    color: var(--accent-hover);
+}
+
+/* Proposal Form Styles */
+.form-container {
+    margin: 16px 0;
+    text-align: center;
+}
+
+/* Carousel Styles */
+.art-carousel, .photography-carousel {
+    position: relative;
+    max-width: 600px;
+    margin: 16px auto;
+    background-color: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 16px;
+    box-shadow: 0 2px 8px var(--shadow-color);
+    overflow: hidden;
+}
+
+.carousel-image-container {
+    position: relative;
+    width: 100%;
+    height: 400px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+}
+
+.carousel-image {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+    border-radius: 8px;
+    opacity: 1;
+    transition: opacity 0.5s ease;
+}
+
+.carousel-image.fade-out {
+    opacity: 0;
+}
+
+.carousel-caption {
+    text-align: center;
+    font-size: 13px;
+    color: var(--secondary-text);
+    margin-top: 12px;
+}
+
+.carousel-arrow {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background-color: rgba(0, 0, 0, 0.3);
+    color: var(--text-color);
+    border: none;
+    border-radius: 8px;
+    padding: 8px;
+    font-size: 16px;
+    cursor: pointer;
+    opacity: 0.5;
+    transition: opacity 0.2s ease, background-color 0.2s ease;
+}
+
+.carousel-arrow:hover {
+    opacity: 1;
+    background-color: var(--accent-color);
+    color: #ffffff;
+}
+
+.carousel-prev {
+    left: 16px;
+}
+
+.carousel-next {
+    right: 16px;
+}
+
+@media (max-width: 768px) {
+    .navbar {
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 12px;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+    }
+
+    .nav-logo {
+        margin: 0 auto;
+    }
+
+    .nav-menu {
+        display: none;
+        flex-direction: column;
+        width: 100%;
+        text-align: center;
+    }
+
+    .nav-menu.active {
+        display: flex;
+        margin-top: 48px;
+    }
+
+    .nav-toggle {
+        display: block;
+        position: absolute;
+        left: 24px;
+        top: 16px;
+    }
+
+    .nav-menu li {
+        margin: 8px 0;
+    }
+
+    .nav-button, #theme-selector {
+        width: 100%;
+        padding: 8px;
+    }
+
+    .container {
+        padding: 16px;
+        padding-top: 100px;
+        padding-bottom: 100px;
+    }
+
+    .line-animation {
+        height: 15px;
+        margin: 4px auto 0;
+    }
+
+    .teaching-image {
+        width: 80px;
+        max-width: 80px;
+        margin: 0 8px 8px 0;
+    }
+
+    .teaching-image:hover {
+        transform: scale(3.75);
+    }
+
+    h1 {
+        font-size: 24px;
+    }
+
+    h2 {
+        font-size: 18px;
+    }
+
+    .footer {
+        padding: 8px 16px;
+    }
+
+    .footer-content {
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    .social-icons {
+        gap: 8px;
+        font-size: 16px;
+    }
+
+    .donation-links {
+        gap: 10px;
+    }
+
+    .art-carousel, .photography-carousel {
+        max-width: 100%;
+        padding: 12px;
+    }
+
+    .carousel-image-container {
+        height: 300px;
+    }
+
+    .carousel-arrow {
+        padding: 6px;
+        font-size: 14px;
+    }
+
+    .carousel-prev {
+        left: 12px;
+    }
+
+    .carousel-next {
+        right: 12px;
+    }
+}
