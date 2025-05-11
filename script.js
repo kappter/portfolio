@@ -33,44 +33,54 @@ document.addEventListener('DOMContentLoaded', function () {
     const canvases = document.querySelectorAll('.line-animation');
     canvases.forEach(canvas => {
         const ctx = canvas.getContext('2d');
+        const dpr = window.devicePixelRatio || 1; // Get device pixel ratio
         let width = Math.min(window.innerWidth, 960); // Match container max-width
-        const height = 20; // Canvas height (adjusted to match CSS)
-        canvas.width = width;
-        canvas.height = height;
+        const height = 20; // Canvas height
+        canvas.style.width = `${width}px`; // CSS width
+        canvas.style.height = `${height}px`; // CSS height
+        canvas.width = width * dpr; // Pixel width
+        canvas.height = height * dpr; // Pixel height
+        ctx.scale(dpr, dpr); // Scale context for high-DPI
 
         // Random direction: true for left-to-right, false for right-to-left
         const leftToRight = Math.random() > 0.5;
         let x = leftToRight ? 0 : width;
-        // Random speed between 0.5 and 2 pixels per frame (slower)
-        const speed = leftToRight ? (0.5 + Math.random() * 1.5) : -(0.5 + Math.random() * 1.5);
+        // Random speed between 0.5 and 1.5 pixels per frame
+        const speed = leftToRight ? (0.5 + Math.random()) : -(0.5 + Math.random());
         const baseY = height / 2;
-        let lastY = baseY;
+        let targetY = baseY;
+        let currentY = baseY;
         let pathPoints = []; // Store points for tail
-        let frameCount = 0; // For controlling y-position updates
-        const yUpdateInterval = 5; // Update y every 5 frames for smoother transitions
+        const fadeDistance = width * 0.6; // 60% of canvas width
 
         // Adjust canvas size on window resize
         window.addEventListener('resize', () => {
             width = Math.min(window.innerWidth, 960);
-            canvas.width = width;
-            canvas.height = height;
-            x = leftToRight ? 0 : width; // Reset animation based on direction
-            ctx.clearRect(0, 0, canvas.width, canvas.height); // Clear on resize to reset
-            lastY = baseY;
+            canvas.style.width = `${width}px`;
+            canvas.width = width * dpr;
+            canvas.height = height * dpr;
+            ctx.scale(dpr, dpr);
+            x = leftToRight ? 0 : width; // Reset position
             pathPoints = []; // Clear path points
+            currentY = baseY;
+            targetY = baseY;
+            ctx.clearRect(0, 0, width, height); // Clear canvas
         });
 
         function drawLine() {
-            // Calculate fade distance: at least 60% of canvas width
-            const fadeDistance = Math.min(width, width * 0.6);
+            // Clear entire canvas
+            ctx.clearRect(0, 0, width, height);
 
-            // Clear only the area behind the tail to prevent trails during animation
-            const clearStart = leftToRight ? Math.max(0, x - fadeDistance - 10) : Math.min(width, x + fadeDistance + 10);
-            const clearWidth = fadeDistance + 20; // Slightly larger to ensure full clear
-            ctx.clearRect(clearStart, 0, clearWidth, height);
+            // Update y position with interpolation
+            if (Math.random() < 0.1) { // Update targetY ~10% of frames
+                targetY = baseY + (Math.random() - 0.5); // ±0.5px for organic wiggle
+            }
+            currentY += (targetY - currentY) * 0.2; // Smooth interpolation
+            currentY = Math.round(currentY * 2) / 2; // Snap to 0.5px grid
+            x = Math.round(x * 2) / 2; // Snap x to 0.5px grid
 
             // Add current point to path
-            pathPoints.push({ x, y: lastY });
+            pathPoints.push({ x, y: currentY });
 
             // Draw the path with fading tail
             ctx.beginPath();
@@ -78,14 +88,15 @@ document.addEventListener('DOMContentLoaded', function () {
                 const distance = leftToRight ? x - point.x : point.x - x;
                 let opacity = 1;
                 if (distance > 0 && distance <= fadeDistance) {
-                    opacity = 1 - (distance / fadeDistance); // Linear fade
+                    opacity = 1 - (distance / fadeDistance);
                 } else if (distance > fadeDistance) {
-                    opacity = 0; // Fully transparent beyond fade distance
+                    opacity = 0;
                 }
 
                 ctx.strokeStyle = `rgba(${getRGBValues(getComputedStyle(document.documentElement).getPropertyValue('--accent-color').trim())}, ${opacity})`;
-                ctx.lineWidth = 2 + (Math.random() - 0.5) * 0.2; // 1.9–2.1px
+                ctx.lineWidth = 2 * (1 + (Math.random() - 0.5) * 0.1); // 1.9–2.1px for tail
                 ctx.lineCap = 'round';
+                ctx.lineJoin = 'round'; // Smooth joins
 
                 if (index === 0) {
                     ctx.moveTo(point.x, point.y);
@@ -97,48 +108,31 @@ document.addEventListener('DOMContentLoaded', function () {
                 }
             });
 
-            // Update x position based on direction
+            // Update x position
             x += speed;
-            let reachedEnd = false;
-            if (leftToRight) {
-                if (x >= width) {
-                    reachedEnd = true;
-                }
-            } else {
-                if (x <= 0) {
-                    reachedEnd = true;
-                }
-            }
-
-            // Update y position less frequently and with less randomness for smoother effect
-            frameCount++;
-            let y = lastY;
-            if (frameCount % yUpdateInterval === 0) {
-                y = lastY + (Math.random() - 0.5) * 0.3; // Reduced randomness to ±0.3px
-            }
-            ctx.lineTo(x, y);
+            let reachedEnd = leftToRight ? x >= width : x <= 0;
 
             // Draw the latest segment
+            ctx.lineTo(x, currentY);
             ctx.strokeStyle = getComputedStyle(document.documentElement).getPropertyValue('--accent-color').trim();
-            ctx.lineWidth = 2 + (Math.random() - 0.5) * 0.2;
+            ctx.lineWidth = 2; // Fixed width for main line
             ctx.lineCap = 'round';
+            ctx.lineJoin = 'round';
             ctx.stroke();
 
-            lastY = y; // Update last y position
-
-            // Clean up old points beyond fade distance
+            // Clean up old points
             pathPoints = pathPoints.filter(point => {
                 const distance = leftToRight ? x - point.x : point.x - x;
                 return distance <= fadeDistance;
             });
 
-            // Clear entire canvas and reset when reaching the end
+            // Reset when reaching the end
             if (reachedEnd) {
-                ctx.clearRect(0, 0, canvas.width, canvas.height);
-                x = leftToRight ? 0 : width; // Reset to initial position
+                ctx.clearRect(0, 0, width, height);
+                x = leftToRight ? 0 : width;
                 pathPoints = [];
-                lastY = baseY; // Reset y to base for new path
-                frameCount = 0; // Reset frame count for y updates
+                currentY = baseY;
+                targetY = baseY;
             }
 
             // Continue animation
@@ -153,7 +147,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 const b = parseInt(color.slice(5, 7), 16);
                 return `${r}, ${g}, ${b}`;
             }
-            return '107, 125, 75'; // Fallback to --accent-color (olive green)
+            return '107, 125, 75'; // Fallback to --accent-color
         }
 
         // Start animation
@@ -177,7 +171,6 @@ document.addEventListener('DOMContentLoaded', function () {
                 return response.json();
             })
             .then(data => {
-                console.log('Guitar pieces data:', data);
                 if (!Array.isArray(data)) {
                     throw new Error('guitar_pieces.json is not a valid array');
                 }
@@ -289,7 +282,6 @@ document.addEventListener('DOMContentLoaded', function () {
             return response.json();
         })
         .then(data => {
-            console.log('Art images data:', data);
             if (!Array.isArray(data)) {
                 throw new Error('art_images.json is not a valid array');
             }
@@ -302,7 +294,6 @@ document.addEventListener('DOMContentLoaded', function () {
                 console.warn('No valid images found in art_images.json');
                 return;
             }
-            console.log(`Loaded ${artImages.length} art images`);
             // Initialize art carousel
             changeImage(artCarouselImage, artCarouselCaption, artImages, artCurrentIndex, index => artCurrentIndex = index);
             artAutoAdvanceInterval = startAutoAdvance(artAutoAdvanceInterval, () => {
@@ -323,7 +314,6 @@ document.addEventListener('DOMContentLoaded', function () {
             return response.json();
         })
         .then(data => {
-            console.log('Photography images data:', data);
             if (!Array.isArray(data)) {
                 throw new Error('photography_images.json is not a valid array');
             }
@@ -336,7 +326,6 @@ document.addEventListener('DOMContentLoaded', function () {
                 console.warn('No valid images found in photography_images.json');
                 return;
             }
-            console.log(`Loaded ${photographyImages.length} photography images`);
             // Initialize photography carousel
             changeImage(photographyCarouselImage, photographyCarouselCaption, photographyImages, photographyCurrentIndex, index => photographyCurrentIndex = index);
             photographyAutoAdvanceInterval = startAutoAdvance(photographyAutoAdvanceInterval, () => {
