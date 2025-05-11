@@ -9,13 +9,13 @@ document.addEventListener('DOMContentLoaded', function () {
 
         let stylesheet;
         if (theme.includes('natural')) {
-            stylesheet = 'styles.css';
+            stylesheet = 'css/styles.css';
         } else if (theme.includes('architectural')) {
-            stylesheet = 'architectural.css';
+            stylesheet = 'css/architectural.css';
         } else if (theme.includes('space')) {
-            stylesheet = 'space.css';
+            stylesheet = 'css/space.css';
         } else if (theme.includes('medieval')) {
-            stylesheet = 'medieval.css';
+            stylesheet = 'css/medieval.css';
         }
 
         document.getElementById('theme-stylesheet').setAttribute('href', stylesheet);
