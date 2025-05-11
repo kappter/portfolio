@@ -1,4 +1,43 @@
-<!DOCTYPE html>
+<script type="text/javascript">
+        var gk_isXlsx = false;
+        var gk_xlsxFileLookup = {};
+        var gk_fileData = {};
+        function filledCell(cell) {
+          return cell !== '' && cell != null;
+        }
+        function loadFileData(filename) {
+        if (gk_isXlsx && gk_xlsxFileLookup[filename]) {
+            try {
+                var workbook = XLSX.read(gk_fileData[filename], { type: 'base64' });
+                var firstSheetName = workbook.SheetNames[0];
+                var worksheet = workbook.Sheets[firstSheetName];
+
+                // Convert sheet to JSON to filter blank rows
+                var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, blankrows: false, defval: '' });
+                // Filter out blank rows (rows where all cells are empty, null, or undefined)
+                var filteredData = jsonData.filter(row => row.some(filledCell));
+
+                // Heuristic to find the header row by ignoring rows with fewer filled cells than the next row
+                var headerRowIndex = filteredData.findIndex((row, index) =>
+                  row.filter(filledCell).length >= filteredData[index + 1]?.filter(filledCell).length
+                );
+                // Fallback
+                if (headerRowIndex === -1 || headerRowIndex > 25) {
+                  headerRowIndex = 0;
+                }
+
+                // Convert filtered JSON back to CSV
+                var csv = XLSX.utils.aoa_to_sheet(filteredData.slice(headerRowIndex)); // Create a new sheet from filtered array of arrays
+                csv = XLSX.utils.sheet_to_csv(csv, { header: 1 });
+                return csv;
+            } catch (e) {
+                console.error(e);
+                return "";
+            }
+        }
+        return gk_fileData[filename] || "";
+        }
+        </script><!DOCTYPE html>
 <html lang="en" data-theme="light">
 <head>
     <meta charset="UTF-8">
@@ -26,17 +65,24 @@
             <li><a href="index.html#awards" class="nav-button">Awards</a></li>
             <li><a href="index.html#art" class="nav-button">Art</a></li>
             <li><a href="index.html#music" class="nav-button">Music</a></li>
-            <!-- <li><a href="index.html#blogs" class="nav-button">Blogs</a></li> -->
             <li>
-                <select id="theme-selector">
-                    <option value="natural-light">Natural Light</option>
-                    <option value="natural-dark">Natural Dark</option>
-                    <option value="architectural-light">Architectural Light</option>
-                    <option value="architectural-dark">Architectural Dark</option>
-                    <option value="space-light">Space Light</option>
-                    <option value="space-dark">Space Dark</option>
-                    <option value="medieval-light">Medieval Light</option>
-                    <option value="medieval-dark">Medieval Dark</option>
+                <select id="theme-selector" aria-label="Select Theme and Style">
+                    <optgroup label="Natural Theme">
+                        <option value="natural-light">Natural Light</option>
+                        <option value="natural-dark">Natural Dark</option>
+                    </optgroup>
+                    <optgroup label="Architectural Theme">
+                        <option value="architectural-light">Architectural Light</option>
+                        <option value="architectural-dark">Architectural Dark</option>
+                    </optgroup>
+                    <optgroup label="Space Theme">
+                        <option value="space-light">Space Light</option>
+                        <option value="space-dark">Space Dark</option>
+                    </optgroup>
+                    <optgroup label="Medieval Theme">
+                        <option value="medieval-light">Medieval Light</option>
+                        <option value="medieval-dark">Medieval Dark</option>
+                    </optgroup>
                 </select>
             </li>
         </ul>
@@ -44,32 +90,43 @@
 
     <div class="container">
         <header>
+            <canvas id="line-animation-header" class="line-animation"></canvas>
             <h1>Request a Proposal</h1>
-            <p>Interested in a custom portfolio or project? Fill out the form below to get started.</p>
+            <p>Let’s create something extraordinary together—whether it’s a custom portfolio, a web project, or just a friendly hello.</p>
         </header>
 
+        <section id="collaboration">
+            <h2>Let’s Collaborate</h2>
+            <p>Every great project begins with a spark of curiosity. Whether you need a tailored portfolio to showcase your work, a dynamic web application, or a creative digital solution, I’m here to bring your vision to life. My process is collaborative and thoughtful: we’ll explore your goals, refine ideas, and craft something that’s both functional and beautiful.</p>
+            <p>Just want to say hello? I’d love to hear from you! Reach out with questions, ideas, or simply to connect over shared passions for technology, art, or education.</p>
+        </section>
+
         <section id="proposal-form">
-            <h2>Proposal Form</h2>
+            <h2>Submit Your Proposal</h2>
             <div class="form-container">
-                <p>Click the button below to open the proposal form:</p>
+                <p>Tell me about your project—your vision, timeline, and any specific needs. The form below will guide you through the details, and I’ll follow up to discuss next steps.</p>
                 <a href="https://docs.google.com/forms/d/e/1FAIpQLSf35uOdh0lgwRx2tFt8kbNNNv8kq-RaKA_E0PQZ1fvDNoaOqg/viewform?usp=sharing" 
                    target="_blank" 
-                   class="button">Open Proposal Form</a>
+                   class="button proposal-button">Start Your Proposal</a>
+                <p class="contact-alternative">Prefer a quick chat? <a href="mailto:kappter@gmail.com" class="email-link">Email me</a> to say hello or share your ideas.</p>
             </div>
         </section>
+        <canvas id="line-animation-footer" class="line-animation"></canvas>
     </div>
 
     <footer class="footer">
         <div class="footer-content">
-            <span>© 2025 Kappter. All rights reserved.</span>
+            <span>© 2025 Ken Kapptie. All rights reserved.</span>
             <div class="social-icons">
                 <a href="https://www.facebook.com/kappter/" target="_blank" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
-                <a href="https://x.com/kappter" target="_blank" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+                <a href="https://x.com/kappter" target="_blank" aria-label="X"><i class="fab fa-x-twitter"></i></a>
                 <a href="https://www.instagram.com/kappter/?hl=en" target="_blank" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
                 <a href="https://github.com/kappter" target="_blank" aria-label="GitHub"><i class="fab fa-github"></i></a>
                 <a href="https://www.linkedin.com/in/ken-kapptie-0b19665" target="_blank" aria-label="LinkedIn"><i class="fab fa-linkedin"></i></a>
             </div>
             <div class="donation-links">
+                <a href="resume.html" target="_blank">Resume</a>
+                <a href="curriculum_vitae.html" target="_blank">CV</a>
                 <a href="https://buymeacoffee.com/kappterw" target="_blank">Buy Me a Coffee</a>
                 <a href="proposal.html">Want your own?</a>
             </div>
