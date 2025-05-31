@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+ <meta charset="UTF-8">
+ <title>Electric Circuit Maze</title>
+ <style>
+   body {
+     background: #000;
+     display: flex;
+     justify-content: center;
+     align-items: center;
+     height: 100vh;
+     margin: 0;
+   }
+   canvas {
+     border-radius: 20px;
+     background-color: #000;
+     box-shadow: 0 0 20px #0f0;
+   }
+ </style>
+</head>
+<body>
+<canvas id="circuit" width="600" height="400"></canvas>
+
+<script>
+ const canvas = document.getElementById('circuit');
+ const ctx = canvas.getContext('2d');
+ const w = canvas.width;
+ const h = canvas.height;
+
+ const cellSize = 10;
+ const cols = Math.floor(w / cellSize);
+ const rows = Math.floor(h / cellSize);
+ let grid = [];
+ let path = [];
+
+ const forestGreens = [
+   '#013220', '#014421', '#025928',
+   '#036635', '#0a7e41', '#0f8f4a',
+   '#1a9b55', '#22995d'
+ ];
+
+ let animationFrame = 0;
+
+ function initGrid() {
+   grid = Array(rows).fill().map(() => Array(cols).fill(0));
+   path = [];
+
+   let startCol = Math.floor(cols / 2);
+   let startRow = Math.floor(rows / 2);
+   path.push({ col: startCol, row: startRow });
+   grid[startRow][startCol] = 1;
+ }
+
+ function drawMaze() {
+   ctx.fillStyle = '#000';
+   ctx.fillRect(0, 0, w, h);
+
+   ctx.save();
+   ctx.beginPath();
+   ctx.roundRect(0, 0, w, h, 20);
+   ctx.clip();
+
+   for (let i = 0; i < path.length; i++) {
+     const { col, row } = path[i];
+     ctx.fillStyle = forestGreens[Math.floor(Math.random() * forestGreens.length)];
+     ctx.fillRect(col * cellSize, row * cellSize, cellSize, cellSize);
+   }
+
+   ctx.restore();
+ }
+
+ function growMaze() {
+   const last = path[path.length - 1];
+   const directions = [
+     { col: 0, row: -1 },
+     { col: 0, row: 1 },
+     { col: -1, row: 0 },
+     { col: 1, row: 0 }
+   ];
+
+   const shuffled = directions.sort(() => 0.5 - Math.random());
+   for (let dir of shuffled) {
+     const newCol = last.col + dir.col;
+     const newRow = last.row + dir.row;
+
+     if (
+       newCol >= 0 && newCol < cols &&
+       newRow >= 0 && newRow < rows &&
+       grid[newRow][newCol] === 0
+     ) {
+       grid[newRow][newCol] = 1;
+       path.push({ col: newCol, row: newRow });
+       return;
+     }
+   }
+
+   // If stuck or reached too far, dissolve
+   if (path.length >= cols * rows * 0.75 || Math.random() < 0.01) {
+     dissolveMaze();
+   }
+ }
+
+ let dissolveProgress = 0;
+ function dissolveMaze() {
+   dissolveProgress += 0.01;
+   if (dissolveProgress >= 1) {
+     dissolveProgress = 0;
+     initGrid();
+   } else {
+     path = path.filter(() => Math.random() > dissolveProgress);
+   }
+ }
+
+ function animate() {
+   animationFrame++;
+   if (animationFrame % 2 === 0) {
+     growMaze();
+   }
+   drawMaze();
+   requestAnimationFrame(animate);
+ }
+
+ // Polyfill for rounded rectangle path
+ CanvasRenderingContext2D.prototype.roundRect = function (x, y, w, h, r) {
+   if (w < 2 * r) r = w / 2;
+   if (h < 2 * r) r = h / 2;
+   this.beginPath();
+   this.moveTo(x + r, y);
+   this.arcTo(x + w, y, x + w, y + h, r);
+   this.arcTo(x + w, y + h, x, y + h, r);
+   this.arcTo(x, y + h, x, y, r);
+   this.arcTo(x, y, x + w, y, r);
+   this.closePath();
+   return this;
+ }
+
+ initGrid();
+ animate();
+</script>
+</body>
+</html>
