@@ -692,7 +692,7 @@ h3 {
 /* Carousel Styles */
 .art-carousel, .photography-carousel {
     position: relative;
-    max-width: 600px;
+    max-width: 960px; /* Match container max-width */
     margin: 16px auto;
     background-color: var(--card-bg);
     border: 1px solid var(--border-color);
@@ -718,18 +718,16 @@ h3 {
     object-fit: contain;
     border-radius: 4px;
     opacity: 1;
-    transition: opacity 0.5s ease;
+    transition: opacity 0.5s ease-in-out;
 }
 
 .carousel-image.fade-out {
     opacity: 0;
+    transition: opacity 0.5s ease-in-out;
 }
 
-.carousel-caption {
-    text-align: center;
-    font-size: 13px;
-    color: var(--secondary-text);
-    margin-top: 12px;
+#carousel-caption, #photography-carousel-caption {
+    display: none; /* Hide captions */
 }
 
 .carousel-arrow {
@@ -744,13 +742,17 @@ h3 {
     font-size: 16px;
     cursor: pointer;
     opacity: 0.5;
-    transition: opacity 0.2s ease, background-color 0.2s ease;
+    transition: opacity 0.2s ease, background-color 0.2s ease, color 0.2s ease;
 }
 
-.carousel-arrow:hover {
+.carousel-arrow:hover, .carousel-arrow:focus {
     opacity: 1;
     background-color: var(--accent-color);
     color: #ffffff;
+}
+
+.carousel-arrow::before, .carousel-arrow::after {
+    content: ""; /* Prevent pseudo-element text */
 }
 
 .carousel-prev {
@@ -891,7 +893,7 @@ h3 {
         font-size: 12px;
     }
 
-    .art-carousel, .photography-carousel {
+   .art-carousel, .photography-carousel {
         max-width: 100%;
         padding: 12px;
     }
