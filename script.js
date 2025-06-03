@@ -214,7 +214,7 @@ document.addEventListener('DOMContentLoaded', function () {
     let artImages = [];
     let artCurrentIndex = 0;
     let artAutoAdvanceInterval = null;
-    const AUTO_ADVANCE_INTERVAL = 5000; // 5 seconds
+    const AUTO_ADVANCE_INTERVAL = 5000;
 
     // Photography Carousel Logic
     const photographyCarouselImage = document.getElementById('photography-carousel-image');
@@ -225,46 +225,50 @@ document.addEventListener('DOMContentLoaded', function () {
     let photographyImages = [];
     let photographyCurrentIndex = 0;
     let photographyAutoAdvanceInterval = null;
+    let isTransitioning = false; // Prevent overlapping transitions
 
-    // Function to format filename into a caption
+    // Function to format filename into a caption (for alt text only)
     function formatCaption(filename) {
-        // Remove extension and replace underscores/hyphens with spaces
         const name = filename.replace(/\.[^/.]+$/, '').replace(/[_-]/g, ' ');
-        // Capitalize first letter of each word
         return name.replace(/\w\S*/g, txt => txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase());
     }
 
-    // Function to change image with fade effect (generic for both carousels)
+    // Function to change image with fade effect
     function changeImage(carouselImage, carouselCaption, images, currentIndex, setIndex) {
+        if (isTransitioning) return;
+        isTransitioning = true;
         if (!carouselImage || !carouselCaption) {
             console.error('Carousel elements not found');
+            isTransitioning = false;
             return;
         }
         if (images.length === 0) {
             console.warn('No images available for carousel');
+            isTransitioning = false;
             return;
         }
         if (currentIndex < 0) currentIndex = images.length - 1;
         if (currentIndex >= images.length) currentIndex = 0;
         setIndex(currentIndex);
 
+        console.log('Changing to image:', images[currentIndex].url); // Debug
         carouselImage.classList.add('fade-out');
         setTimeout(() => {
             carouselImage.src = images[currentIndex].url;
             carouselImage.alt = formatCaption(images[currentIndex].file);
-            carouselCaption.textContent = formatCaption(images[currentIndex].file);
             carouselImage.classList.remove('fade-out');
-        }, 500); // Match CSS transition duration
+            isTransitioning = false;
+        }, 500);
     }
 
-    // Function to start auto-advance (generic)
+    // Function to start auto-advance
     function startAutoAdvance(interval, changeFunction) {
         interval = stopAutoAdvance(interval);
         interval = setInterval(changeFunction, AUTO_ADVANCE_INTERVAL);
         return interval;
     }
 
-    // Function to stop auto-advance (generic)
+    // Function to stop auto-advance
     function stopAutoAdvance(interval) {
         if (interval) {
             clearInterval(interval);
@@ -273,28 +277,23 @@ document.addEventListener('DOMContentLoaded', function () {
         return interval;
     }
 
-    // Load art images from art_images.json
+    // Load art images
     fetch('https://raw.githubusercontent.com/kappter/portfolio/main/art_images.json')
         .then(response => {
-            if (!response.ok) {
-                throw new Error(`Failed to load art_images.json: ${response.status} ${response.statusText}`);
-            }
+            if (!response.ok) throw new Error(`Failed to load art_images.json: ${response.status}`);
             return response.json();
         })
         .then(data => {
-            if (!Array.isArray(data)) {
-                throw new Error('art_images.json is not a valid array');
-            }
+            if (!Array.isArray(data)) throw new Error('art_images.json is not a valid array');
             artImages = data.filter(item => item.file && /\.(jpg|jpeg|png|gif)$/i.test(item.file)).map(item => ({
                 file: item.file,
                 url: `https://raw.githubusercontent.com/kappter/portfolio/main/art/${item.file}`
             }));
+            console.log('Art images loaded:', artImages); // Debug
             if (artImages.length === 0) {
-                artCarouselCaption.textContent = 'No images found in art folder.';
                 console.warn('No valid images found in art_images.json');
                 return;
             }
-            // Initialize art carousel
             changeImage(artCarouselImage, artCarouselCaption, artImages, artCurrentIndex, index => artCurrentIndex = index);
             artAutoAdvanceInterval = startAutoAdvance(artAutoAdvanceInterval, () => {
                 changeImage(artCarouselImage, artCarouselCaption, artImages, artCurrentIndex + 1, index => artCurrentIndex = index);
@@ -302,31 +301,25 @@ document.addEventListener('DOMContentLoaded', function () {
         })
         .catch(error => {
             console.error('Error loading art images:', error.message);
-            artCarouselCaption.textContent = 'Unable to load art images at this time. Please try again later.';
         });
 
-    // Load photography images from photography_images.json
+    // Load photography images
     fetch('https://raw.githubusercontent.com/kappter/portfolio/main/photography_images.json')
         .then(response => {
-            if (!response.ok) {
-                throw new Error(`Failed to load photography_images.json: ${response.status} ${response.statusText}`);
-            }
+            if (!response.ok) throw new Error(`Failed to load photography_images.json: ${response.status}`);
             return response.json();
         })
         .then(data => {
-            if (!Array.isArray(data)) {
-                throw new Error('photography_images.json is not a valid array');
-            }
+            if (!Array.isArray(data)) throw new Error('photography_images.json is not a valid array');
             photographyImages = data.filter(item => item.file && /\.(jpg|jpeg|png|gif)$/i.test(item.file)).map(item => ({
                 file: item.file,
                 url: `https://raw.githubusercontent.com/kappter/portfolio/main/photography/${item.file}`
             }));
+            console.log('Photography images loaded:', photographyImages); // Debug
             if (photographyImages.length === 0) {
-                photographyCarouselCaption.textContent = 'No images found in photography folder.';
                 console.warn('No valid images found in photography_images.json');
                 return;
             }
-            // Initialize photography carousel
             changeImage(photographyCarouselImage, photographyCarouselCaption, photographyImages, photographyCurrentIndex, index => photographyCurrentIndex = index);
             photographyAutoAdvanceInterval = startAutoAdvance(photographyAutoAdvanceInterval, () => {
                 changeImage(photographyCarouselImage, photographyCarouselCaption, photographyImages, photographyCurrentIndex + 1, index => photographyCurrentIndex = index);
@@ -334,7 +327,6 @@ document.addEventListener('DOMContentLoaded', function () {
         })
         .catch(error => {
             console.error('Error loading photography images:', error.message);
-            photographyCarouselCaption.textContent = 'Unable to load photography images at this time. Please try again later.';
         });
 
     // Event listeners for art carousel buttons
@@ -355,7 +347,6 @@ document.addEventListener('DOMContentLoaded', function () {
             });
         });
 
-        // Pause art carousel auto-advance on hover
         artCarouselContainer.addEventListener('mouseenter', () => {
             artAutoAdvanceInterval = stopAutoAdvance(artAutoAdvanceInterval);
         });
@@ -365,7 +356,7 @@ document.addEventListener('DOMContentLoaded', function () {
             });
         });
     } else {
-        console.error('Art carousel buttons not found');
+        console.error('Art carousel buttons not found:', { artPrevButton, artNextButton });
     }
 
     // Event listeners for photography carousel buttons
@@ -386,7 +377,6 @@ document.addEventListener('DOMContentLoaded', function () {
             });
         });
 
-        // Pause photography carousel auto-advance on hover
         photographyCarouselContainer.addEventListener('mouseenter', () => {
             photographyAutoAdvanceInterval = stopAutoAdvance(photographyAutoAdvanceInterval);
         });
@@ -396,7 +386,7 @@ document.addEventListener('DOMContentLoaded', function () {
             });
         });
     } else {
-        console.error('Photography carousel buttons not found');
+        console.error('Photography carousel buttons not found:', { photographyPrevButton, photographyNextButton });
     }
 
     // Keyboard navigation for both carousels
