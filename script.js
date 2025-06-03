@@ -227,6 +227,10 @@ document.addEventListener('DOMContentLoaded', function () {
     let photographyAutoAdvanceInterval = null;
     let isTransitioning = false; // Prevent overlapping transitions
 
+    // Debug: Log button existence
+    console.log('Art carousel buttons:', { artPrevButton, artNextButton });
+    console.log('Photography carousel buttons:', { photographyPrevButton, photographyNextButton });
+
     // Function to format filename into a caption (for alt text only)
     function formatCaption(filename) {
         const name = filename.replace(/\.[^/.]+$/, '').replace(/[_-]/g, ' ');
@@ -332,6 +336,7 @@ document.addEventListener('DOMContentLoaded', function () {
     // Event listeners for art carousel buttons
     if (artPrevButton && artNextButton) {
         artPrevButton.addEventListener('click', () => {
+            console.log('Art previous button clicked'); // Debug
             artAutoAdvanceInterval = stopAutoAdvance(artAutoAdvanceInterval);
             changeImage(artCarouselImage, artCarouselCaption, artImages, artCurrentIndex - 1, index => artCurrentIndex = index);
             artAutoAdvanceInterval = startAutoAdvance(artAutoAdvanceInterval, () => {
@@ -340,6 +345,7 @@ document.addEventListener('DOMContentLoaded', function () {
         });
 
         artNextButton.addEventListener('click', () => {
+            console.log('Art next button clicked'); // Debug
             artAutoAdvanceInterval = stopAutoAdvance(artAutoAdvanceInterval);
             changeImage(artCarouselImage, artCarouselCaption, artImages, artCurrentIndex + 1, index => artCurrentIndex = index);
             artAutoAdvanceInterval = startAutoAdvance(artAutoAdvanceInterval, () => {
@@ -362,6 +368,7 @@ document.addEventListener('DOMContentLoaded', function () {
     // Event listeners for photography carousel buttons
     if (photographyPrevButton && photographyNextButton) {
         photographyPrevButton.addEventListener('click', () => {
+            console.log('Photography previous button clicked'); // Debug
             photographyAutoAdvanceInterval = stopAutoAdvance(photographyAutoAdvanceInterval);
             changeImage(photographyCarouselImage, photographyCarouselCaption, photographyImages, photographyCurrentIndex - 1, index => photographyCurrentIndex = index);
             photographyAutoAdvanceInterval = startAutoAdvance(photographyAutoAdvanceInterval, () => {
@@ -370,6 +377,7 @@ document.addEventListener('DOMContentLoaded', function () {
         });
 
         photographyNextButton.addEventListener('click', () => {
+            console.log('Photography next button clicked'); // Debug
             photographyAutoAdvanceInterval = stopAutoAdvance(photographyAutoAdvanceInterval);
             changeImage(photographyCarouselImage, photographyCarouselCaption, photographyImages, photographyCurrentIndex + 1, index => photographyCurrentIndex = index);
             photographyAutoAdvanceInterval = startAutoAdvance(photographyAutoAdvanceInterval, () => {
@@ -388,6 +396,47 @@ document.addEventListener('DOMContentLoaded', function () {
     } else {
         console.error('Photography carousel buttons not found:', { photographyPrevButton, photographyNextButton });
     }
+
+    // Fallback event delegation for carousel buttons
+    artCarouselContainer.addEventListener('click', (e) => {
+        const prevButton = e.target.closest('.art-carousel .carousel-prev');
+        const nextButton = e.target.closest('.art-carousel .carousel-next');
+        if (prevButton) {
+            console.log('Art previous button clicked via delegation'); // Debug
+            artAutoAdvanceInterval = stopAutoAdvance(artAutoAdvanceInterval);
+            changeImage(artCarouselImage, artCarouselCaption, artImages, artCurrentIndex - 1, index => artCurrentIndex = index);
+            artAutoAdvanceInterval = startAutoAdvance(artAutoAdvanceInterval, () => {
+                changeImage(artCarouselImage, artCarouselCaption, artImages, artCurrentIndex + 1, index => artCurrentIndex = index);
+            });
+        } else if (nextButton) {
+            console.log('Art next button clicked via delegation'); // Debug
+            artAutoAdvanceInterval = stopAutoAdvance(artAutoAdvanceInterval);
+            changeImage(artCarouselImage, artCarouselCaption, artImages, artCurrentIndex + 1, index => artCurrentIndex = index);
+            artAutoAdvanceInterval = startAutoAdvance(artAutoAdvanceInterval, () => {
+                changeImage(artCarouselImage, artCarouselCaption, artImages, artCurrentIndex + 1, index => artCurrentIndex = index);
+            });
+        }
+    });
+
+    photographyCarouselContainer.addEventListener('click', (e) => {
+        const prevButton = e.target.closest('.photography-carousel .carousel-prev');
+        const nextButton = e.target.closest('.photography-carousel .carousel-next');
+        if (prevButton) {
+            console.log('Photography previous button clicked via delegation'); // Debug
+            photographyAutoAdvanceInterval = stopAutoAdvance(photographyAutoAdvanceInterval);
+            changeImage(photographyCarouselImage, photographyCarouselCaption, photographyImages, photographyCurrentIndex - 1, index => photographyCurrentIndex = index);
+            photographyAutoAdvanceInterval = startAutoAdvance(photographyAutoAdvanceInterval, () => {
+                changeImage(photographyCarouselImage, photographyCarouselCaption, photographyImages, photographyCurrentIndex + 1, index => photographyCurrentIndex = index);
+            });
+        } else if (nextButton) {
+            console.log('Photography next button clicked via delegation'); // Debug
+            photographyAutoAdvanceInterval = stopAutoAdvance(photographyAutoAdvanceInterval);
+            changeImage(photographyCarouselImage, photographyCarouselCaption, photographyImages, photographyCurrentIndex + 1, index => photographyCurrentIndex = index);
+            photographyAutoAdvanceInterval = startAutoAdvance(photographyAutoAdvanceInterval, () => {
+                changeImage(photographyCarouselImage, photographyCarouselCaption, photographyImages, photographyCurrentIndex + 1, index => photographyCurrentIndex = index);
+            });
+        }
+    });
 
     // Keyboard navigation for both carousels
     document.addEventListener('keydown', (e) => {
