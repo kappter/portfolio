@@ -5,12 +5,16 @@
   <title>Life Travel Map</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <!-- Leaflet CSS -->
+  <!-- Leaflet CSS – no integrity (it changes often) -->
   <link
     rel="stylesheet"
     href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
-    integrity="sha256-sA+Z4bJ0d5f+9/7g6k3u7u9x5u9x5u9x5u9x5u9x5u9x="
-    crossorigin=""
+  />
+  <!-- Fallback if unpkg is unreachable -->
+  <link
+    rel="stylesheet"
+    href="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.css"
+    onerror="this.onerror=null;this.href='https://unpkg.com/leaflet@1.9.4/dist/leaflet.css';"
   />
 
   <style>
@@ -39,91 +43,87 @@
 <div id="slider-container">
   <div id="year-display">Year: 1973</div>
   <input type="range" id="yearSlider" min="1973" max="2025" value="1973" step="1" />
+  <button id="playBtn" style="margin-left:10px;">Play</button>
 </div>
 
-<!-- Leaflet JS -->
-<script
-  src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
-  integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
-  crossorigin=""></script>
+<!-- Leaflet JS – no integrity -->
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<!-- Fallback -->
+<script>
+  if (typeof L === 'undefined') {
+    document.write('<script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.js"><\/script>');
+  }
+</script>
 
 <script>
 // ------------------------------------------------------------------
-// 1. RAW DATA (copy-paste from your table – one line per year)
+// 1. RAW DATA
 // ------------------------------------------------------------------
 const rawData = `YearAgeSchUSASchoolsLocationLiving With1973197Aprox.6/22/7319740198Triangle Packing - Worland, WYMom-Dad19751199743 S. 13th Worland, WYMom-Dad19762200Worland, WYMom-Dad19773201Worland, WYMom-Dad19784202Worland, WYMom-Dad19795K203Westside/SouthsideWorland, WYDad19806K/1204LincolnEugene, ORMom-Joe198171/2205KincadeEugene, ORMom-Joe198282/3206Ellis ParkEugene, ORMom-Joe198393/4207Ellis Park3920 Hillyard Eugene, ORMom-Joe1984104/5208Ellis ParkEugene, ORMom-Joe1985115/6209Spencers ButteEugene, ORMom-Joe1986126/7210Spencers Butte/MadisonEugene, ORMom1987137/8211BattlegroundBattleground WADad1988148/9212Worland MiddleWorland, WYDad1989159/10213South HighEugene, ORMom-Robert19901610/11214South HighEugene, ORMom-Robert19911711/12215Worland HighWorland, WYDad19921812216Worland HighWorland, WYDad199319217San JoseMission199420218San JoseMission199521219Worland,WY/SLC, UTSelf199622220Sandy, UTStacey/Z199723221Sandy, UTStacey/Z/S199824222Sandy, UTStacey/Z/S199925223Sandy, UTStacey/Z/S200026224Sandy, UTStacey/Z/S200127225Sandy, UTStacey/Z/S200228226Sandy, UTStacey/Z/S200329227Brigham Young(Dist)Sandy, UTStacey/Z/S200430Fr228UoPSandy, UTStacey/Z/S200531So229UoPSandy, UTStacey/Z/S200632Ju230UoPSandy, UTStacey/Z/S200733Sn231UoPSandy, UTStacey/Z/S200834MA232UoPSandy, UTStacey/Z/S200935MA233UoPSandy, UTStacey/Z/S201036234Granite PeaksSandy, UTStacey/Z/S201137235SkylineSLC, UTStacey/Z/S201238236SkylineSLC, UTStacey/Z/S201339237SkylineSLC, UTStacey/Z/S201440238SkylineSLC, UTStacey/Z/S201541239SkylineSLC, UTSelf201642240SkylineSLC, UTSelf/Megan201743241SkylineSLC, UTMegan201844242SkylineSLC, UTMegan/Self201945243SkylineSLC, UTSelf202046244SkylineSLC, UTSelf202147245SkylineSLC, UT - Lehi, UTSelf/Tina202248246SkylineLehi, UTTina202349247SkylineMurray - SLC, UTNaomi202450248SkylineSLC, UTNaomi202551249202652250202753PHD251202854PHD2522029552532030562542031572552032582562033592572034602582035612592036622602037632612038642622039652632040662642041672652042682662043692672044702682045712692046722702047732712048742722049752732050762742051772752052782762053792772054802782055812792056822802057832812058842822059852832060862842061872852062882862063892872064902882065912892066922902067932912068942922069952932070962942071972952072982962073992972074100298299`;
 
 // ------------------------------------------------------------------
-// 2. GEOCODE CITIES (you can extend this table)
+// 2. GEOCODE CITIES
 // ------------------------------------------------------------------
 const cityCoords = {
   "Worland, WY":          [44.0169, -107.9554],
   "Eugene, OR":           [44.0521, -123.0868],
   "Battleground, WA":     [45.7809, -122.5334],
-  "San Jose, CA":         [37.3382, -121.8863],   // assumed CA
+  "San Jose, CA":         [37.3382, -121.8863],
   "Sandy, UT":            [40.5649, -111.8388],
   "SLC, UT":              [40.7608, -111.8910],
   "Lehi, UT":             [40.3876, -111.8482],
   "Murray, UT":           [40.6669, -111.8880]
-  // add more if needed
 };
 
 // ------------------------------------------------------------------
-// 3. PARSE RAW DATA → array of objects
+// 3. PARSE RAW DATA
 // ------------------------------------------------------------------
 function parseData(str) {
-  const lines = str.split(/\r?\n/).filter(l => l.trim());
   const result = [];
+  const regex = /^(\d{4})(\d+)(.*)$/;
 
-  for (const line of lines) {
-    // Very tolerant regex – grabs everything after the year number
-    const m = line.match(/^(\d{4})(\d+)(.*)$/);
-    if (!m) continue;
-    const year = +m[1];
-    const age  = +m[2];
-    const rest = m[3];
+  str.split(/\r?\n/).forEach(line => {
+    const m = line.match(regex);
+    if (!m) return;
+    const year = +m[1], age = +m[2], rest = m[3];
 
-    // Find a known city inside the rest string
-    let latlng = null;
-    let location = "";
+    let latlng = null, location = "";
     for (const [city, coord] of Object.entries(cityCoords)) {
-      if (rest.includes(city.split(",")[0])) {   // match city name
+      if (rest.includes(city.split(',')[0])) {
         latlng = coord;
         location = city;
         break;
       }
     }
-
-    if (!latlng) continue;   // skip rows without known location
+    if (!latlng) return;
 
     result.push({ year, age, location, raw: rest, latlng });
-  }
+  });
+
   return result.sort((a,b) => a.year - b.year);
 }
-
 const events = parseData(rawData);
 
 // ------------------------------------------------------------------
-// 4. LEAFLET MAP SETUP
+// 4. LEAFLET MAP
 // ------------------------------------------------------------------
 const map = L.map('map').setView([20, 0], 2);
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
   attribution: '&copy; OpenStreetMap contributors'
 }).addTo(map);
 
-// LayerGroup for markers (so we can clear/show easily)
 const markerLayer = L.layerGroup().addTo(map);
+const markers = {};
 
 // ------------------------------------------------------------------
-// 5. CREATE MARKERS (one per event)
+// 5. CREATE MARKERS
 // ------------------------------------------------------------------
-const markers = {};   // year → marker
-
 events.forEach(ev => {
   const [lat, lng] = ev.latlng;
-  const color = `hsl(${ (ev.year-1973)*3 }, 80%, 50%)`; // rainbow over time
+  const hue = (ev.year - 1973) * 3;
+  const color = `hsl(${hue}, 80%, 50%)`;
 
-  const marker = L.circleMarker([lat, lng], {
+  const m = L.circleMarker([lat, lng], {
     radius: 6,
     fillColor: color,
     color: "#000",
@@ -132,71 +132,54 @@ events.forEach(ev => {
     fillOpacity: 0.8
   });
 
-  marker.bindTooltip(
-    `<b>Year:</b> ${ev.year}<br/>
-     <b Age:</b> ${ev.age}<br/>
-     <b>Location:</b> ${ev.location}<br/>
-     <b>Living with:</b> ${ev.raw.split(ev.location).pop().trim()}`,
-    { permanent: false, direction: "top" }
-  );
+  const living = ev.raw.split(ev.location).pop().trim();
+  m.bindTooltip(`
+    <b>Year:</b> ${ev.year}<br>
+    <b>Age:</b> ${ev.age}<br>
+    <b>Location:</b> ${ev.location}<br>
+    <b>Living with:</b> ${living}
+  `, { direction: "top" });
 
-  markers[ev.year] = marker;
+  markers[ev.year] = m;
 });
 
 // ------------------------------------------------------------------
-// 6. SLIDER LOGIC
+// 6. SLIDER
 // ------------------------------------------------------------------
 const slider = document.getElementById('yearSlider');
 const yearDisplay = document.getElementById('year-display');
 
-const minYear = Math.min(...events.map(e=>e.year));
-const maxYear = Math.max(...events.map(e=>e.year));
-
-slider.min = minYear;
-slider.max = maxYear;
-slider.value = minYear;
+const minYear = Math.min(...events.map(e => e.year));
+const maxYear = Math.max(...events.map(e => e.year));
+slider.min = minYear; slider.max = maxYear; slider.value = minYear;
 
 function updateMap(year) {
   markerLayer.clearLayers();
-  // show all markers up to (and including) the selected year
-  events.filter(e => e.year <= year).forEach(e => {
-    markers[e.year].addTo(markerLayer);
-  });
+  events.filter(e => e.year <= year).forEach(e => markers[e.year].addTo(markerLayer));
   yearDisplay.textContent = `Year: ${year}`;
 }
-
-// initial draw
 updateMap(minYear);
 
-slider.addEventListener('input', function () {
-  const y = +this.value;
-  updateMap(y);
-});
+slider.addEventListener('input', () => updateMap(+slider.value));
 
 // ------------------------------------------------------------------
-// 7. OPTIONAL: auto-play animation
+// 7. PLAY / PAUSE
 // ------------------------------------------------------------------
-let animInterval = null;
-document.getElementById('slider-container').insertAdjacentHTML('beforeend',
-  `<button id="playBtn" style="margin-left:10px;">Play</button>`
-);
-document.getElementById('playBtn').addEventListener('click', () => {
-  if (animInterval) {
-    clearInterval(animInterval);
-    animInterval = null;
-    this.textContent = 'Play';
+let anim = null;
+document.getElementById('playBtn').addEventListener('click', function () {
+  if (anim) {
+    clearInterval(anim); anim = null; this.textContent = 'Play';
     return;
   }
   this.textContent = 'Pause';
   let y = +slider.value;
-  animInterval = setInterval(() => {
+  anim = setInterval(() => {
     y++;
-    if (y > maxYear) { clearInterval(animInterval); animInterval=null; this.textContent='Play'; return; }
+    if (y > maxYear) { clearInterval(anim); anim = null; this.textContent = 'Play'; return; }
     slider.value = y;
     updateMap(y);
-  }, 600); // 0.6 s per year
+  }, 600);
 });
-
 </script>
 </body>
 </html>
