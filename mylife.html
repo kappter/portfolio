@@ -2,112 +2,184 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Life Travel Map</title>
+  <title>My Life Journey</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="icon" href="data:,">
 
-  <!-- Leaflet CSS – no integrity (it changes often) -->
-  <link
-    rel="stylesheet"
-    href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
-  />
-  <!-- Fallback if unpkg is unreachable -->
-  <link
-    rel="stylesheet"
-    href="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.css"
-    onerror="this.onerror=null;this.href='https://unpkg.com/leaflet@1.9.4/dist/leaflet.css';"
-  />
-
+  <!-- Leaflet -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <style>
     body { margin:0; padding:0; font-family:Arial, sans-serif; }
     #map { width:100%; height:100vh; }
-    #slider-container {
+    #controls {
       position: absolute;
-      bottom: 20px;
+      bottom: 15px;
       left: 50%;
       transform: translateX(-50%);
-      background: rgba(255,255,255,0.9);
-      padding: 10px 20px;
-      border-radius: 8px;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+      background: rgba(255,255,255,0.95);
+      padding: 12px 20px;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
       z-index: 1000;
-      text-align:center;
+      text-align: center;
+      font-size: 14px;
     }
-    #year-display { font-weight:bold; margin-bottom:5px; }
-    input[type=range] { width:300px; }
+    #year-display { font-weight: bold; font-size: 18px; margin-bottom: 8px; }
+    input[type=range] { width: 320px; height: 8px; }
+    button { 
+      margin-left: 10px; 
+      padding: 6px 12px; 
+      font-size: 14px; 
+      cursor: pointer; 
+      border: none; 
+      border-radius: 6px; 
+      background: #0078d4; 
+      color: white; 
+    }
+    button:hover { background: #005a9e; }
+    .dot {
+      width: 10px;
+      height: 10px;
+      background: #ff6b6b;
+      border-radius: 50%;
+      display: inline-block;
+      margin: 0 3px;
+      animation: pulse 1.5s infinite;
+    }
+    @keyframes pulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.4); }
+      100% { transform: scale(1); }
+    }
   </style>
 </head>
 <body>
 
 <div id="map"></div>
 
-<div id="slider-container">
-  <div id="year-display">Year: 1973</div>
+<div id="controls">
+  <div id="year-display">Year: <span id="year">1973</span> <span class="dot"></span></div>
   <input type="range" id="yearSlider" min="1973" max="2025" value="1973" step="1" />
-  <button id="playBtn" style="margin-left:10px;">Play</button>
+  <button id="playBtn">Pause</button>
 </div>
 
-<!-- Leaflet JS – no integrity -->
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-<!-- Fallback -->
 <script>
-  if (typeof L === 'undefined') {
-    document.write('<script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.js"><\/script>');
-  }
-</script>
+// ========================================
+// 1. CLEAN CSV DATA (embedded)
+// ========================================
+const csvData = `Year,Age,School,Location,LivingWith
+1973,0,,Aprox. 6/22/73,
+1974,1,,Triangle Packing - Worland, WY,Mom-Dad
+1975,2,,43 S. 13th Worland, WY,Mom-Dad
+1976,3,,Worland, WY,Mom-Dad
+1977,4,,Worland, WY,Mom-Dad
+1978,5,,Worland, WY,Mom-Dad
+1979,6,K,Westside/Southside Worland, WY,Dad
+1980,7,K/1,Lincoln Eugene, OR,Mom-Joe
+1981,8,1/2,Kincade Eugene, OR,Mom-Joe
+1982,9,2/3,Ellis Park Eugene, OR,Mom-Joe
+1983,10,3/4,Ellis Park 3920 Hillyard Eugene, OR,Mom-Joe
+1984,11,4/5,Ellis Park Eugene, OR,Mom-Joe
+1985,12,5/6,Spencers Butte Eugene, OR,Mom-Joe
+1986,13,6/7,Spencers Butte/Madison Eugene, OR,Mom
+1987,14,7/8,Battleground Battleground, WA,Dad
+1988,15,8/9,Worland Middle Worland, WY,Dad
+1989,16,9/10,South High Eugene, OR,Mom-Robert
+1990,17,10/11,South High Eugene, OR,Mom-Robert
+1991,18,11/12,Worland High Worland, WY,Dad
+1992,19,12,Worland High Worland, WY,Dad
+1993,20,,San Jose,Mission
+1994,21,,San Jose,Mission
+1995,22,,Worland WY/SLC UT,Self
+1996,23,,Sandy UT,Stacey/Z
+1997,24,,Sandy UT,Stacey/Z/S
+1998,25,,Sandy UT,Stacey/Z/S
+1999,26,,Sandy UT,Stacey/Z/S
+2000,27,,Sandy UT,Stacey/Z/S
+2001,28,,Sandy UT,Stacey/Z/S
+2002,29,,Sandy UT,Stacey/Z/S
+2003,30,,Brigham Young (Dist) Sandy UT,Stacey/Z/S
+2004,31,Fr,UoP Sandy UT,Stacey/Z/S
+2005,32,So,UoP Sandy UT,Stacey/Z/S
+2006,33,Ju,UoP Sandy UT,Stacey/Z/S
+2007,34,Sn,UoP Sandy UT,Stacey/Z/S
+2008,35,MA,UoP Sandy UT,Stacey/Z/S
+2009,36,MA,UoP Sandy UT,Stacey/Z/S
+2010,37,,Granite Peaks Sandy UT,Stacey/Z/S
+2011,38,,Skyline SLC UT,Stacey/Z/S
+2012,39,,Skyline SLC UT,Stacey/Z/S
+2013,40,,Skyline SLC UT,Stacey/Z/S
+2014,41,,Skyline SLC UT,Stacey/Z/S
+2015,42,,Skyline SLC UT,Self
+2016,43,,Skyline SLC UT,Self/Megan
+2017,44,,Skyline SLC UT,Megan
+2018,45,,Skyline SLC UT,Megan/Self
+2019,46,,Skyline SLC UT,Self
+2020,47,,Skyline SLC UT,Self
+2021,48,,Skyline SLC UT - Lehi UT,Self/Tina
+2022,49,,Skyline Lehi UT,Tina
+2023,50,,Skyline Murray - SLC UT,Naomi
+2024,51,,Skyline SLC UT,Naomi
+2025,52,,,`;
 
-<script>
-// ------------------------------------------------------------------
-// 1. RAW DATA
-// ------------------------------------------------------------------
-const rawData = `YearAgeSchUSASchoolsLocationLiving With1973197Aprox.6/22/7319740198Triangle Packing - Worland, WYMom-Dad19751199743 S. 13th Worland, WYMom-Dad19762200Worland, WYMom-Dad19773201Worland, WYMom-Dad19784202Worland, WYMom-Dad19795K203Westside/SouthsideWorland, WYDad19806K/1204LincolnEugene, ORMom-Joe198171/2205KincadeEugene, ORMom-Joe198282/3206Ellis ParkEugene, ORMom-Joe198393/4207Ellis Park3920 Hillyard Eugene, ORMom-Joe1984104/5208Ellis ParkEugene, ORMom-Joe1985115/6209Spencers ButteEugene, ORMom-Joe1986126/7210Spencers Butte/MadisonEugene, ORMom1987137/8211BattlegroundBattleground WADad1988148/9212Worland MiddleWorland, WYDad1989159/10213South HighEugene, ORMom-Robert19901610/11214South HighEugene, ORMom-Robert19911711/12215Worland HighWorland, WYDad19921812216Worland HighWorland, WYDad199319217San JoseMission199420218San JoseMission199521219Worland,WY/SLC, UTSelf199622220Sandy, UTStacey/Z199723221Sandy, UTStacey/Z/S199824222Sandy, UTStacey/Z/S199925223Sandy, UTStacey/Z/S200026224Sandy, UTStacey/Z/S200127225Sandy, UTStacey/Z/S200228226Sandy, UTStacey/Z/S200329227Brigham Young(Dist)Sandy, UTStacey/Z/S200430Fr228UoPSandy, UTStacey/Z/S200531So229UoPSandy, UTStacey/Z/S200632Ju230UoPSandy, UTStacey/Z/S200733Sn231UoPSandy, UTStacey/Z/S200834MA232UoPSandy, UTStacey/Z/S200935MA233UoPSandy, UTStacey/Z/S201036234Granite PeaksSandy, UTStacey/Z/S201137235SkylineSLC, UTStacey/Z/S201238236SkylineSLC, UTStacey/Z/S201339237SkylineSLC, UTStacey/Z/S201440238SkylineSLC, UTStacey/Z/S201541239SkylineSLC, UTSelf201642240SkylineSLC, UTSelf/Megan201743241SkylineSLC, UTMegan201844242SkylineSLC, UTMegan/Self201945243SkylineSLC, UTSelf202046244SkylineSLC, UTSelf202147245SkylineSLC, UT - Lehi, UTSelf/Tina202248246SkylineLehi, UTTina202349247SkylineMurray - SLC, UTNaomi202450248SkylineSLC, UTNaomi202551249202652250202753PHD251202854PHD2522029552532030562542031572552032582562033592572034602582035612592036622602037632612038642622039652632040662642041672652042682662043692672044702682045712692046722702047732712048742722049752732050762742051772752052782762053792772054802782055812792056822802057832812058842822059852832060862842061872852062882862063892872064902882065912892066922902067932912068942922069952932070962942071972952072982962073992972074100298299`;
-
-// ------------------------------------------------------------------
-// 2. GEOCODE CITIES
-// ------------------------------------------------------------------
+// ========================================
+// 2. CITY COORDINATES
+// ========================================
 const cityCoords = {
-  "Worland, WY":          [44.0169, -107.9554],
-  "Eugene, OR":           [44.0521, -123.0868],
-  "Battleground, WA":     [45.7809, -122.5334],
-  "San Jose, CA":         [37.3382, -121.8863],
-  "Sandy, UT":            [40.5649, -111.8388],
-  "SLC, UT":              [40.7608, -111.8910],
-  "Lehi, UT":             [40.3876, -111.8482],
-  "Murray, UT":           [40.6669, -111.8880]
+  "Worland, WY": [44.0169, -107.9554],
+  "Eugene, OR": [44.0521, -123.0868],
+  "Battleground, WA": [45.7809, -122.5334],
+  "San Jose": [37.3382, -121.8863],
+  "Sandy, UT": [40.5649, -111.8388],
+  "SLC, UT": [40.7608, -111.8910],
+  "Lehi, UT": [40.3876, -111.8482],
+  "Murray, UT": [40.6669, -111.8880]
 };
 
-// ------------------------------------------------------------------
-// 3. PARSE RAW DATA
-// ------------------------------------------------------------------
-function parseData(str) {
-  const result = [];
-  const regex = /^(\d{4})(\d+)(.*)$/;
+// ========================================
+// 3. PARSE CSV
+// ========================================
+function parseCSV(text) {
+  const lines = text.trim().split('\n');
+  const headers = lines[0].split(',');
+  const rows = lines.slice(1).map(line => {
+    const values = line.split(',');
+    const obj = {};
+    headers.forEach((h, i) => obj[h.trim()] = values[i]?.trim());
+    return obj;
+  });
+  return rows.filter(r => r.Location && r.Year);
+}
 
-  str.split(/\r?\n/).forEach(line => {
-    const m = line.match(regex);
-    if (!m) return;
-    const year = +m[1], age = +m[2], rest = m[3];
-
-    let latlng = null, location = "";
+const events = parseCSV(csvData)
+  .map(row => {
+    const year = parseInt(row.Year);
+    const loc = row.Location;
+    let matchedCity = null;
     for (const [city, coord] of Object.entries(cityCoords)) {
-      if (rest.includes(city.split(',')[0])) {
-        latlng = coord;
-        location = city;
+      if (loc.includes(city.split(',')[0])) {
+        matchedCity = city;
         break;
       }
     }
-    if (!latlng) return;
+    if (!matchedCity) return null;
+    return {
+      year,
+      age: row.Age,
+      location: matchedCity,
+      living: row.LivingWith || "—",
+      latlng: cityCoords[matchedCity],
+      raw: loc
+    };
+  })
+  .filter(Boolean)
+  .sort((a,b) => a.year - b.year);
 
-    result.push({ year, age, location, raw: rest, latlng });
-  });
-
-  return result.sort((a,b) => a.year - b.year);
-}
-const events = parseData(rawData);
-
-// ------------------------------------------------------------------
-// 4. LEAFLET MAP
-// ------------------------------------------------------------------
-const map = L.map('map').setView([20, 0], 2);
+// ========================================
+// 4. MAP SETUP
+// ========================================
+const map = L.map('map').setView([39.8, -98.5], 4); // USA view
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
   attribution: '&copy; OpenStreetMap contributors'
 }).addTo(map);
@@ -115,71 +187,105 @@ L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
 const markerLayer = L.layerGroup().addTo(map);
 const markers = {};
 
-// ------------------------------------------------------------------
+// ========================================
 // 5. CREATE MARKERS
-// ------------------------------------------------------------------
+// ========================================
 events.forEach(ev => {
   const [lat, lng] = ev.latlng;
-  const hue = (ev.year - 1973) * 3;
-  const color = `hsl(${hue}, 80%, 50%)`;
+  const hue = ((ev.year - 1973) / (2025 - 1973)) * 280; // blue → red
+  const color = `hsl(${hue}, 90%, 55%)`;
 
-  const m = L.circleMarker([lat, lng], {
-    radius: 6,
+  const marker = L.circleMarker([lat, lng], {
+    radius: 8,
     fillColor: color,
-    color: "#000",
-    weight: 1,
+    color: '#000',
+    weight: 1.5,
     opacity: 1,
-    fillOpacity: 0.8
+    fillOpacity: 0.9
   });
 
-  const living = ev.raw.split(ev.location).pop().trim();
-  m.bindTooltip(`
-    <b>Year:</b> ${ev.year}<br>
-    <b>Age:</b> ${ev.age}<br>
-    <b>Location:</b> ${ev.location}<br>
-    <b>Living with:</b> ${living}
-  `, { direction: "top" });
+  marker.bindTooltip(`
+    <div style="font-size:13px; line-height:1.4;">
+      <b>${ev.year} (Age ${ev.age})</b><br>
+      <b>Location:</b> ${ev.raw}<br>
+      <b>Living with:</b> ${ev.living}
+    </div>
+  `, { direction: 'top', offset: [0, -10] });
 
-  markers[ev.year] = m;
+  markers[ev.year] = marker;
 });
 
-// ------------------------------------------------------------------
-// 6. SLIDER
-// ------------------------------------------------------------------
+// ========================================
+// 6. AUTO ZOOM TO DATA
+// ========================================
+const lats = events.map(e => e.latlng[0]);
+const lngs = events.map(e => e.latlng[1]);
+const bounds = L.latLngBounds(
+  L.latLng(Math.min(...lats), Math.min(...lngs)),
+  L.latLng(Math.max(...lats), Math.max(...lngs))
+);
+map.fitBounds(bounds, { padding: [50, 50] });
+
+// ========================================
+// 7. SLIDER & AUTO-PLAY
+// ========================================
 const slider = document.getElementById('yearSlider');
-const yearDisplay = document.getElementById('year-display');
+const yearSpan = document.getElementById('year');
+const playBtn = document.getElementById('('playBtn');
 
 const minYear = Math.min(...events.map(e => e.year));
 const maxYear = Math.max(...events.map(e => e.year));
-slider.min = minYear; slider.max = maxYear; slider.value = minYear;
+slider.min = minYear;
+slider.max = maxYear;
 
-function updateMap(year) {
+let currentYear = minYear;
+let interval = null;
+
+function updateYear(y) {
+  currentYear = y;
+  slider.value = y;
+  yearSpan.textContent = y;
   markerLayer.clearLayers();
-  events.filter(e => e.year <= year).forEach(e => markers[e.year].addTo(markerLayer));
-  yearDisplay.textContent = `Year: ${year}`;
+  events.filter(e => e.year <= y).forEach(e => markers[e.year].addTo(markerLayer));
 }
-updateMap(minYear);
 
-slider.addEventListener('input', () => updateMap(+slider.value));
+function play() {
+  if (interval) return;
+  interval = setInterval(() => {
+    if (currentYear >= maxYear) {
+      pause();
+      return;
+    }
+    updateYear(currentYear + 1);
+  }, 800);
+}
 
-// ------------------------------------------------------------------
-// 7. PLAY / PAUSE
-// ------------------------------------------------------------------
-let anim = null;
-document.getElementById('playBtn').addEventListener('click', function () {
-  if (anim) {
-    clearInterval(anim); anim = null; this.textContent = 'Play';
-    return;
-  }
-  this.textContent = 'Pause';
-  let y = +slider.value;
-  anim = setInterval(() => {
-    y++;
-    if (y > maxYear) { clearInterval(anim); anim = null; this.textContent = 'Play'; return; }
-    slider.value = y;
-    updateMap(y);
-  }, 600);
+function pause() {
+  if (interval) clearInterval(interval);
+  interval = null;
+  playBtn.textContent = 'Play';
+}
+
+slider.addEventListener('input', () => {
+  pause();
+  updateYear(+slider.value);
 });
+
+playBtn.addEventListener('click', () => {
+  if (interval) {
+    pause();
+  } else {
+    playBtn.textContent = 'Pause';
+    play();
+  }
+});
+
+// Start animation on load
+setTimeout(() => {
+  updateYear(minYear);
+  play();
+}, 500);
+
 </script>
 </body>
 </html>
