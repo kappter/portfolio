@@ -192,7 +192,7 @@ const markers = {};
 // ========================================
 events.forEach(ev => {
   const [lat, lng] = ev.latlng;
-  const hue = ((ev.year - 1973) / (2025 - 1973)) * 280; // blue → red
+  const hue = ((ev.year - 1973) / (2025 - 1973)) * 280;
   const color = `hsl(${hue}, 90%, 55%)`;
 
   const marker = L.circleMarker([lat, lng], {
@@ -218,20 +218,22 @@ events.forEach(ev => {
 // ========================================
 // 6. AUTO ZOOM TO DATA
 // ========================================
-const lats = events.map(e => e.latlng[0]);
-const lngs = events.map(e => e.latlng[1]);
-const bounds = L.latLngBounds(
-  L.latLng(Math.min(...lats), Math.min(...lngs)),
-  L.latLng(Math.max(...lats), Math.max(...lngs))
-);
-map.fitBounds(bounds, { padding: [50, 50] });
+if (events.length > 0) {
+  const lats = events.map(e => e.latlng[0]);
+  const lngs = events.map(e => e.latlng[1]);
+  const bounds = L.latLngBounds(
+    L.latLng(Math.min(...lats), Math.min(...lngs)),
+    L.latLng(Math.max(...lats), Math.max(...lngs))
+  );
+  map.fitBounds(bounds, { padding: [50, 50] });
+}
 
 // ========================================
 // 7. SLIDER & AUTO-PLAY
 // ========================================
 const slider = document.getElementById('yearSlider');
 const yearSpan = document.getElementById('year');
-const playBtn = document.getElementById('('playBtn');
+const playBtn = document.getElementById('playBtn');  // FIXED: Removed stray '('
 
 const minYear = Math.min(...events.map(e => e.year));
 const maxYear = Math.max(...events.map(e => e.year));
