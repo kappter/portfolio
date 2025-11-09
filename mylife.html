@@ -323,7 +323,35 @@
       map.fitBounds(bounds, {padding: [30, 30]});
     }
     // Hide UI on initial load
-    hideMapUI();
+    // hideMapUI();
+    function loadCSVfromURL() {
+  Papa.parse('journey.csv', {
+    download: true,
+    header: true,
+    skipEmptyLines: true,
+    complete: function(results) {
+      journeyData = results.data.filter(r => r.lat && r.lon && r.year && r.location);
+      if (journeyData.length > 0) {
+        // proceed as usual: initMap(), etc.
+        showMapUI();
+        if (map) { resetMap(); } else { initMap(); }
+        buildDestinationList(); setupSlider(); updateMap(0); fitMapBounds();
+        return;
+      }
+      // If no data, show upload UI
+      hideMapUI();
+    },
+    error: function() {
+      // Fallback if fetch fails
+      hideMapUI();
+    }
+  });
+}
+
+loadCSVfromURL(); // Try auto load when the page loads
+
+// Keep file upload in place for fallback
+
   </script>
 
 </body>
