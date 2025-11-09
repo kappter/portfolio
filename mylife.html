@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <title>Life Journey Map with Destination List</title>
+  <title>Life Journey Map with Upload and Destination List</title>
   
   <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
   <style>
@@ -17,8 +17,9 @@
       width: 100vw;
     }
     #controls {
-      margin: 10px;
-      position: absolute;
+      margin: 10px auto 10px auto;
+      max-width: 500px;
+      position: relative;
       top: 10px;
       left: 50%;
       transform: translateX(-50%);
@@ -31,14 +32,16 @@
       align-items: center;
       gap: 12px;
       user-select: none;
+      flex-wrap: wrap;
+      justify-content: center;
     }
     #yearSlider {
-      width: 300px;
+      width: 250px;
       cursor: pointer;
     }
     #yearDisplay {
       font-weight: bold;
-      min-width: 80px;
+      min-width: 90px;
       text-align: center;
     }
     #destination-list {
@@ -89,6 +92,18 @@
       z-index: 1200;
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     }
+    #upload-description {
+      width: 100%;
+      font-size: 0.85em;
+      color: #444;
+      text-align: center;
+      margin-bottom: 6px;
+      font-family: monospace;
+      user-select: none;
+    }
+    #csvUpload {
+      cursor: pointer;
+    }
   </style>
 </head>
 <body>
@@ -96,7 +111,17 @@
   <div id="controls">
     <button id="playBtn">Play</button>
     <input type="range" id="yearSlider" min="0" max="0" value="0" />
-    <span id="yearDisplay">Loading...</span>
+    <span id="yearDisplay">Upload CSV to start</span>
+    <div id="upload-container" style="flex-basis:100%; margin-top: 6px;">
+      <div id="upload-description">
+        CSV format required: <br>
+        <strong>Headers:</strong> <em>year, age, location, lat, lon, livingWith</em><br>
+        Example row:<br>
+        <code>1974,0,"Worland, WY",44.0169,-104.419,"Mom-Dad"</code><br>
+        Latitude and longitude are decimal degrees; quotes required if location contains commas.
+      </div>
+      <input type="file" id="csvUpload" accept=".csv" title="Upload your life journey CSV" />
+    </div>
   </div>
 
   <div id="map"></div>
@@ -113,26 +138,47 @@
   <script>
     let map, journeyData = [], markers = [], animInterval = null;
 
-    // Load CSV data (replace the URL or path with your local CSV file path)
-    Papa.parse('journey.csv', {
-      download: true,
-      header: true,
-      complete: function(results) {
-        journeyData = results.data.filter(r => r.lat && r.lon);
-        journeyData.forEach(d => {
-          d.lat = parseFloat(d.lat);
-          d.lon = parseFloat(d.lon);
-          d.year = parseInt(d.year);
-          d.age = d.age || ''; // fallback if no age
-          d.location = d.location || 'Unknown';
-          d.livingWith = d.livingWith || '';
-        });
-        initMap();
-        buildDestinationList();
-        setupSlider();
-        updateMap(0);
-        fitMapBounds();
-      }
+    const playBtn = document.getElementById('playBtn');
+    const slider = document.getElementById('yearSlider');
+    const yearDisplay = document.getElementById('yearDisplay');
+    const csvUpload = document.getElementById('csvUpload');
+
+    csvUpload.addEventListener('change', function(evt) {
+      const file = evt.target.files[0];
+      if (!file) return;
+
+      Papa.parse(file, {
+        header: true,
+        skipEmptyLines: true,
+        complete: function(results) {
+          journeyData = results.data.filter(r => r.lat && r.lon);
+          if(journeyData.length === 0) {
+            alert('No valid data rows found. Check CSV format and values.');
+            yearDisplay.textContent = 'Upload a valid CSV to start';
+            return;
+          }
+          journeyData.forEach(d => {
+            d.lat = parseFloat(d.lat);
+            d.lon = parseFloat(d.lon);
+            d.year = parseInt(d.year);
+            d.age = d.age || '';
+            d.location = d.location || 'Unknown';
+            d.livingWith = d.livingWith || '';
+          });
+          if (map) {
+            resetMap();
+          } else {
+            initMap();
+          }
+          buildDestinationList();
+          setupSlider();
+          updateMap(0);
+          fitMapBounds();
+        },
+        error: function(err) {
+          alert('Error loading CSV: ' + err.message);
+        }
+      });
     });
 
     function initMap() {
@@ -142,8 +188,17 @@
       }).addTo(map);
     }
 
+    function resetMap() {
+      markers.forEach(m => map.removeLayer(m));
+      markers = [];
+      map.eachLayer(function(layer) {
+        if (!(layer instanceof L.TileLayer)) {
+          map.removeLayer(layer);
+        }
+      });
+    }
+
     function updateMap(idx) {
-      // Clear existing markers and polylines
       markers.forEach(m => map.removeLayer(m));
       markers = [];
 
@@ -165,10 +220,7 @@
           L.polyline([[prev.lat, prev.lon], [d.lat, d.lon]], {color: '#888'}).addTo(map);
         }
       }
-
-      document.getElementById('yearDisplay').textContent =
-        journeyData[idx].year + " (Age " + journeyData[idx].age + ")";
-
+      yearDisplay.textContent = journeyData[idx].year + " (Age " + journeyData[idx].age + ")";
       highlightDestinations(idx);
     }
 
@@ -196,14 +248,13 @@
     }
 
     function setupSlider() {
-      const slider = document.getElementById('yearSlider');
       slider.max = journeyData.length - 1;
       slider.value = 0;
       slider.oninput = function() {
         updateMap(Number(this.value));
         pauseAnimation();
       };
-      document.getElementById('playBtn').onclick = togglePlay;
+      playBtn.onclick = togglePlay;
     }
 
     function togglePlay() {
@@ -215,8 +266,7 @@
     }
 
     function playAnimation() {
-      document.getElementById('playBtn').textContent = 'Pause';
-      let slider = document.getElementById('yearSlider');
+      playBtn.textContent = 'Pause';
       let idx = Number(slider.value);
       if (idx >= journeyData.length - 1) idx = 0;
       animInterval = setInterval(() => {
@@ -233,7 +283,7 @@
     function pauseAnimation() {
       clearInterval(animInterval);
       animInterval = null;
-      document.getElementById('playBtn').textContent = 'Play';
+      playBtn.textContent = 'Play';
     }
 
     function fitMapBounds() {
