@@ -2,30 +2,21 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <title>Life Journey Map with Upload and Destination List</title>
-  
+  <title>Life Journey Map</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
   <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
   <style>
-    html, body {
-      height: 100%;
-      margin: 0;
-      font-family: Arial, sans-serif;
-      background: #f9f9f9;
-    }
-    #map {
-      height: 80vh;
-      width: 100vw;
-    }
+    html, body { height: 100%; margin: 0; background: #f8f8fa; font-family: Arial, sans-serif; }
     #controls {
-      margin: 10px auto 10px auto;
-      max-width: 500px;
+      margin: 14px auto 0 auto;
+      max-width: 520px;
       position: relative;
-      top: 10px;
-      left: 50%;
-      transform: translateX(-50%);
+      top: 0;
+      left: 0;
       background: #fffbe9;
       z-index: 1100;
-      padding: 8px 16px;
+      padding: 10px 18px;
       border-radius: 12px;
       box-shadow: 0 2px 8px #aaa6;
       display: flex;
@@ -35,92 +26,91 @@
       flex-wrap: wrap;
       justify-content: center;
     }
-    #yearSlider {
-      width: 250px;
-      cursor: pointer;
+    #playBtn { min-width: 45px; }
+    #yearSlider { width: 220px; }
+    #yearDisplay { font-weight: bold; min-width: 90px; text-align: center; }
+    #csvUpload { cursor: pointer; }
+    #helpBtn {
+      background: #185a9d; color: #fff; border: none; border-radius: 50%; width: 28px; height: 28px;
+      cursor: pointer; font-size: 1.2em; font-weight: bold; display: flex; align-items: center;
+      justify-content: center; margin-left: 2px;
     }
-    #yearDisplay {
-      font-weight: bold;
-      min-width: 90px;
-      text-align: center;
-    }
-    #destination-list {
+    #csvHelp {
+      display: none;
       position: absolute;
-      left: 0;
-      bottom: 60px;
-      width: 260px;
-      max-height: 45vh;
-      overflow-y: auto;
-      background: rgba(255,255,255,0.95);
-      border-radius: 0 12px 0 0;
-      padding: 12px 18px;
-      box-shadow: 2px 0 6px #8883;
-      font-size: 0.9em;
-      z-index: 1050;
-    }
-    #destination-list h3 {
-      margin-top: 0;
-      margin-bottom: 8px;
-      font-weight: bold;
+      top: 40px; right: 18px;
+      background: #fffbe9;
+      border-radius: 9px;
+      padding: 15px 18px;
+      font-size: 1.03em;
       color: #185a9d;
+      box-shadow: 0 2px 8px #aaa;
+      z-index: 2000;
+      width: 360px;
+      line-height: 1.5;
     }
+    #csvHelp code {
+      background: #eaf6ff;
+      border-radius: 3px;
+      padding: 2px 3px;
+      color: #464646;
+    }
+    #map { height: 80vh; width: 100vw; display: none;}
+    #destination-list {
+      position: absolute; left: 0; bottom: 60px;
+      width: 260px; max-height: 45vh; overflow-y: auto;
+      background: rgba(255,255,255,0.95);
+      border-radius: 0 12px 0 0; padding: 12px 18px;
+      box-shadow: 2px 0 6px #8883; font-size: 0.95em;
+      z-index: 1050; display: none;
+    }
+    #destination-list h3 { margin-top: 0; margin-bottom: 8px; font-weight: bold; color: #185a9d; }
     #destinations li {
-      color: #777;
-      margin-bottom: 8px;
+      color: #777; margin-bottom: 8px;
       transition: color 0.3s, background 0.3s;
-      padding-left: 7px;
-      list-style: none;
+      padding-left: 7px; list-style: none;
       border-left: 4px solid transparent;
+      cursor: pointer;
     }
     #destinations li.active {
-      color: #185a9d;
-      background: #dbeffe;
-      font-weight: bold;
-      border-left-color: #185a9d;
+      color: #185a9d; background: #dbeffe;
+      font-weight: bold; border-left-color: #185a9d;
     }
     #footer {
-      position: fixed;
-      bottom: 0;
-      left: 0;
-      width: 100%;
-      background: #222a40;
-      color: #ccc;
-      font-size: 0.85em;
-      padding: 8px 10px;
-      text-align: center;
-      user-select: none;
-      z-index: 1200;
+      position: fixed; bottom: 0; left: 0; width: 100%;
+      background: #222a40; color: #ccc; font-size: 0.88em;
+      padding: 8px 10px; text-align: center;
+      user-select: none; z-index: 1200;
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     }
-    #upload-description {
-      width: 100%;
-      font-size: 0.85em;
-      color: #444;
-      text-align: center;
-      margin-bottom: 6px;
-      font-family: monospace;
-      user-select: none;
+    #errorMsg {
+      color: #b7102b;
+      margin-left: 12px;
+      font-size: 0.97em;
+      display: none;
+      font-weight: bold;
     }
-    #csvUpload {
-      cursor: pointer;
+    @media (max-width: 700px) {
+      #controls, #csvHelp { max-width: 98vw; width: 98vw; }
+      #destination-list { width: 90vw; font-size: 1em; }
     }
   </style>
 </head>
 <body>
 
   <div id="controls">
-    <button id="playBtn">Play</button>
-    <input type="range" id="yearSlider" min="0" max="0" value="0" />
+    <button id="playBtn" disabled>Play</button>
+    <input type="range" id="yearSlider" min="0" max="0" value="0" disabled />
     <span id="yearDisplay">Upload CSV to start</span>
-    <div id="upload-container" style="flex-basis:100%; margin-top: 6px;">
-      <div id="upload-description">
-        CSV format required: <br>
-        <strong>Headers:</strong> <em>year, age, location, lat, lon, livingWith</em><br>
-        Example row:<br>
-        <code>1974,0,"Worland, WY",44.0169,-104.419,"Mom-Dad"</code><br>
-        Latitude and longitude are decimal degrees; quotes required if location contains commas.
-      </div>
-      <input type="file" id="csvUpload" accept=".csv" title="Upload your life journey CSV" />
+    <input type="file" id="csvUpload" accept=".csv" />
+    <button id="helpBtn" title="CSV format requirements">?</button>
+    <span id="errorMsg"></span>
+    <div id="csvHelp">
+      <strong>CSV format required</strong><br>
+      <b>Headers:</b> <em>year, age, location, lat, lon, livingWith</em><br>
+      Example row:<br>
+      <code>1974,0,"Worland, WY",44.0169,-104.419,"Mom-Dad"</code><br>
+      Latitude and longitude are decimal degrees; quotes required if location contains commas.
     </div>
   </div>
 
@@ -137,34 +127,62 @@
   <script src="https://cdn.jsdelivr.net/npm/papaparse@5.3.2/papaparse.min.js"></script>
   <script>
     let map, journeyData = [], markers = [], animInterval = null;
-
     const playBtn = document.getElementById('playBtn');
     const slider = document.getElementById('yearSlider');
     const yearDisplay = document.getElementById('yearDisplay');
     const csvUpload = document.getElementById('csvUpload');
+    const destinationList = document.getElementById('destination-list');
+    const mapDiv = document.getElementById('map');
+    const errorMsg = document.getElementById('errorMsg');
+
+    // Help popup management
+    const helpBtn = document.getElementById('helpBtn');
+    const helpPopup = document.getElementById('csvHelp');
+    helpBtn.onclick = (e) => {
+      e.stopPropagation();
+      helpPopup.style.display = helpPopup.style.display === "block" ? "none" : "block";
+    };
+    document.body.addEventListener('click', e => {
+      if (!helpBtn.contains(e.target) && !helpPopup.contains(e.target)) {
+        helpPopup.style.display = "none";
+      }
+    });
 
     csvUpload.addEventListener('change', function(evt) {
-      const file = evt.target.files[0];
-      if (!file) return;
-
+      playBtn.disabled = true;
+      slider.disabled = true;
+      yearDisplay.textContent = "Loading...";
+      errorMsg.style.display = "none";
+      if (!csvUpload.files.length) return;
+      const file = csvUpload.files[0];
       Papa.parse(file, {
         header: true,
         skipEmptyLines: true,
         complete: function(results) {
-          journeyData = results.data.filter(r => r.lat && r.lon);
-          if(journeyData.length === 0) {
-            alert('No valid data rows found. Check CSV format and values.');
-            yearDisplay.textContent = 'Upload a valid CSV to start';
+          journeyData = results.data.filter(r => r.lat && r.lon && r.year && r.location);
+          if(!validateHeaders(results.meta.fields)) {
+            errorMsg.textContent = "Missing required headers. Click '?' for format help.";
+            errorMsg.style.display = "inline";
+            yearDisplay.textContent = "Upload CSV to start";
+            hideMapUI();
+            return;
+          }
+          if (journeyData.length === 0) {
+            errorMsg.textContent = "No valid data rows found. Click '?' for format help.";
+            errorMsg.style.display = "inline";
+            yearDisplay.textContent = "Upload valid CSV";
+            hideMapUI();
             return;
           }
           journeyData.forEach(d => {
             d.lat = parseFloat(d.lat);
             d.lon = parseFloat(d.lon);
-            d.year = parseInt(d.year);
+            d.year = parseInt(d.year, 10);
             d.age = d.age || '';
             d.location = d.location || 'Unknown';
             d.livingWith = d.livingWith || '';
           });
+          showMapUI();
           if (map) {
             resetMap();
           } else {
@@ -176,18 +194,37 @@
           fitMapBounds();
         },
         error: function(err) {
-          alert('Error loading CSV: ' + err.message);
+          errorMsg.textContent = 'CSV Load Error: ' + err.message;
+          errorMsg.style.display = "inline";
+          hideMapUI();
         }
       });
     });
 
+    function validateHeaders(fields) {
+      const req = ['year', 'age', 'location', 'lat', 'lon', 'livingWith'];
+      // allow case-insensitive
+      let lower = fields.map(f => f.trim().toLowerCase());
+      return req.every(h => lower.includes(h));
+    }
+    function showMapUI() {
+      mapDiv.style.display = "block";
+      destinationList.style.display = "block";
+      playBtn.disabled = false;
+      slider.disabled = false;
+    }
+    function hideMapUI() {
+      mapDiv.style.display = "none";
+      destinationList.style.display = "none";
+      playBtn.disabled = true;
+      slider.disabled = true;
+    }
     function initMap() {
       map = L.map('map').setView([journeyData[0].lat, journeyData[0].lon], 5);
       L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         attribution: '&copy; OpenStreetMap contributors'
       }).addTo(map);
     }
-
     function resetMap() {
       markers.forEach(m => map.removeLayer(m));
       markers = [];
@@ -197,11 +234,9 @@
         }
       });
     }
-
     function updateMap(idx) {
       markers.forEach(m => map.removeLayer(m));
       markers = [];
-
       for (let i = 0; i <= idx; i++) {
         let d = journeyData[i];
         let marker = L.circleMarker([d.lat, d.lon], {
@@ -212,9 +247,7 @@
         })
         .bindPopup(`<strong>${d.location} (${d.year})</strong><br>With: ${d.livingWith}`)
         .addTo(map);
-
         markers.push(marker);
-
         if (i > 0) {
           let prev = journeyData[i - 1];
           L.polyline([[prev.lat, prev.lon], [d.lat, d.lon]], {color: '#888'}).addTo(map);
@@ -223,7 +256,6 @@
       yearDisplay.textContent = journeyData[idx].year + " (Age " + journeyData[idx].age + ")";
       highlightDestinations(idx);
     }
-
     function buildDestinationList() {
       const ul = document.getElementById('destinations');
       ul.innerHTML = '';
@@ -231,12 +263,16 @@
         let li = document.createElement('li');
         li.textContent = `${d.year}: ${d.location}`;
         li.id = `dest-${i}`;
+        li.onclick = () => {
+          slider.value = i;
+          updateMap(i);
+          pauseAnimation();
+        };
         ul.appendChild(li);
       });
     }
-
     function highlightDestinations(currentIdx) {
-      journeyData.forEach((d, i) => {
+      journeyData.forEach((_d, i) => {
         const li = document.getElementById(`dest-${i}`);
         if (!li) return;
         if (i <= currentIdx) {
@@ -246,7 +282,6 @@
         }
       });
     }
-
     function setupSlider() {
       slider.max = journeyData.length - 1;
       slider.value = 0;
@@ -256,7 +291,6 @@
       };
       playBtn.onclick = togglePlay;
     }
-
     function togglePlay() {
       if (animInterval) {
         pauseAnimation();
@@ -264,7 +298,6 @@
         playAnimation();
       }
     }
-
     function playAnimation() {
       playBtn.textContent = 'Pause';
       let idx = Number(slider.value);
@@ -279,18 +312,18 @@
         updateMap(idx);
       }, 1500);
     }
-
     function pauseAnimation() {
       clearInterval(animInterval);
       animInterval = null;
       playBtn.textContent = 'Play';
     }
-
     function fitMapBounds() {
       let latlngs = journeyData.map(d => [d.lat, d.lon]);
       let bounds = L.latLngBounds(latlngs);
       map.fitBounds(bounds, {padding: [30, 30]});
     }
+    // Hide UI on initial load
+    hideMapUI();
   </script>
 
 </body>
