@@ -8,7 +8,7 @@ const errorMsg = document.getElementById('errorMsg');
 const helpBtn = document.getElementById('helpBtn');
 const helpPopup = document.getElementById('csvHelp');
 
-// Help popup logic
+// Toggle help popup
 helpBtn.onclick = (e) => {
   e.stopPropagation();
   helpPopup.style.display = helpPopup.style.display === "block" ? "none" : "block";
@@ -22,21 +22,8 @@ document.body.addEventListener('click', e => {
 function validateHeaders(fields) {
   const req = ['year', 'age', 'location', 'lat', 'lon', 'livingWith'];
   let lower = fields.map(f => f.trim().toLowerCase());
-  // Find any missing
   let missing = req.filter(h => !lower.includes(h));
   return { valid: missing.length === 0, missing };
-}
-
-let headerCheck = validateHeaders(results.meta.fields);
-if(!headerCheck.valid) {
-  trace("Demo file missing required headers: " + headerCheck.missing.join(', '));
-  hideMapUI();
-  return;
-}
-
-// On page load, use journey.csv as default demo
-window.onload = function() {
-  loadDemoCSV();
 }
 
 function trace(msg) {
@@ -45,7 +32,10 @@ function trace(msg) {
   errorMsg.textContent = msg;
 }
 
-// Load journey.csv as default
+window.onload = function() {
+  loadDemoCSV();
+}
+
 function loadDemoCSV() {
   trace('Attempting to load journey.csv as demo...');
   fetch('journey.csv')
@@ -60,18 +50,19 @@ function loadDemoCSV() {
         complete: function(results) {
           trace('PapaParse complete');
           console.log('Headers found:', results.meta.fields);
-    if (results.meta.fields && results.meta.fields.length)
-      console.log('First header in hex:', Array.from(results.meta.fields[0]).map(c => c.charCodeAt(0).toString(16)));
-    console.log('All headers:', results.meta.fields);
-    console.log('First row of data:', results.data[0]);
-          if(!validateHeaders(results.meta.fields)) {
-  trace("Demo file missing required headers: " + results.meta.fields);
-  hideMapUI();
-  return;
-}
-          journeyData = results.data.filter(r =>
-            r.lat && r.lon && r.year && r.location && r.lat !== "-1" && r.lon !== "-1"
-          );
+          if (results.meta.fields && results.meta.fields.length)
+            console.log('First header in hex:', Array.from(results.meta.fields[0]).map(c => c.charCodeAt(0).toString(16)));
+          console.log('All headers:', results.meta.fields);
+          console.log('First row of data:', results.data[0]);
+
+          let headerCheck = validateHeaders(results.meta.fields);
+          if (!headerCheck.valid) {
+            trace("Demo file missing required headers: " + headerCheck.missing.join(', '));
+            hideMapUI();
+            return;
+          }
+
+          journeyData = results.data.filter(r => r.lat && r.lon && r.year && r.location && r.lat !== "-1" && r.lon !== "-1");
           trace(`Loaded records: ${journeyData.length}`);
           journeyData.forEach(d => {
             d.lat = parseFloat(d.lat);
@@ -90,7 +81,7 @@ function loadDemoCSV() {
           fitMapBounds();
         },
         error: function(err) {
-          trace('PapaParse error:' + err.message);
+          trace('PapaParse error: ' + err.message);
           hideMapUI();
         }
       });
@@ -101,7 +92,7 @@ function loadDemoCSV() {
     });
 }
 
-// File upload replaces demo
+// File upload replaces demo data
 csvUpload.addEventListener('change', function(evt) {
   trace('Upload event triggered');
   playBtn.disabled = true;
@@ -116,15 +107,16 @@ csvUpload.addEventListener('change', function(evt) {
     complete: function(results) {
       trace('PapaParse complete (upload)');
       console.log('Upload headers found:', results.meta.fields);
-      if(!validateHeaders(results.meta.fields)) {
-        trace("Missing required headers: " + results.meta.fields);
+
+      let headerCheck = validateHeaders(results.meta.fields);
+      if (!headerCheck.valid) {
+        trace("Missing required headers: " + headerCheck.missing.join(', '));
         yearDisplay.textContent = "Upload CSV to start";
         hideMapUI();
         return;
       }
-      journeyData = results.data.filter(r =>
-        r.lat && r.lon && r.year && r.location && r.lat !== "-1" && r.lon !== "-1"
-      );
+
+      journeyData = results.data.filter(r => r.lat && r.lon && r.year && r.location && r.lat !== "-1" && r.lon !== "-1");
       trace(`Loaded upload records: ${journeyData.length}`);
       journeyData.forEach(d => {
         d.lat = parseFloat(d.lat);
@@ -142,7 +134,7 @@ csvUpload.addEventListener('change', function(evt) {
       fitMapBounds();
     },
     error: function(err) {
-      trace('PapaParse error:' + err.message);
+      trace('PapaParse error: ' + err.message);
       hideMapUI();
     }
   });
@@ -154,18 +146,21 @@ function showMapUI() {
   playBtn.disabled = false;
   slider.disabled = false;
 }
+
 function hideMapUI() {
   document.getElementById('map').style.display = "none";
   destinationList.style.display = "none";
   playBtn.disabled = true;
   slider.disabled = true;
 }
+
 function initMap() {
   map = L.map('map').setView([journeyData[0].lat, journeyData[0].lon], 5);
   L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     attribution: '&copy; OpenStreetMap contributors'
   }).addTo(map);
 }
+
 function resetMap() {
   markers.forEach(m => map.removeLayer(m));
   markers = [];
@@ -175,6 +170,7 @@ function resetMap() {
     }
   });
 }
+
 function updateMap(idx) {
   markers.forEach(m => map.removeLayer(m));
   markers = [];
@@ -197,6 +193,7 @@ function updateMap(idx) {
   yearDisplay.textContent = journeyData[idx].year + " (Age " + journeyData[idx].age + ")";
   highlightDestinations(idx);
 }
+
 function buildDestinationList() {
   const ul = document.getElementById('destinations');
   ul.innerHTML = '';
@@ -212,6 +209,7 @@ function buildDestinationList() {
     ul.appendChild(li);
   });
 }
+
 function highlightDestinations(currentIdx) {
   journeyData.forEach((_d, i) => {
     const li = document.getElementById(`dest-${i}`);
@@ -223,6 +221,7 @@ function highlightDestinations(currentIdx) {
     }
   });
 }
+
 function setupSlider() {
   slider.max = journeyData.length - 1;
   slider.value = 0;
@@ -232,6 +231,7 @@ function setupSlider() {
   };
   playBtn.onclick = togglePlay;
 }
+
 function togglePlay() {
   if (animInterval) {
     pauseAnimation();
@@ -239,6 +239,7 @@ function togglePlay() {
     playAnimation();
   }
 }
+
 function playAnimation() {
   playBtn.textContent = 'Pause';
   let idx = Number(slider.value);
@@ -253,11 +254,13 @@ function playAnimation() {
     updateMap(idx);
   }, 1500);
 }
+
 function pauseAnimation() {
   clearInterval(animInterval);
   animInterval = null;
   playBtn.textContent = 'Play';
 }
+
 function fitMapBounds() {
   let latlngs = journeyData.map(d => [d.lat, d.lon]);
   let bounds = L.latLngBounds(latlngs);
