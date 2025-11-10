@@ -22,7 +22,16 @@ document.body.addEventListener('click', e => {
 function validateHeaders(fields) {
   const req = ['year', 'age', 'location', 'lat', 'lon', 'livingWith'];
   let lower = fields.map(f => f.trim().toLowerCase());
-  return req.every(h => lower.includes(h));
+  // Find any missing
+  let missing = req.filter(h => !lower.includes(h));
+  return { valid: missing.length === 0, missing };
+}
+
+let headerCheck = validateHeaders(results.meta.fields);
+if(!headerCheck.valid) {
+  trace("Demo file missing required headers: " + headerCheck.missing.join(', '));
+  hideMapUI();
+  return;
 }
 
 // On page load, use journey.csv as default demo
@@ -56,10 +65,10 @@ function loadDemoCSV() {
     console.log('All headers:', results.meta.fields);
     console.log('First row of data:', results.data[0]);
           if(!validateHeaders(results.meta.fields)) {
-            trace("Demo file missing required headers: " + results.meta.fields);
-            hideMapUI();
-            return;
-          }
+  trace("Demo file missing required headers: " + results.meta.fields);
+  hideMapUI();
+  return;
+}
           journeyData = results.data.filter(r =>
             r.lat && r.lon && r.year && r.location && r.lat !== "-1" && r.lon !== "-1"
           );
