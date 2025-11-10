@@ -20,7 +20,7 @@ document.body.addEventListener('click', e => {
 });
 
 function validateHeaders(fields) {
-  const req = ['year', 'age', 'location', 'lat', 'lon', 'livingWith'];
+  const req = ['year', 'age', 'location', 'lat', 'lon', 'livingWith'].map(x => x.toLowerCase());
   let lower = fields.map(f => f.trim().toLowerCase());
   let missing = req.filter(h => !lower.includes(h));
   return { valid: missing.length === 0, missing };
