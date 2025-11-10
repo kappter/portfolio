@@ -51,6 +51,10 @@ function loadDemoCSV() {
         complete: function(results) {
           trace('PapaParse complete');
           console.log('Headers found:', results.meta.fields);
+    if (results.meta.fields && results.meta.fields.length)
+      console.log('First header in hex:', Array.from(results.meta.fields[0]).map(c => c.charCodeAt(0).toString(16)));
+    console.log('All headers:', results.meta.fields);
+    console.log('First row of data:', results.data[0]);
           if(!validateHeaders(results.meta.fields)) {
             trace("Demo file missing required headers: " + results.meta.fields);
             hideMapUI();
