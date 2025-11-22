@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Life Journey Map – Preview</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+  <style>
+    html, body { height: 100%; margin: 0; background: #f8f8fa; font-family: Arial, sans-serif; }
+    #controls {
+      margin: 14px auto 0 auto;
+      max-width: 520px;
+      position: relative;
+      background: #fffbe9;
+      z-index: 1100;
+      padding: 10px 18px;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px #aaa6;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      user-select: none;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+    #playBtn { min-width: 45px; }
+    #yearSlider { width: 220px; }
+    #yearDisplay { font-weight: bold; min-width: 90px; text-align: center; }
+    #csvUpload { cursor: pointer; }
+    #helpBtn {
+      background: #185a9d; color: #fff; border: none; border-radius: 50%; width: 28px; height: 28px;
+      cursor: pointer; font-size: 1.2em; font-weight: bold; display: flex; align-items: center;
+      justify-content: center; margin-left: 2px;
+    }
+    #csvHelp {
+      display: none;
+      position: absolute;
+      top: 40px; right: 18px;
+      background: #fffbe9;
+      border-radius: 9px;
+      padding: 15px 18px;
+      font-size: 1.03em;
+      color: #185a9d;
+      box-shadow: 0 2px 8px #aaa;
+      z-index: 2000;
+      width: 360px;
+      line-height: 1.5;
+    }
+    #csvHelp code {
+      background: #eaf6ff;
+      border-radius: 3px;
+      padding: 2px 3px;
+      color: #464646;
+    }
+    #map { height: 80vh; width: 100vw; display: block; }
+    #destination-list {
+      position: absolute; left: 0; bottom: 60px;
+      width: 260px; max-height: 45vh; overflow-y: auto;
+      background: rgba(255,255,255,0.95);
+      border-radius: 0 12px 0 0; padding: 12px 18px;
+      box-shadow: 2px 0 6px #8883; font-size: 0.95em;
+      z-index: 1050; display: none;
+    }
+    #destination-list h3 {
+      margin-top: 0; margin-bottom: 8px; font-weight: bold; color: #185a9d;
+    }
+    #destinations li {
+      color: #777; margin-bottom: 8px;
+      transition: color 0.3s, background 0.3s;
+      padding-left: 7px; list-style: none;
+      border-left: 4px solid transparent;
+      cursor: pointer;
+    }
+    #destinations li.active {
+      color: #185a9d; background: #dbeffe;
+      font-weight: bold; border-left-color: #185a9d;
+    }
+    #footer {
+      position: fixed; bottom: 0; left: 0; width: 100%;
+      background: #222a40; color: #ccc; font-size: 0.88em;
+      padding: 8px 10px; text-align: center;
+      user-select: none; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      z-index: 1200;
+    }
+    #errorMsg {
+      color: #b7102b;
+      margin-left: 12px;
+      font-size: 0.97em;
+      display: none;
+      font-weight: bold;
+    }
+    @media (max-width: 700px) {
+      #controls, #csvHelp { max-width: 98vw; width: 98vw; }
+      #destination-list { width: 90vw; font-size: 1em; }
+      #csvHelp {
+        right: 2%;
+        width: 90vw;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div id="controls">
+    <button id="playBtn" disabled>Play</button>
+    <input type="range" id="yearSlider" min="0" max="0" value="0" disabled />
+    <span id="yearDisplay">Loading data...</span>
+    <input type="file" id="csvUpload" accept=".csv" />
+    <button id="helpBtn" title="CSV format requirements">?</button>
+    <span id="errorMsg"></span>
+    <div id="csvHelp">
+      <strong>CSV format required</strong><br>
+      <b>Headers:</b> <em>year, age, location, lat, lon, livingWith</em><br>
+      Example row:
+      <div class="code-row">
+        <code>1974,0,"Worland Hospital - Worland, WY",44.0165,-107.9559,"Mom-Dad"</code>
+      </div>
+      Latitude and longitude are decimal degrees; quotes required if location contains commas.
+    </div>
+  </div>
+
+  <div id="map"></div>
+  <div id="destination-list">
+    <h3>Destinations</h3>
+    <ul id="destinations"></ul>
+  </div>
+  <div id="footer">© 2025 Life Journey Visualization Project. All rights reserved.</div>
+
+  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/papaparse@5.3.2/papaparse.min.js"></script>
+  <script>
+    // Simplified version of your main.js for preview purposes
+    let map, journeyData = [], markers = [], polylines = [], animInterval = null;
+
+    const playBtn = document.getElementById('playBtn');
+    const slider = document.getElementById('yearSlider');
+    const yearDisplay = document.getElementById('yearDisplay');
+    const csvUpload = document.getElementById('csvUpload');
+    const destinationList = document.getElementById('destination-list');
+    const errorMsg = document.getElementById('errorMsg');
+    const helpBtn = document.getElementById('helpBtn');
+    const helpPopup = document.getElementById('csvHelp');
+
+    function stripBOM(str) {
+      return str.replace(/^\uFEFF/, '');
+    }
+
+    function validateHeaders(fields) {
+      const req = ['year', 'age', 'location', 'lat', 'lon', 'livingWith'];
+      let lower = fields.map(f => stripBOM(f).trim().toLowerCase());
+      let missing = req.filter(h => !lower.includes(h));
+      return { valid: missing.length === 0, missing };
+    }
+
+    function trace(msg, isError = false) {
+      console.log(msg);
+      if (isError) {
+        errorMsg.style.display = "inline";
+        errorMsg.textContent = msg;
+      }
+    }
+
+    helpBtn.onclick = (e) => {
+      e.stopPropagation();
+      helpPopup.style.display = helpPopup.style.display === "block" ? "none" : "block";
+    };
+    document.body.addEventListener('click', e => {
+      if (!helpBtn.contains(e.target) && !helpPopup.contains(e.target)) {
+        helpPopup.style.display = "none";
+      }
+    });
+
+    window.onload = () => {
+      loadDemoCSV();
+    };
+
+    function loadDemoCSV() {
+      trace('Attempting to load demo CSV...');
+      fetch('journeys.csv')
+        .then(r => { if (!r.ok) throw new Error("CSV not served"); return r.text(); })
+        .then(txt => Papa.parse(txt, { header: true, skipEmptyLines: true, complete: r => parseCSV(r, false) }))
+        .catch(err => {
+          trace(err.message, true);
+        });
+    }
+
+    csvUpload.addEventListener('change', e => {
+      trace('Upload event triggered');
+      playBtn.disabled = true;
+      slider.disabled = true;
+      yearDisplay.textContent = "Loading...";
+      errorMsg.style.display = "none";
+      if (!csvUpload.files.length) return;
+      Papa.parse(csvUpload.files[0], {
+        header: true,
+        skipEmptyLines: true,
+        complete: r => parseCSV(r, true),
+        error: err => {
+          trace('PapaParse error: ' + err.message, true);
+        }
+      });
+    });
+
+    function parseCSV(results, fromUpload) {
+      const fields = results.meta?.fields?.map(stripBOM) || [];
+      let check = validateHeaders(fields);
+      if (!check.valid) {
+        trace((fromUpload ? "Missing required headers: " : "Demo file missing headers: ") +
+             check.missing.join(', '), true);
+        return;
+      }
+
+      journeyData = results.data
+        .filter(r => r.lat && r.lon && r.year && r.location && r.lat !== "-1" && r.lon !== "-1")
+        .map(r => ({
+          year: parseInt(r.year, 10),
+          age: r.age || '',
+          location: r.location || 'Unknown',
+          livingWith: r.livingWith || '',
+          lat: parseFloat(r.lat),
+          lon: parseFloat(r.lon)
+        }));
+
+      if (!journeyData.length) {
+        trace("No valid records found in CSV", true);
+        return;
+      }
+
+      showMapUI();
+      map ? resetMap() : initMap();
+      buildDestinationList();
+      setupSlider();
+      updateMap(0);
+      fitMapBounds();
+    }
+
+    function initMap() {
+      map = L.map('map').setView([journeyData[0].lat, journeyData[0].lon], 5);
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; OpenStreetMap contributors'
+      }).addTo(map);
+    }
+
+    function resetMap() {
+      markers.forEach(m => map.removeLayer(m));
+      polylines.forEach(l => map.removeLayer(l));
+      markers = []; polylines = [];
+    }
+
+    function updateMap(idx) {
+      resetMap();
+      for (let i = 0; i <= idx; i++) {
+        const d = journeyData[i];
+        const marker = L.circleMarker([d.lat, d.lon], {
+          radius: 7,
+          color: '#0066cc',
+          fillColor: '#a8e0ff',
+          fillOpacity: 0.9
+        }).bindPopup(`<strong>${d.location} (${d.year})</strong><br>With: ${d.livingWith}`)
+          .addTo(map);
+        markers.push(marker);
+        if (i > 0) {
+          const p = journeyData[i - 1];
+          const line = L.polyline([[p.lat, p.lon], [d.lat, d.lon]], { color: '#888' })
+            .addTo(map);
+          polylines.push(line);
+        }
+      }
+      const cur = journeyData[idx];
+      yearDisplay.textContent = `${cur.year} (Age ${cur.age})`;
+      highlightDestinations(idx);
+    }
+
+    function fitMapBounds() {
+      const latlngs = journeyData.map(d => [d.lat, d.lon]);
+      const bounds = L.latLngBounds(latlngs);
+      map.fitBounds(bounds, { padding: [30, 30] });
+    }
+
+    function showMapUI() {
+      document.getElementById('map').style.display = "block";
+      document.getElementById('destination-list').style.display = "block";
+      playBtn.disabled = false;
+      slider.disabled = false;
+    }
+
+    function buildDestinationList() {
+      const ul = document.getElementById('destinations');
+      ul.innerHTML = '';
+      journeyData.forEach((d, i) => {
+        const li = document.createElement('li');
+        li.textContent = `${d.year}: ${d.location}`;
+        li.id = `dest-${i}`;
+        li.onclick = () => {
+          slider.value = i;
+          updateMap(i);
+        };
+        ul.appendChild(li);
+      });
+    }
+
+    function highlightDestinations(idx) {
+      journeyData.forEach((_d, i) => {
+        const li = document.getElementById(`dest-${i}`);
+        if (li) li.classList.toggle('active', i <= idx);
+      });
+    }
+
+    function setupSlider() {
+      slider.max = journeyData.length - 1;
+      slider.value = 0;
+      slider.oninput = () => {
+        updateMap(Number(slider.value));
+      };
+      playBtn.onclick = () => {
+        if (animInterval) { clearInterval(animInterval); animInterval = null; playBtn.textContent = 'Play'; }
+        else {
+          playBtn.textContent = 'Pause';
+          let idx = Number(slider.value);
+          if (idx >= journeyData.length - 1) idx = -1;
+          animInterval = setInterval(() => {
+            idx++;
+            slider.value = idx;
+            updateMap(idx);
+            if (idx >= journeyData.length - 1) {
+              clearInterval(animInterval); animInterval = null; playBtn.textContent = 'Play';
+            }
+          }, 1500);
+        }
+      };
+    }
+  </script>
+</body>
+</html>
