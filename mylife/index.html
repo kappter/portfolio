@@ -1,16 +1,36 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Journey Visualizer</title>
-  <link rel="stylesheet" href="styles.css">
-  <script src="https://cdn.jsdelivr.net/npm/papaparse@5.3.2/papaparse.min.js"></script>
-  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <meta charset="utf-8" />
+  <title>Life Journey Map</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
 </head>
 <body>
-  <input type="file" id="csvInput" accept=".csv">
+  <div id="controls">
+    <button id="playBtn" disabled>Play</button>
+    <input type="range" id="yearSlider" min="0" max="0" value="0" disabled />
+    <span id="yearDisplay">Loading data...</span>
+    <input type="file" id="csvUpload" accept=".csv" />
+    <button id="helpBtn" title="CSV format requirements">?</button>
+    <span id="errorMsg"></span>
+    <div id="csvHelp">
+      <strong>CSV format required</strong><br>
+      <b>Headers:</b> <em>year, age, location, lat, lon, livingWith</em><br>
+      Example row:<br>
+      <code>1974,1,"Triangle Packing - Worland, WY",44.0165,-107.9559,"Mom-Dad"</code><br>
+      Latitude and longitude are decimal degrees; quotes required if location contains commas.
+    </div>
+  </div>
   <div id="map"></div>
+  <div id="destination-list">
+    <h3>Destinations</h3>
+    <ul id="destinations"></ul>
+  </div>
+  <div id="footer">© 2025 Life Journey Visualization Project. All rights reserved.</div>
+  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/papaparse@5.3.2/papaparse.min.js"></script>
   <script src="main.js"></script>
 </body>
 </html>
