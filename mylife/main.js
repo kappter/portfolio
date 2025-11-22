@@ -38,7 +38,7 @@ window.onload = function() {
 
 function loadDemoCSV() {
   trace('Attempting to load journey.csv as demo...');
-  fetch('journey.csv')
+  fetch("https://raw.githubusercontent.com/kappter/portfolio/main/mylife/journeys.csv")
     .then(response => {
       if (!response.ok) throw new Error("CSV not found or not served");
       return response.text();
