@@ -185,7 +185,7 @@ slider.disabled = true;
 }
 
 function initMap() {
-if (map) return; // prevent "already initialized"
+if (map) return;
 map = L.map('map').setView([journeyData.lat, journeyData.lon], 5);
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
 attribution: '© OpenStreetMap contributors'
