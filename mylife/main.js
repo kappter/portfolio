@@ -7,6 +7,7 @@ const destinationList = document.getElementById('destination-list');
 const errorMsg = document.getElementById('errorMsg');
 const helpBtn = document.getElementById('helpBtn');
 const helpPopup = document.getElementById('csvHelp');
+const presetSelect = document.getElementById('presetSelect');
 
 // Help popup logic
 helpBtn.onclick = (e) => {
@@ -36,9 +37,15 @@ window.onload = function() {
 loadDemoCSV();
 };
 
-function loadDemoCSV() {
-trace('Attempting to load journey.csv as demo...');
-fetch('journey.csv')
+// Preset dropdown change handler
+presetSelect.addEventListener('change', function() {
+const selectedFile = this.value;
+loadDemoCSV(selectedFile);
+});
+
+function loadDemoCSV(filename = 'journey.csv') {
+trace(`Attempting to load ${filename} as demo...`);
+fetch(filename)
 .then(response => {
 if (!response.ok) throw new Error("CSV not found or not served");
 return response.text();

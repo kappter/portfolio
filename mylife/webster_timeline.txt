@@ -1,0 +1,32 @@
+Noah Webster Life Timeline - Key Locations and Dates
+Source: https://noahwebsterhouse.org/websters-schoolhouse/timeline-of-noahs-life/
+
+1758 - Born in West Hartford, Connecticut (October 16)
+1772 - West Hartford, CT (prepared for college)
+1774-1778 - New Haven, CT (Yale University student)
+1778 - Glastonbury, CT (schoolmaster)
+1779 - Hartford, CT (Brick School House), then West Hartford, CT (moved back home)
+1780 - Litchfield, CT (studied law), then Sharon, CT (opened school)
+1783 - Hartford, CT (published Blue-Backed Speller, opened law office)
+1785-1789 - Philadelphia, PA (moved), then New York City (founded American Magazine 1787)
+1789 - Married Rebecca Greenleaf, moved back to Hartford, CT
+1793 - New York City (moved back, published American Minerva newspaper)
+1798 - New Haven, CT (moved with family, served in state legislature)
+1812-1822 - Amherst, Massachusetts (helped found Amherst College)
+1822-1843 - New Haven, CT (moved back)
+1822 - Traveled to France and England (dictionary research)
+1828 - Published American Dictionary of the English Language
+1828 - Visited Washington, D.C. (copyright legislation)
+1843 - Died in New Haven, CT (May 28, age 84), buried at Grove Street Cemetery
+
+Key locations for CSV:
+- West Hartford, CT: 41.7620, -72.7420
+- New Haven, CT: 41.3083, -72.9279
+- Glastonbury, CT: 41.7123, -72.6081
+- Hartford, CT: 41.7658, -72.6734
+- Litchfield, CT: 41.7473, -73.1887
+- Sharon, CT: 41.8773, -73.4762
+- Philadelphia, PA: 39.9526, -75.1652
+- New York City, NY: 40.7128, -74.0060
+- Amherst, MA: 42.3732, -72.5199
+- Washington, D.C.: 38.9072, -77.0369

@@ -1,0 +1,29 @@
+Isaac Newton Life Timeline - Key Locations and Dates
+Source: https://www.britannica.com/summary/Isaac-Newton-Timeline
+
+1642 (Dec 25, 1642 Old Style / Jan 4, 1643 New Style) - Born in Woolsthorpe, Lincolnshire, England
+1653 - Woolsthorpe (reunited with mother after stepfather's death)
+1653-1661 - Grantham, England (grammar school)
+1661-1696 - Cambridge, England (Trinity College - student, fellow, professor)
+  1661 - Begins undergraduate studies
+  1665 - Receives bachelor's degree
+  1665-1667 - Plague years, returns to Woolsthorpe
+  1667 - Elected fellow at Trinity College
+  1668 - Invents reflecting telescope
+  1669-1671 - Professor of mathematics at Trinity
+  1672 - Sends paper on light to Royal Society
+  1684-1687 - Writes and publishes Principia Mathematica
+1696-1727 - London, England (Warden/Master of the Mint, Royal Society President)
+  1696 - Appointed warden of the mint, moves to London
+  1701 - Resigns from Cambridge
+  1703 - Elected president of Royal Society
+  1704 - Publishes Opticks
+  1705 - Knighted by Queen Anne
+  1727 - Dies in London (March 20/31), buried at Westminster Abbey
+
+Key locations for CSV:
+- Woolsthorpe, England: 52.8108, -0.6414
+- Grantham, England: 52.9144, -0.6417
+- Cambridge, England: 52.2053, 0.1218
+- London, England: 51.5074, -0.1278
+- Kensington, London (death location): 51.4991, -0.1938
