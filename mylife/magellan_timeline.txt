@@ -1,0 +1,35 @@
+Ferdinand Magellan Life Timeline - Key Locations and Dates
+Source: https://www.worldhistory.org/timeline/Ferdinand_Magellan/
+
+c. 1480 - Born in Villa Real (or Sabrosa), Tras os Montes, Portugal
+c. 1492 - Joins royal Portuguese court as page in Lisbon
+1505 - Enlisted in Portuguese fleet to India
+1510 - Assists in establishment of Portuguese Goa, India
+1511 - Assists in establishment of Portuguese Malacca, Malaysia
+1513 - Participates in Portuguese attack on Azemmour, Morocco
+1517 - Renounces Portuguese citizenship, moves to Seville, Spain
+1518 - Proposal accepted by Charles I of Spain
+Aug 10, 1519 - Fleet leaves Seville, Spain
+Oct 3, 1519 - Fleet leaves Canary Islands
+Dec 1519 - Fleet arrives in Rio de Janeiro, Brazil
+Mar 21, 1520 - Fleet winters at San Julián Bay, southern Argentina
+Oct-Nov 1520 - Sails through Straits of Magellan, Tierra del Fuego
+Dec 18, 1520 - Leaves South America coast to cross Pacific
+Jan 24, 1521 - Spots first land (San Pablo Island) in Pacific
+Mar 6, 1521 - Reaches Guam, Marianas Islands
+Apr 7, 1521 - Reaches Philippine Islands
+Apr 27, 1521 - Killed in battle on Cebu/Mactan, Philippines
+
+Key locations for CSV:
+- Sabrosa, Portugal: 41.2667, -7.5833
+- Lisbon, Portugal: 38.7223, -9.1393
+- Goa, India: 15.2993, 74.1240
+- Malacca, Malaysia: 2.1896, 102.2501
+- Azemmour, Morocco: 33.2833, -8.3333
+- Seville, Spain: 37.3891, -5.9845
+- Canary Islands: 28.2916, -16.6291
+- Rio de Janeiro, Brazil: -22.9068, -43.1729
+- San Julián Bay, Argentina: -49.3000, -67.7167
+- Strait of Magellan: -53.9000, -70.0000
+- Guam: 13.4443, 144.7937
+- Cebu, Philippines: 10.3157, 123.8854

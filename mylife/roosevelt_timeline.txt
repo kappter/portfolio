@@ -1,0 +1,32 @@
+Theodore Roosevelt Life Timeline - Key Locations and Dates
+Source: https://www.theodoreroosevelt.org/content.aspx?page_id=22&club_id=991271&module_id=339177
+
+1858 - Born in New York City (Oct 27)
+1876-1880 - Harvard College, Cambridge, MA
+1881-1884 - New York State Assembly, Albany, NY
+1883-1886 - Badlands rancher, Medora, North Dakota
+1885-1919 - Sagamore Hill, Oyster Bay, Long Island, NY (home)
+1889-1895 - US Civil Service Commissioner, Washington, DC
+1895-1897 - Police Commissioner, New York City
+1897-1898 - Assistant Secretary of Navy, Washington, DC
+1898 - Rough Riders, Cuba (Spanish-American War)
+1898-1900 - Governor of New York, Albany, NY
+1901 - Vice President, Washington, DC
+1901-1909 - President of the United States, Washington, DC
+1909-1910 - African safari expedition (Kenya, Uganda, Congo, Sudan, Egypt)
+1910 - European tour (Italy, Austria, France, Belgium, Netherlands, Denmark, Norway, Sweden, Germany, UK)
+1913-1914 - South American expedition (Brazil, Uruguay, Argentina, Chile, Paraguay)
+1914 - Trip to Spain and England
+1919 - Died at Sagamore Hill, Oyster Bay, NY (Jan 6)
+
+Key locations for CSV:
+- New York City, NY: 40.7128, -74.0060
+- Cambridge, MA (Harvard): 42.3770, -71.1167
+- Albany, NY: 42.6526, -73.7562
+- Medora, ND: 46.9147, -103.5238
+- Oyster Bay, NY: 40.8659, -73.5318
+- Washington, DC: 38.9072, -77.0369
+- Cuba (Santiago): 20.0247, -75.8219
+- Nairobi, Kenya: -1.2864, 36.8172
+- Paris, France: 48.8566, 2.3522
+- Rio de Janeiro, Brazil: -22.9068, -43.1729
