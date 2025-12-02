@@ -1,5 +1,4 @@
 year,age,location,lat,lon,livingWith
-1973,0,"Aprox. 6/22/73",39.8283,-98.5795,""
 1974,1,"Triangle Packing - Worland, WY",44.0165,-107.9559,"Mom-Dad"
 1975,2,"43 S. 13th Worland, WY",44.0150,-107.9566,"Mom-Dad"
 1976,3,"Worland, WY",44.0165,-107.9559,"Mom-Dad"
@@ -14,7 +13,7 @@ year,age,location,lat,lon,livingWith
 1985,12,"Spencers Butte Eugene, OR",44.0521,-123.0868,"Mom-Joe"
 1986,13,"Spencers Butte/Madison Eugene, OR",44.0521,-123.0868,"Mom"
 1987,14,"Battleground Battleground, WA",45.7806,-122.5306,"Dad"
-1988,15,"Worland Middle Worland, WY",44.0169,-104.419,"Dad"
+1988,15,"Worland Middle Worland, WY",44.0165,-107.9559,"Dad"
 1989,16,"South High Eugene, OR",44.0521,-123.0868,"Mom-Robert"
 1990,17,"South High Eugene, OR",44.0521,-123.0868,"Mom-Robert"
 1991,18,"Worland High Worland, WY",44.0165,-107.9559,"Dad"
