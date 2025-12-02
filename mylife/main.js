@@ -51,7 +51,6 @@ complete: function(results) {
 trace('PapaParse complete (demo)');
 console.log('Headers found:', results.meta.fields);
 
-text
       const headerCheck = validateHeaders(results.meta.fields);
       if (!headerCheck.valid) {
         trace("Demo file missing required headers: " + headerCheck.missing.join(', '));
@@ -113,7 +112,7 @@ slider.disabled = true;
 yearDisplay.textContent = "Loading...";
 errorMsg.style.display = "none";
 if (!csvUpload.files.length) return;
-const file = csvUpload.files;
+const file = csvUpload.files[0];
 Papa.parse(file, {
 header: true,
 skipEmptyLines: true,
@@ -121,7 +120,6 @@ complete: function(results) {
 trace('PapaParse complete (upload)');
 console.log('Upload headers found:', results.meta.fields);
 
-text
   const headerCheck = validateHeaders(results.meta.fields);
   if (!headerCheck.valid) {
     trace("Missing required headers: " + headerCheck.missing.join(', '));
@@ -186,7 +184,7 @@ slider.disabled = true;
 
 function initMap() {
 if (map) return;
-map = L.map('map').setView([journeyData.lat, journeyData.lon], 5);
+map = L.map('map').setView([journeyData[0].lat, journeyData[0].lon], 5);
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
 attribution: '© OpenStreetMap contributors'
 }).addTo(map);
@@ -214,7 +212,7 @@ color: '#0066cc',
 fillColor: '#a8e0ff',
 fillOpacity: 0.9
 })
-.bindPopup(<strong>${d.location} (${d.year})</strong><br>With: ${d.livingWith})
+.bindPopup(`<strong>${d.location} (${d.year})</strong><br>With: ${d.livingWith}`)
 .addTo(map);
 markers.push(marker);
 if (i > 0) {
@@ -231,8 +229,8 @@ const ul = document.getElementById('destinations');
 ul.innerHTML = '';
 journeyData.forEach((d, i) => {
 const li = document.createElement('li');
-li.textContent = ${d.year}: ${d.location};
-li.id = dest-${i};
+li.textContent = `${d.year}: ${d.location}`;
+li.id = `dest-${i}`;
 li.onclick = () => {
 slider.value = i;
 updateMap(i);
@@ -244,7 +242,7 @@ ul.appendChild(li);
 
 function highlightDestinations(currentIdx) {
 journeyData.forEach((_d, i) => {
-const li = document.getElementById(dest-${i});
+const li = document.getElementById(`dest-${i}`);
 if (!li) return;
 if (i <= currentIdx) {
 li.classList.add('active');
@@ -296,5 +294,5 @@ playBtn.textContent = 'Play';
 function fitMapBounds() {
 const latlngs = journeyData.map(d => [d.lat, d.lon]);
 const bounds = L.latLngBounds(latlngs);
-map.fitBounds(bounds, {padding: });​
+map.fitBounds(bounds, {padding: [50, 50]});
 }
