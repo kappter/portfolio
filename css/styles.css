@@ -26,6 +26,32 @@
     --progress-bg: #5c5342; /* Dark tan */
 }
 
+[data-theme="pulsetap-light"] {
+    --bg-color: #f4f8ff;
+    --text-color: #0c1427;
+    --header-bg: #ffffff;
+    --card-bg: #ffffff;
+    --border-color: #c9d8ff;
+    --accent-color: #2456ff;
+    --accent-hover: #173bc2;
+    --secondary-text: #4f617d;
+    --shadow-color: rgba(36, 86, 255, 0.14);
+    --progress-bg: #e7eeff;
+}
+
+[data-theme="pulsetap-dark"] {
+    --bg-color: #07101f;
+    --text-color: #e9f4ff;
+    --header-bg: #0c1629;
+    --card-bg: #101d34;
+    --border-color: #1f3d70;
+    --accent-color: #00d4ff;
+    --accent-hover: #6ee7ff;
+    --secondary-text: #a9bdd8;
+    --shadow-color: rgba(0, 212, 255, 0.18);
+    --progress-bg: #142642;
+}
+
 html {
     scroll-behavior: smooth;
 }
@@ -197,6 +223,103 @@ header p {
 
 section {
     padding: 16px 0;
+}
+
+/* =========================
+   Current Work / PulseTap Module
+========================= */
+
+.now-module {
+    padding: 24px;
+    margin: 0 0 16px;
+    background: linear-gradient(135deg, var(--card-bg), var(--progress-bg));
+    border: 1px solid var(--border-color);
+    border-radius: 14px;
+    box-shadow: 0 8px 24px var(--shadow-color);
+}
+
+.now-module-header {
+    margin-bottom: 18px;
+}
+
+.now-module-header .eyebrow {
+    display: inline-block;
+    margin-bottom: 6px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--accent-color);
+}
+
+.now-module-header p {
+    color: var(--secondary-text);
+    max-width: 720px;
+}
+
+.now-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 16px;
+}
+
+.now-card {
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 16px;
+    box-shadow: 0 4px 14px var(--shadow-color);
+}
+
+.now-card-feature {
+    position: relative;
+    overflow: hidden;
+}
+
+.now-card-feature::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-top: 3px solid var(--accent-color);
+    pointer-events: none;
+}
+
+.now-card-topline,
+.now-actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 10px;
+}
+
+.now-card-topline {
+    margin-bottom: 10px;
+}
+
+.now-badge {
+    display: inline-block;
+    padding: 4px 8px;
+    border-radius: 999px;
+    background: var(--accent-color);
+    color: var(--bg-color);
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+}
+
+.now-status {
+    color: var(--secondary-text);
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.now-actions {
+    margin-top: 12px;
+}
+
+[data-theme^="pulsetap"] .now-card-feature {
+    box-shadow: 0 0 20px var(--shadow-color);
 }
 
 h2 {
