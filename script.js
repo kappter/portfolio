@@ -41,17 +41,17 @@ document.addEventListener("DOMContentLoaded", function () {
       stylesheet: "css/medieval.css",
     },
     "pulsetap-light": {
-      mode: "light",
-      stylesheet: "css/pulsetap.css",
-    },
-    "pulsetap-dark": {
-      mode: "dark",
-      stylesheet: "css/pulsetap.css",
-    },
-    pulsetap: {
-      mode: "dark",
-      stylesheet: "css/pulsetap.css",
-    },
+  mode: "pulsetap-light",
+  stylesheet: "css/styles.css",
+},
+"pulsetap-dark": {
+  mode: "pulsetap-dark",
+  stylesheet: "css/styles.css",
+},
+pulsetap: {
+  mode: "pulsetap-dark",
+  stylesheet: "css/styles.css",
+},
   };
 
   function applyTheme(themeName) {
