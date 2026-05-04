@@ -73,13 +73,20 @@ console.log('Headers found:', results.meta.fields);
 
       trace(`Loaded demo records: ${journeyData.length}`);
       journeyData.forEach(d => {
-        d.lat = parseFloat(d.lat);
-        d.lon = parseFloat(d.lon);
-        d.year = parseInt(d.year, 10);
-        d.age = d.age || '';
-        d.location = d.location || 'Unknown';
-        d.livingWith = d.livingWith || '';
-      });
+  d.lat = parseFloat(d.lat);
+  d.lon = parseFloat(d.lon);
+  d.year = parseInt(d.year, 10);
+  d.age = d.age || '';
+  d.location = d.location || 'Unknown';
+  d.livingWith = d.livingWith || '';
+});
+
+// ✅ SORT HERE (correct place)
+
+journeyData.sort((a, b) => {
+  if (a.year !== b.year) return a.year - b.year;
+  return a.location.localeCompare(b.location); // or month later
+});
 
       if (!journeyData.length) {
         trace("No valid rows with lat/lon found in demo CSV.");
@@ -143,13 +150,19 @@ console.log('Upload headers found:', results.meta.fields);
 
   trace(`Loaded upload records: ${journeyData.length}`);
   journeyData.forEach(d => {
-    d.lat = parseFloat(d.lat);
-    d.lon = parseFloat(d.lon);
-    d.year = parseInt(d.year, 10);
-    d.age = d.age || '';
-    d.location = d.location || 'Unknown';
-    d.livingWith = d.livingWith || '';
-  });
+  d.lat = parseFloat(d.lat);
+  d.lon = parseFloat(d.lon);
+  d.year = parseInt(d.year, 10);
+  d.age = d.age || '';
+  d.location = d.location || 'Unknown';
+  d.livingWith = d.livingWith || '';
+});
+
+// ✅ SORT HERE (correct place)
+journeyData.sort((a, b) => {
+  if (a.year !== b.year) return a.year - b.year;
+  return a.location.localeCompare(b.location);
+});
 
   if (!journeyData.length) {
     trace("No valid rows with lat/lon found in uploaded CSV.");
