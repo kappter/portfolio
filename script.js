@@ -150,143 +150,61 @@ pulsetap: {
 
   const canvases = document.querySelectorAll(".line-animation");
 
- const parent = canvas.parentElement;
-let width = parent ? parent.clientWidth : Math.min(window.innerWidth, 960);
-    const ctx = canvas.getContext("2d");
-    if (!ctx) return;
+canvases.forEach(function (canvas) {
+  const ctx = canvas.getContext("2d");
+  if (!ctx) return;
 
-    const dpr = window.devicePixelRatio || 1;
-    const container = canvas.closest(".container");
-let width = container ? container.clientWidth : Math.min(window.innerWidth, 960);
-    const height = 20;
+  const dpr = window.devicePixelRatio || 1;
+  const parent = canvas.parentElement;
+  const height = 20;
+ let width = parent ? parent.clientWidth - 48 : 960;
 
-    canvas.style.width = width + "px";
-    canvas.style.height = height + "px";
+ canvas.style.width = width + "px";
+  canvas.style.height = height + "px";
+  canvas.width = width * dpr;
+  canvas.height = height * dpr;
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+
+  let x = 0;
+  let y = height / 2;
+
+  function resizeCanvas() {
+   width = parent ? parent.clientWidth - 48 : 960;
     canvas.width = width * dpr;
     canvas.height = height * dpr;
-    ctx.scale(dpr, dpr);
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    x = 0;
+  }
 
-    const leftToRight = Math.random() > 0.5;
-    let x = leftToRight ? 0 : width;
-    const speed = leftToRight ? 0.5 + Math.random() : -(0.5 + Math.random());
-    const baseY = height / 2;
-    let targetY = baseY;
-    let currentY = baseY;
-    let pathPoints = [];
-    let fadeDistance = width * 0.6;
+  window.addEventListener("resize", resizeCanvas);
 
-    function resizeCanvas() {
-      width = parent ? parent.clientWidth : Math.min(window.innerWidth, 960);
-      fadeDistance = width * 0.6;
+  function getAccentColor() {
+    return getComputedStyle(document.documentElement)
+      .getPropertyValue("--accent-color")
+      .trim() || "#6b7d4b";
+  }
 
-      canvas.style.width = width + "px";
-      canvas.style.height = height + "px";
-      canvas.width = width * dpr;
-      canvas.height = height * dpr;
-      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  function drawLine() {
+    ctx.clearRect(0, 0, width, height);
 
-      x = leftToRight ? 0 : width;
-      pathPoints = [];
-      currentY = baseY;
-      targetY = baseY;
-      ctx.clearRect(0, 0, width, height);
-    }
+    ctx.beginPath();
+    ctx.moveTo(0, y);
+    ctx.lineTo(x, y);
+    ctx.strokeStyle = getAccentColor();
+    ctx.lineWidth = 2;
+    ctx.lineCap = "round";
+    ctx.stroke();
 
-    window.addEventListener("resize", resizeCanvas);
+    x += 1.5 + Math.sin(performance.now() * 0.002) * 0.5;
+    if (x > width) x = 0;
 
-    function getRGBValues(color) {
-      if (!color) return "107, 125, 75";
+    requestAnimationFrame(drawLine);
+  }
 
-      color = color.trim();
+  drawLine();
+});
 
-      if (color.startsWith("#") && color.length >= 7) {
-        const r = parseInt(color.slice(1, 3), 16);
-        const g = parseInt(color.slice(3, 5), 16);
-        const b = parseInt(color.slice(5, 7), 16);
-        return r + ", " + g + ", " + b;
-      }
-
-      if (color.startsWith("rgb")) {
-        const values = color.match(/\d+/g);
-        if (values && values.length >= 3) {
-          return values.slice(0, 3).join(", ");
-        }
-      }
-
-      return "107, 125, 75";
-    }
-
-    function getAccentColor() {
-      return getComputedStyle(document.documentElement).getPropertyValue("--accent-color").trim() || "#6b7d4b";
-    }
-
-    function drawLine() {
-      ctx.clearRect(0, 0, width, height);
-
-      if (Math.random() < 0.1) {
-        targetY = baseY + (Math.random() - 0.5);
-      }
-
-      currentY += (targetY - currentY) * 0.2;
-      currentY = Math.round(currentY * 2) / 2;
-      x = Math.round(x * 2) / 2;
-
-      pathPoints.push({ x: x, y: currentY });
-      ctx.beginPath();
-
-      pathPoints.forEach(function (point, index) {
-        const distance = leftToRight ? x - point.x : point.x - x;
-        let opacity = 1;
-
-        if (distance > 0 && distance <= fadeDistance) {
-          opacity = 1 - distance / fadeDistance;
-        } else if (distance > fadeDistance) {
-          opacity = 0;
-        }
-
-        ctx.strokeStyle = "rgba(" + getRGBValues(getAccentColor()) + ", " + opacity + ")";
-        ctx.lineWidth = 2 * (1 + (Math.random() - 0.5) * 0.1);
-        ctx.lineCap = "round";
-        ctx.lineJoin = "round";
-
-        if (index === 0) {
-          ctx.moveTo(point.x, point.y);
-        } else {
-          ctx.lineTo(point.x, point.y);
-          ctx.stroke();
-          ctx.beginPath();
-          ctx.moveTo(point.x, point.y);
-        }
-      });
-
-      x += speed;
-      const reachedEnd = leftToRight ? x >= width : x <= 0;
-
-      ctx.lineTo(x, currentY);
-      ctx.strokeStyle = getAccentColor();
-      ctx.lineWidth = 2;
-      ctx.lineCap = "round";
-      ctx.lineJoin = "round";
-      ctx.stroke();
-
-      pathPoints = pathPoints.filter(function (point) {
-        const distance = leftToRight ? x - point.x : point.x - x;
-        return distance <= fadeDistance;
-      });
-
-      if (reachedEnd) {
-        ctx.clearRect(0, 0, width, height);
-        x = leftToRight ? 0 : width;
-        pathPoints = [];
-        currentY = baseY;
-        targetY = baseY;
-      }
-
-      requestAnimationFrame(drawLine);
-    }
-
-    drawLine();
-  });
+ 
 
   // ============================================================
   // Guitar pieces loader
