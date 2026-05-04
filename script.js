@@ -150,7 +150,8 @@ pulsetap: {
 
   const canvases = document.querySelectorAll(".line-animation");
 
-  canvases.forEach(function (canvas) {
+ const parent = canvas.parentElement;
+let width = parent ? parent.clientWidth : Math.min(window.innerWidth, 960);
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
@@ -175,7 +176,7 @@ let width = container ? container.clientWidth : Math.min(window.innerWidth, 960)
     let fadeDistance = width * 0.6;
 
     function resizeCanvas() {
-      width = container ? container.clientWidth : Math.min(window.innerWidth, 960);
+      width = parent ? parent.clientWidth : Math.min(window.innerWidth, 960);
       fadeDistance = width * 0.6;
 
       canvas.style.width = width + "px";
