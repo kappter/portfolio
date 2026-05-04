@@ -297,7 +297,8 @@ canvases.forEach(function (canvas) {
   // ============================================================
 
   const AUTO_ADVANCE_INTERVAL = 5000;
-  let isTransitioning = false;
+let artIsTransitioning = false;
+let photographyIsTransitioning = false;
 
   function formatCaption(filename) {
     const name = filename.replace(/\.[^/.]+$/, "").replace(/[_-]/g, " ");
@@ -320,39 +321,49 @@ canvases.forEach(function (canvas) {
     return interval;
   }
 
-  function changeImage(carouselImage, carouselCaption, images, currentIndex, setIndex) {
-    if (isTransitioning) return;
-    isTransitioning = true;
+ function changeImage(carouselImage, carouselCaption, images, currentIndex, setIndex, carouselType) {
+  const isArt = carouselType === "art";
 
-    if (!carouselImage) {
-      isTransitioning = false;
-      return;
-    }
+  if (isArt && artIsTransitioning) return;
+  if (!isArt && photographyIsTransitioning) return;
 
-    if (!images || images.length === 0) {
-      isTransitioning = false;
-      return;
-    }
-
-    if (currentIndex < 0) currentIndex = images.length - 1;
-    if (currentIndex >= images.length) currentIndex = 0;
-
-    setIndex(currentIndex);
-
-    carouselImage.classList.add("fade-out");
-
-    setTimeout(function () {
-      carouselImage.src = images[currentIndex].url;
-      carouselImage.alt = formatCaption(images[currentIndex].file);
-
-      if (carouselCaption) {
-        carouselCaption.textContent = images[currentIndex].caption || formatCaption(images[currentIndex].file);
-      }
-
-      carouselImage.classList.remove("fade-out");
-      isTransitioning = false;
-    }, 500);
+  if (isArt) {
+    artIsTransitioning = true;
+  } else {
+    photographyIsTransitioning = true;
   }
+
+  if (!carouselImage || !images || images.length === 0) {
+    if (isArt) artIsTransitioning = false;
+    else photographyIsTransitioning = false;
+    return;
+  }
+
+  if (currentIndex < 0) currentIndex = images.length - 1;
+  if (currentIndex >= images.length) currentIndex = 0;
+
+  setIndex(currentIndex);
+
+  carouselImage.classList.add("fade-out");
+
+  setTimeout(function () {
+    carouselImage.src = images[currentIndex].url;
+    carouselImage.alt = formatCaption(images[currentIndex].file);
+
+    if (carouselCaption) {
+      carouselCaption.textContent =
+        images[currentIndex].caption || formatCaption(images[currentIndex].file);
+    }
+
+    carouselImage.classList.remove("fade-out");
+
+    if (isArt) {
+      artIsTransitioning = false;
+    } else {
+      photographyIsTransitioning = false;
+    }
+  }, 500);
+}
 
   // ============================================================
   // Art Carousel Logic
