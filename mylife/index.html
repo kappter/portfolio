@@ -8,10 +8,12 @@
   <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
 </head>
 <body>
+
   <div id="controls">
     <button id="playBtn" disabled>Play</button>
     <input type="range" id="yearSlider" min="0" max="0" value="0" disabled />
     <span id="yearDisplay">Loading data...</span>
+
     <select id="presetSelect">
       <option value="journey.csv">Your Journey</option>
       <option value="einstein.csv">Albert Einstein</option>
@@ -20,9 +22,11 @@
       <option value="magellan.csv">Ferdinand Magellan</option>
       <option value="roosevelt.csv">Theodore Roosevelt</option>
     </select>
+
     <input type="file" id="csvUpload" accept=".csv" />
     <button id="helpBtn" title="CSV format requirements">?</button>
     <span id="errorMsg"></span>
+
     <div id="csvHelp">
       <strong>CSV format required</strong><br>
       <b>Headers:</b> <em>year, age, location, lat, lon, livingWith</em><br>
@@ -31,12 +35,18 @@
       Latitude and longitude are decimal degrees; quotes required if location contains commas.
     </div>
   </div>
-  <div id="map"></div>
+
+  <div id="map-frame">
+    <div id="map"></div>
+  </div>
+
   <div id="destination-list">
     <h3>Destinations</h3>
     <ul id="destinations"></ul>
   </div>
+
   <div id="footer">© 2025 Life Journey Visualization Project. All rights reserved.</div>
+
   <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/papaparse@5.3.2/papaparse.min.js"></script>
   <script src="main.js"></script>
