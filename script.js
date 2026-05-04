@@ -206,7 +206,7 @@ function drawLine() {
    const opacity = Math.max(0, 1 - age / 160); // fade tail
 
     ctx.strokeStyle = `rgba(${getRGBValues(getAccentColor())}, ${opacity})`;
-    ctx.lineWidth = 2;
+    ctx.lineWidth = 2 * (1 - age / 200);
     ctx.lineCap = "round";
 
     if (i === 0) {
