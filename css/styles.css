@@ -137,7 +137,10 @@ body {
     background-color: var(--progress-bg);
     color: var(--accent-color);
 }
-
+.line-animation {
+    margin: 8px auto 0;
+    display: block;
+}
 .nav-toggle {
     display: none;
     font-size: 1.2rem;
