@@ -185,21 +185,44 @@ canvases.forEach(function (canvas) {
   }
 
   function drawLine() {
-    ctx.clearRect(0, 0, width, height);
+  ctx.clearRect(0, 0, width, height);
 
-    ctx.beginPath();
-    ctx.moveTo(0, y);
-    ctx.lineTo(x, y);
-    ctx.strokeStyle = getAccentColor();
-    ctx.lineWidth = 2;
-    ctx.lineCap = "round";
-    ctx.stroke();
+  const wobble = Math.sin(x * 0.04) * 1.2 + Math.sin(x * 0.11) * 0.5;
+  const humanY = y + wobble;
 
-    x += 1.5 + Math.sin(performance.now() * 0.002) * 0.5;
-    if (x > width) x = 0;
+  ctx.beginPath();
 
-    requestAnimationFrame(drawLine);
+  for (let i = 0; i < x; i += 6) {
+    const smallWobble =
+      Math.sin(i * 0.04) * 1.2 +
+      Math.sin(i * 0.11) * 0.5 +
+      (Math.random() - 0.5) * 0.35;
+
+    const drawY = y + smallWobble;
+
+    if (i === 0) {
+      ctx.moveTo(i, drawY);
+    } else {
+      ctx.lineTo(i, drawY);
+    }
   }
+
+  ctx.strokeStyle = getAccentColor();
+  ctx.lineWidth = 2;
+  ctx.lineCap = "round";
+  ctx.lineJoin = "round";
+  ctx.globalAlpha = 0.85;
+  ctx.stroke();
+  ctx.globalAlpha = 1;
+
+  x += 1.2 + Math.random() * 0.6;
+
+  if (x > width) {
+    x = 0;
+  }
+
+  requestAnimationFrame(drawLine);
+}
 
   drawLine();
 });
