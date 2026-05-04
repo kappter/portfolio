@@ -184,41 +184,56 @@ canvases.forEach(function (canvas) {
       .trim() || "#6b7d4b";
   }
 
-  function drawLine() {
+ let leftToRight = Math.random() > 0.5;
+let speed = leftToRight ? 1.2 : -1.2;
+let path = [];
+
+function drawLine() {
   ctx.clearRect(0, 0, width, height);
 
-  const wobble = Math.sin(x * 0.04) * 1.2 + Math.sin(x * 0.11) * 0.5;
-  const humanY = y + wobble;
+  // slight vertical drift (human feel)
+  y += (Math.random() - 0.5) * 0.4;
+
+  // clamp so it doesn't wander off
+  y = Math.max(height / 2 - 3, Math.min(height / 2 + 3, y));
+
+  path.push({ x, y });
 
   ctx.beginPath();
 
-  for (let i = 0; i < x; i += 6) {
-    const smallWobble =
-      Math.sin(i * 0.04) * 1.2 +
-      Math.sin(i * 0.11) * 0.5 +
-      (Math.random() - 0.5) * 0.35;
+  path.forEach((p, i) => {
+    const age = path.length - i;
+    const opacity = Math.max(0, 1 - age / 80); // fade tail
 
-    const drawY = y + smallWobble;
+    ctx.strokeStyle = `rgba(${getRGBValues(getAccentColor())}, ${opacity})`;
+    ctx.lineWidth = 2;
+    ctx.lineCap = "round";
 
     if (i === 0) {
-      ctx.moveTo(i, drawY);
+      ctx.moveTo(p.x, p.y);
     } else {
-      ctx.lineTo(i, drawY);
+      ctx.lineTo(p.x, p.y);
+      ctx.stroke();
+      ctx.beginPath();
+      ctx.moveTo(p.x, p.y);
     }
-  }
+  });
 
-  ctx.strokeStyle = getAccentColor();
-  ctx.lineWidth = 2;
-  ctx.lineCap = "round";
-  ctx.lineJoin = "round";
-  ctx.globalAlpha = 0.85;
-  ctx.stroke();
-  ctx.globalAlpha = 1;
+  x += speed;
 
-  x += 1.2 + Math.random() * 0.6;
+  // remove old trail
+  path = path.filter(p =>
+    leftToRight ? p.x >= 0 : p.x <= width
+  );
 
-  if (x > width) {
-    x = 0;
+  // reset when reaching edge
+  if ((leftToRight && x > width) || (!leftToRight && x < 0)) {
+    leftToRight = Math.random() > 0.5;
+    speed = leftToRight ? 1.2 : -1.2;
+
+    x = leftToRight ? 0 : width;
+    y = height / 2;
+    path = [];
   }
 
   requestAnimationFrame(drawLine);
@@ -227,7 +242,19 @@ canvases.forEach(function (canvas) {
   drawLine();
 });
 
- 
+ function getRGBValues(color) {
+  if (!color) return "107,125,75";
+
+  if (color.startsWith("#")) {
+    const r = parseInt(color.slice(1, 3), 16);
+    const g = parseInt(color.slice(3, 5), 16);
+    const b = parseInt(color.slice(5, 7), 16);
+    return `${r},${g},${b}`;
+  }
+
+  const match = color.match(/\d+/g);
+  return match ? match.slice(0, 3).join(",") : "107,125,75";
+}
 
   // ============================================================
   // Guitar pieces loader
