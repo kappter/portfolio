@@ -155,7 +155,8 @@ pulsetap: {
     if (!ctx) return;
 
     const dpr = window.devicePixelRatio || 1;
-    let width = Math.min(window.innerWidth, 960);
+    const container = canvas.closest(".container");
+let width = container ? container.clientWidth : Math.min(window.innerWidth, 960);
     const height = 20;
 
     canvas.style.width = width + "px";
@@ -174,7 +175,7 @@ pulsetap: {
     let fadeDistance = width * 0.6;
 
     function resizeCanvas() {
-      width = Math.min(window.innerWidth, 960);
+      width = container ? container.clientWidth : Math.min(window.innerWidth, 960);
       fadeDistance = width * 0.6;
 
       canvas.style.width = width + "px";
