@@ -203,7 +203,7 @@ function drawLine() {
 
   path.forEach((p, i) => {
     const age = path.length - i;
-   const opacity = Math.max(0, 1 - age / 220); // fade tail
+   const opacity = Math.max(0, 1 - age / 120); // fade tail
 
     ctx.strokeStyle = `rgba(${getRGBValues(getAccentColor())}, ${opacity})`;
     ctx.lineWidth = 2 * (1 - age / 200);
