@@ -234,3 +234,42 @@ input[type="file"] {
     display: none;
   }
 }
+@media (max-width: 700px) {
+  html,
+  body {
+    height: auto;
+    min-height: 100%;
+    overflow-y: auto;
+  }
+
+  body {
+    padding: 8px 8px 0 8px;
+  }
+
+  #map-frame {
+    height: 42vh;
+    margin-bottom: 12px;
+  }
+
+  #destination-list {
+    display: block;
+    position: relative;
+    width: 100%;
+    margin: 12px auto 24px auto;
+    padding-bottom: 24px;
+    z-index: 1000;
+  }
+
+  #destinations {
+    max-height: 32vh;
+    overflow-y: auto;
+    padding-bottom: 24px;
+  }
+
+  #footer {
+    position: static;
+    margin-top: 16px;
+    width: auto;
+    border-radius: 14px;
+  }
+}
