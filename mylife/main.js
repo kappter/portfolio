@@ -43,7 +43,7 @@ const selectedFile = this.value;
 loadDemoCSV(selectedFile);
 });
 
-function loadDemoCSV(filename = 'journey.csv') {
+function loadDemoCSV(filename = 'journeys.csv') {
 trace(`Attempting to load ${filename} as demo...`);
 fetch(filename)
 .then(response => {
@@ -79,6 +79,7 @@ console.log('Headers found:', results.meta.fields);
   d.age = d.age || '';
   d.location = d.location || 'Unknown';
   d.livingWith = d.livingWith || '';
+            d.travel = d.travel || '';
 });
 
 // ✅ SORT HERE (correct place)
@@ -232,7 +233,11 @@ color: '#0066cc',
 fillColor: '#a8e0ff',
 fillOpacity: 0.9
 })
-.bindPopup(`<strong>${d.location} (${d.year})</strong><br>With: ${d.livingWith}`)
+.bindPopup(`
+  <strong>${d.location} (${d.year})</strong><br>
+  With: ${d.livingWith}<br>
+  ${d.travel ? `<em>Travel:</em> ${d.travel}` : ''}
+`)
 .addTo(map);
 markers.push(marker);
 if (i > 0) {
