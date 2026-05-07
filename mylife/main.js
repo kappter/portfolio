@@ -78,8 +78,8 @@ console.log('Headers found:', results.meta.fields);
   d.year = parseInt(d.year, 10);
   d.age = d.age || '';
   d.location = d.location || 'Unknown';
-  d.livingWith = d.livingWith || '';
-            d.travel = d.travel || '';
+ d.livingWith = d.livingWith || '';
+d.travel = d.travel || '';
 });
 
 // ✅ SORT HERE (correct place)
