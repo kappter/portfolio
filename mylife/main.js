@@ -302,7 +302,7 @@ return;
 idx++;
 slider.value = idx;
 updateMap(idx);
-}, 1500);
+}, 750);
 }
 
 function pauseAnimation() {
