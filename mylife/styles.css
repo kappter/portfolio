@@ -123,6 +123,9 @@ input[type="file"] {
 
 /* DESTINATIONS */
 #destination-list {
+   position: absolute;
+  left: 0;
+  bottom: 90px;
   width: min(1100px, 100%);
   margin: 0 auto 48px auto;
   padding: 12px 14px;
@@ -131,6 +134,15 @@ input[type="file"] {
   background: rgba(255,255,255,0.08);
   border: 1px solid rgba(255,255,255,0.12);
   box-shadow: 0 10px 26px rgba(0,0,0,0.22);
+}
+
+@media (max-width: 700px) {
+  #destination-list {
+    bottom: 110px;
+    max-height: 38vh;
+    overflow-y: auto;
+    padding-bottom: 25px;
+  }
 }
 
 #destination-list summary {
@@ -209,7 +221,9 @@ input[type="file"] {
   }
 
   #destination-list {
-    margin-bottom: 44px;
+     position: absolute;
+  left: 0;
+  bottom: 90px;
   }
 
   #destination-list:not([open]) ul {
