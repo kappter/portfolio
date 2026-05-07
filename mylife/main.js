@@ -21,7 +21,7 @@ helpPopup.style.display = "none";
 });
 
 function validateHeaders(fields) {
-const req = ['year', 'age', 'location', 'lat', 'lon', 'livingWith'].map(x => x.toLowerCase());
+const req = ['year', 'age', 'location', 'lat', 'lon'].map(x => x.toLowerCase());
 const lower = fields.map(f => f.trim().toLowerCase());
 const missing = req.filter(h => !lower.includes(h));
 return { valid: missing.length === 0, missing };
