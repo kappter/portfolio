@@ -31,7 +31,7 @@ year,age,location,lat,lon,livingWith,travel
 2003,30,"Brigham Young (Dist) Sandy UT",40.564978,-111.838684,"Stacey/Z/S",""
 2004,31,"UoP Sandy UT",47.950222,-124.386165,"Stacey/Z/S","Olympic Peninsula, WA"
 2005,32,"UoP Sandy UT",40.564978,-111.838684,"Stacey/Z/S","Vancouver, WA"
-2006,33,"UoP Sandy UT",31.8715,116.6007,"Stacey/Z/S","Ensenada, Mexico"
+2006,33,"UoP Sandy UT",31.8715,-116.6007,"Stacey/Z/S","Ensenada, Mexico"
 2007,34,"UoP Sandy UT",38.89511,-77.03637,"Stacey/Z/S","Washington DC"
 2008,35,"UoP Sandy UT",32.076176,-181.088371,"Stacey/Z/S","Savannah, GA"
 2009,36,"UoP Sandy UT",40.564978,-111.838684,"Stacey/Z/S","Big Horn Mountains"
