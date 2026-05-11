@@ -633,3 +633,36 @@ h3 {
         right: 8px;
     }
 }
+/* =========================
+   Fix Upcoming Projects Cards
+========================= */
+
+#pros .book-gallery {
+    clear: both;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 16px;
+    margin-top: 24px;
+}
+
+#pros .book-card {
+    background-color: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    padding: 16px;
+    overflow: hidden;
+}
+
+#pros .book-card img {
+    width: 100%;
+    max-width: 100%;
+    height: 260px;
+    object-fit: contain;
+    display: block;
+    border-radius: 4px;
+    background-color: var(--card-bg);
+}
+
+#pros .book-card img:hover {
+    transform: scale(1.03);
+}
