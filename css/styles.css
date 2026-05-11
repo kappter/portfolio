@@ -86,15 +86,6 @@ body {
     overflow: hidden;
 }
 
-.book-card img {
-    width: 100%;
-    height: 260px;
-    object-fit: contain;
-    display: block;
-    border-radius: 4px;
-    background-color: var(--card-bg);
-}
-
 .project-card img:hover,
 .book-card img:hover {
     transform: scale(1.03);
@@ -1004,9 +995,10 @@ h3 {
         transform: scale(3.75);
     }
 
-    .project-card img:hover, .book-card img:hover {
-        transform: scale(1.1);
-    }
+ .project-card img:hover,
+.book-card img:hover {
+    transform: scale(1.03);
+}
 
     .blog-image:hover {
         transform: scale(1.07);
