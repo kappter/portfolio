@@ -95,7 +95,15 @@ a:hover {
     color: var(--accent-hover);
     text-decoration: underline;
 }
-
+.book-card img {
+    width: 100%;
+    max-width: 100%;
+    height: 260px;
+    object-fit: contain;
+    display: block;
+    border-radius: 4px;
+    background-color: var(--card-bg);
+}
 .container {
     flex: 1 0 auto;
     max-width: 960px;
