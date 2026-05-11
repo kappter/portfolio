@@ -100,8 +100,30 @@ a {
     transition: color 0.2s ease;
 }
 
+.project-card,
+.book-card {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    height: 100%;
+    overflow: hidden;
+}
+
+.project-link {
+    margin-top: auto;
+    align-self: stretch;
+    text-align: center;
+}
+
 a:visited {
-    color: var(--accent-color);
+    color: var(--accent-hover);
+}
+
+.project-link,
+.project-link:visited,
+.button,
+.button:visited {
+    color: #ffffff;
 }
 
 a:hover {
@@ -393,7 +415,7 @@ h3 {
 }
 
 .teaching-image:hover {
-    transform: scale(3);
+    transform: scale(1.0);
     z-index: 10;
 }
 
@@ -506,10 +528,10 @@ h3 {
     border-radius: 6px;
     padding: 16px;
     overflow: hidden;
-    height: 100%;
-    display: flex;
+     display: flex;
     flex-direction: column;
-    justify-content: space-between;
+    justify-content: flex-start;
+    height: 100%;
 }
 
 .project-card:hover, .book-card:hover {
@@ -538,6 +560,9 @@ h3 {
 }
 
 .project-link {
+    margin-top: auto;
+    align-self: stretch;
+    text-align: center;
     font-size: 13px;
     padding: 6px 12px;
     background-color: var(--accent-color);
@@ -996,7 +1021,7 @@ h3 {
     }
 
     .teaching-image:hover {
-        transform: scale(3.75);
+        transform: scale(1.0);
     }
 
  .project-card img:hover,
