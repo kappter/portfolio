@@ -77,6 +77,28 @@ body {
     flex-direction: column;
 }
 
+#pros .book-gallery {
+    clear: both;
+    margin-top: 24px;
+}
+
+.book-card {
+    overflow: hidden;
+}
+
+.book-card img {
+    width: 100%;
+    height: 260px;
+    object-fit: contain;
+    display: block;
+    border-radius: 4px;
+    background-color: var(--card-bg);
+}
+
+.project-card img:hover,
+.book-card img:hover {
+    transform: scale(1.03);
+}
 /* =========================
    GLOBAL LINK COLORS
 ========================= */
@@ -509,9 +531,9 @@ h3 {
     background-color: var(--card-bg);
 }
 
-.project-card img:hover, .book-card img:hover {
-    transform: scale(1.1);
-    z-index: 10;
+.project-card img:hover,
+.book-card img:hover {
+    transform: scale(1.03);
 }
 
 .project-card p, .book-card p {
