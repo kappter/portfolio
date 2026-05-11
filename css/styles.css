@@ -501,11 +501,15 @@ h3 {
 }
 
 .project-card, .book-card {
-    background-color: var(--card-bg);
+     background-color: var(--card-bg);
     border: 1px solid var(--border-color);
     border-radius: 6px;
     padding: 16px;
-    transition: box-shadow 0.2s ease;
+    overflow: hidden;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
 }
 
 .project-card:hover, .book-card:hover {
