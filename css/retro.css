@@ -203,3 +203,53 @@ a:visited {
 .project-link:visited {
     color: #d6f5a3 !important;
 }
+/* =========================
+   Retro Top Bar Fix
+========================= */
+
+.navbar {
+    min-height: 42px;
+    padding: 6px 10px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+}
+
+.nav-logo .logo {
+    height: 24px;
+    width: 24px;
+}
+
+.nav-toggle {
+    display: none;
+}
+
+.nav-menu {
+    list-style: none;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 6px;
+    width: auto;
+    margin: 0;
+    padding: 0;
+}
+
+.nav-menu li {
+    margin: 0;
+}
+
+.nav-button,
+#theme-selector {
+    font-size: 12px;
+    padding: 4px 7px;
+    white-space: nowrap;
+}
+
+#theme-selector {
+    width: auto;
+    min-width: 150px;
+}
