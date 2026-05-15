@@ -1,0 +1,156 @@
+/* css/retro.css */
+
+:root {
+    --bg-color: #9c9c9c;
+    --text-color: #000000;
+    --header-bg: #c0c0c0;
+    --card-bg: #b8b8b8;
+    --border-color: #ffffff;
+    --accent-color: #0000aa;
+    --accent-hover: #00aaaa;
+    --secondary-text: #111111;
+    --shadow-color: #000000;
+    --progress-bg: #808080;
+}
+
+[data-theme="dark"] {
+    --bg-color: #0000aa;
+    --text-color: #ffffff;
+    --header-bg: #808080;
+    --card-bg: #c0c0c0;
+    --border-color: #ffffff;
+    --accent-color: #00ff00;
+    --accent-hover: #ffff00;
+    --secondary-text: #000000;
+    --shadow-color: #000000;
+    --progress-bg: #008080;
+}
+
+body {
+    font-family: "Courier New", monospace;
+    background: var(--bg-color);
+    color: var(--text-color);
+}
+
+.navbar,
+.footer,
+header,
+.project-card,
+.book-card,
+.award-card,
+.now-card,
+.art-carousel,
+.photography-carousel {
+    background: var(--card-bg);
+    border-top: 2px solid #ffffff;
+    border-left: 2px solid #ffffff;
+    border-right: 2px solid #000000;
+    border-bottom: 2px solid #000000;
+    box-shadow: 8px 8px 0 var(--shadow-color);
+    border-radius: 0;
+}
+
+.navbar {
+    background: #c0c0c0;
+}
+
+.nav-button,
+#theme-selector,
+.button,
+.project-link {
+    font-family: "Courier New", monospace;
+    background: #000000;
+    color: #00ff00 !important;
+    border-top: 2px solid #ffffff;
+    border-left: 2px solid #ffffff;
+    border-right: 2px solid #404040;
+    border-bottom: 2px solid #404040;
+    border-radius: 0;
+    text-transform: uppercase;
+}
+
+.nav-button:hover,
+.button:hover,
+.project-link:hover {
+    background: #00aaaa;
+    color: #000000 !important;
+    text-decoration: none;
+}
+
+h1,
+h2,
+h3 {
+    font-family: "Courier New", monospace;
+    color: var(--accent-color);
+    text-transform: uppercase;
+}
+
+.project-gallery,
+.book-gallery,
+.awards-container,
+.now-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 18px;
+}
+
+.project-card,
+.book-card {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    overflow: hidden;
+    height: 100%;
+}
+
+.project-card img,
+.book-card img {
+    width: 100%;
+    max-width: 100%;
+    height: 220px;
+    object-fit: contain;
+    display: block;
+    background: #008080;
+    border: 2px inset #ffffff;
+    border-radius: 0;
+}
+
+.project-card img:hover,
+.book-card img:hover {
+    transform: scale(1.03);
+}
+
+.project-link {
+    margin-top: auto;
+    align-self: stretch;
+    text-align: center;
+}
+
+.teaching-image {
+    width: 100px;
+    max-width: 100px;
+    border: 2px inset #ffffff;
+    border-radius: 0;
+    transition: transform 0.25s ease;
+    cursor: zoom-in;
+}
+
+.teaching-image:hover {
+    transform: scale(2);
+    z-index: 50;
+}
+
+a {
+    color: #0000aa;
+}
+
+a:visited {
+    color: #800080;
+}
+
+.button,
+.button:visited,
+.project-link,
+.project-link:visited {
+    color: #00ff00 !important;
+}
