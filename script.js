@@ -21,25 +21,34 @@ document.addEventListener("DOMContentLoaded", function () {
 };
 
   function applyTheme(themeName) {
-    if (!themeName || !themeMap[themeName]) {
-      themeName = "natural-light";
-    }
-
-    const theme = themeMap[themeName];
-    html.setAttribute("data-theme", theme.mode);
-    html.setAttribute("data-theme-name", themeName);
-    document.body.setAttribute("data-theme-name", themeName);
-
-    if (themeStylesheet) {
-      themeStylesheet.setAttribute("href", theme.stylesheet);
-    }
-
-    try {
-      localStorage.setItem("portfolio-theme", themeName);
-    } catch (error) {
-      console.warn("Could not save theme preference:", error);
-    }
+  if (!themeName || !themeMap[themeName]) {
+    themeName = "natural-light";
   }
+
+  const stylesheet = themeMap[themeName];
+
+  // handle dark/light mode
+  if (themeName.includes("dark")) {
+    html.setAttribute("data-theme", "dark");
+  } else if (themeName.includes("pulsetap")) {
+    html.setAttribute("data-theme", themeName);
+  } else {
+    html.removeAttribute("data-theme");
+  }
+
+  html.setAttribute("data-theme-name", themeName);
+  document.body.setAttribute("data-theme-name", themeName);
+
+  if (themeStylesheet) {
+    themeStylesheet.setAttribute("href", stylesheet);
+  }
+
+  try {
+    localStorage.setItem("portfolio-theme", themeName);
+  } catch (error) {
+    console.warn("Could not save theme preference:", error);
+  }
+}
 
   function ensurePulseTapThemeOptions() {
     if (!themeSelector) return;
@@ -47,11 +56,6 @@ document.addEventListener("DOMContentLoaded", function () {
     const existingValues = Array.from(themeSelector.options).map(function (option) {
       return option.value;
     });
-    if (selectedTheme.includes("dark")) {
-      document.documentElement.setAttribute("data-theme", "dark");
-    } else {
-      document.documentElement.removeAttribute("data-theme");
-    }
 
     if (!existingValues.includes("pulsetap-dark")) {
       const option = document.createElement("option");
