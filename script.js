@@ -8,51 +8,17 @@ document.addEventListener("DOMContentLoaded", function () {
   const html = document.documentElement;
 
   const themeMap = {
-    "natural-light": {
-      mode: "light",
-      stylesheet: "css/styles.css",
-    },
-    "natural-dark": {
-      mode: "dark",
-      stylesheet: "css/styles.css",
-    },
-    "architectural-light": {
-      mode: "light",
-      stylesheet: "css/architectural.css",
-    },
-    "architectural-dark": {
-      mode: "dark",
-      stylesheet: "css/architectural.css",
-    },
-    "space-light": {
-      mode: "light",
-      stylesheet: "css/space.css",
-    },
-    "space-dark": {
-      mode: "dark",
-      stylesheet: "css/space.css",
-    },
-    "medieval-light": {
-      mode: "light",
-      stylesheet: "css/medieval.css",
-    },
-    "medieval-dark": {
-      mode: "dark",
-      stylesheet: "css/medieval.css",
-    },
-    "pulsetap-light": {
-  mode: "pulsetap-light",
-  stylesheet: "css/styles.css",
-},
-"pulsetap-dark": {
-  mode: "pulsetap-dark",
-  stylesheet: "css/styles.css",
-},
-pulsetap: {
-  mode: "pulsetap-dark",
-  stylesheet: "css/styles.css",
-},
-  };
+    "natural-light": "css/styles.css",
+    "natural-dark": "css/styles.css",
+    "architectural-light": "css/architectural.css",
+    "architectural-dark": "css/architectural.css",
+    "space-light": "css/space.css",
+    "space-dark": "css/space.css",
+    "medieval-light": "css/medieval.css",
+    "medieval-dark": "css/medieval.css",
+    "retro-light": "css/retro.css",
+    "retro-dark": "css/retro.css"
+};
 
   function applyTheme(themeName) {
     if (!themeName || !themeMap[themeName]) {
@@ -81,6 +47,11 @@ pulsetap: {
     const existingValues = Array.from(themeSelector.options).map(function (option) {
       return option.value;
     });
+    if (selectedTheme.includes("dark")) {
+      document.documentElement.setAttribute("data-theme", "dark");
+    } else {
+      document.documentElement.removeAttribute("data-theme");
+    }
 
     if (!existingValues.includes("pulsetap-dark")) {
       const option = document.createElement("option");
