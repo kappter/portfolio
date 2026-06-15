@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>TOK Essay Brainstorming Amalgamator</title>
+<style>
+:root{
+  --bg:#f4f1ea;
+  --ink:#222;
+  --muted:#666;
+  --card:#fff;
+  --accent:#4b2d73;
+  --accent2:#e1b600;
+  --soft:#fafafa;
+  --warm:#fff6d8;
+  --line:#ddd;
+}
+*{box-sizing:border-box;}
+body{
+  margin:0;
+  font-family:Arial, Helvetica, sans-serif;
+  background:var(--bg);
+  color:var(--ink);
+}
+main{
+  max-width:1100px;
+  margin:32px auto;
+  padding:20px;
+}
+h1{
+  text-align:center;
+  color:var(--accent);
+  margin-bottom:8px;
+}
+.subtitle{
+  text-align:center;
+  color:var(--muted);
+  max-width:860px;
+  margin:0 auto 24px;
+  line-height:1.45;
+}
+.card{
+  background:var(--card);
+  border-radius:14px;
+  padding:20px;
+  margin-top:18px;
+  box-shadow:0 3px 10px rgba(0,0,0,.12);
+}
+.controls{
+  display:flex;
+  flex-wrap:wrap;
+  justify-content:center;
+  gap:10px;
+  margin:18px 0;
+}
+button{
+  border:0;
+  border-radius:9px;
+  background:var(--accent);
+  color:white;
+  padding:12px 18px;
+  font-size:1rem;
+  cursor:pointer;
+}
+button.secondary{background:#333;}
+button.gold{background:#9a7400;}
+button:hover{opacity:.9;}
+.grid{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:14px;
+}
+@media(max-width:760px){.grid{grid-template-columns:1fr;}}
+label{
+  display:block;
+  font-weight:bold;
+  color:var(--accent);
+  margin:12px 0 6px;
+}
+textarea,input,select{
+  width:100%;
+  border:1px solid var(--line);
+  border-radius:9px;
+  padding:10px;
+  font-size:1rem;
+  font-family:inherit;
+  background:white;
+}
+textarea{min-height:64px;resize:vertical;}
+.title-row{
+  display:grid;
+  grid-template-columns:80px 1fr;
+  gap:8px;
+  align-items:start;
+  margin-bottom:8px;
+}
+.title-row strong{
+  color:var(--accent);
+  padding-top:10px;
+}
+.section-title{
+  color:var(--accent);
+  margin:0 0 10px;
+}
+.big-title{
+  font-size:1.25rem;
+  font-weight:bold;
+  color:var(--accent);
+  line-height:1.35;
+}
+.pillbar{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0;}
+.pill{
+  background:#eee;
+  border-radius:999px;
+  padding:7px 10px;
+  font-size:.92rem;
+}
+.box{
+  border-left:5px solid var(--accent);
+  background:var(--soft);
+  padding:14px;
+  margin:12px 0;
+  border-radius:8px;
+}
+.box.warm{background:var(--warm);border-left-color:var(--accent2);}
+.small{font-size:.92rem;color:var(--muted);line-height:1.45;}
+ul{margin-top:8px;}
+li{margin:6px 0;}
+hr{border:0;border-top:1px solid var(--line);margin:18px 0;}
+.copyarea{
+  white-space:pre-wrap;
+  background:#f7f7f7;
+  border:1px dashed #bbb;
+  padding:14px;
+  border-radius:10px;
+  line-height:1.45;
+}
+footer{text-align:center;color:var(--muted);font-size:.9rem;margin-top:34px;}
+</style>
+</head>
+<body>
+<main>
+  <h1>TOK Essay Brainstorming Amalgamator</h1>
+  <p class="subtitle">
+    A teacher-facing and student-facing tool for moving from a prescribed TOK essay title into areas of knowledge, claims,
+    counterclaims, real examples, concepts, and a possible argument structure. Replace the placeholder titles with the official prescribed titles for your examination session.
+  </p>
+
+  <div class="card">
+    <h2 class="section-title">Official Prescribed Titles</h2>
+    <p class="small">Paste the six official TOK essay prescribed titles here. They are saved in this browser automatically.</p>
+    <div id="titleInputs"></div>
+    <div class="controls">
+      <button onclick="saveTitles()">Save Titles</button>
+      <button class="secondary" onclick="resetTitles()">Reset Placeholders</button>
+    </div>
+  </div>
+
+  <div class="controls">
+    <button onclick="generateEssayBrainstorm()">Generate Essay Brainstorm</button>
+    <button class="gold" onclick="deepenArgument()">Deepen the Argument</button>
+    <button class="secondary" onclick="copyBrainstorm()">Copy Brainstorm</button>
+  </div>
+
+  <div id="output" class="card">
+    Press <strong>Generate Essay Brainstorm</strong> to begin.
+  </div>
+
+  <footer>
+    TOK essay reminder: the essay is not an exhibition. It needs a sustained argument, not three objects. Use two areas of knowledge when the title asks for them.
+  </footer>
+</main>
+
+<script>
+const DEFAULT_TITLES = [
+  "Paste official prescribed title 1 here.",
+  "Paste official prescribed title 2 here.",
+  "Paste official prescribed title 3 here.",
+  "Paste official prescribed title 4 here.",
+  "Paste official prescribed title 5 here.",
+  "Paste official prescribed title 6 here."
+];
+
+const aoks = [
+  "History",
+  "The Human Sciences",
+  "The Natural Sciences",
+  "The Arts",
+  "Mathematics"
+];
+
+const concepts = [
+  "evidence", "certainty", "truth", "interpretation", "objectivity", "bias", "justification",
+  "explanation", "reliability", "values", "power", "responsibility", "authority", "perspective", "culture"
+];
+
+const commandTerms = [
+  {term:"to what extent", move:"build a balanced argument, then make a clear judgement rather than merely listing both sides"},
+  {term:"discuss", move:"explore competing positions and evaluate the strength of each"},
+  {term:"evaluate", move:"judge strengths and limitations using specific examples"},
+  {term:"compare", move:"show meaningful similarities and differences, not just two separate descriptions"},
+  {term:"claim", move:"identify what the title assumes, then test whether that assumption holds in different AOKs"},
+  {term:"only", move:"test the absoluteness of the title by looking for exceptions and limits"},
+  {term:"always", move:"look for counterexamples because absolute terms are rarely safe in TOK"},
+  {term:"can", move:"separate possibility from likelihood, desirability, or reliability"}
+];
+
+const realExamples = {
+  "History": [
+    "competing interpretations of a historical event using different archives",
+    "a textbook revision that changes how a nation remembers its past",
+    "oral history compared with official written records",
+    "the use of photographs as historical evidence",
+    "a museum label that frames an artifact from one cultural perspective"
+  ],
+  "The Human Sciences": [
+    "a psychology study affected by sampling bias",
+    "an economics model that simplifies human behavior",
+    "a survey whose wording changes the data collected",
+    "a social media algorithm used to predict behavior",
+    "a case study used to generalize about a wider population"
+  ],
+  "The Natural Sciences": [
+    "a scientific model that was later revised by new evidence",
+    "climate data used to make predictions about future risk",
+    "a medical diagnosis based on test results and expert interpretation",
+    "peer review correcting or challenging a published paper",
+    "instrumental data from a telescope, microscope, or detector"
+  ],
+  "The Arts": [
+    "different interpretations of the same song, painting, film, or performance",
+    "a controversial artwork whose meaning changes by audience or context",
+    "a musical score compared with an actual performance",
+    "AI-generated art and questions of authorship",
+    "a public monument whose meaning changes over time"
+  ],
+  "Mathematics": [
+    "a mathematical proof accepted because of logical validity",
+    "statistics used to represent a messy real-world situation",
+    "a model that uses numbers to simplify uncertainty",
+    "Pythagorean relationships expressed across geometry and music",
+    "a data visualization that makes a numerical pattern persuasive"
+  ]
+};
+
+const structures = [
+  "AOK 1 supports the title; AOK 2 complicates or challenges it; conclusion makes a qualified judgement.",
+  "Both AOKs support the title, but for different reasons; conclusion explains why the difference matters.",
+  "AOK 1 shows the title is mostly true in controlled contexts; AOK 2 shows it becomes unstable in human or cultural contexts.",
+  "Start by accepting the title in a limited way, then test its limits through two contrasting AOKs.",
+  "Use one strong example and one counterexample in each AOK, then judge which side is more convincing."
+];
+
+const deepeners = [
+  "Where is the title making an assumption that needs to be challenged?",
+  "Which word in the title is doing the most philosophical work? Define that word carefully.",
+  "What would count as a strong counterexample to your first claim?",
+  "Are your examples doing analytical work, or are they just decorating the paragraph?",
+  "What changes when you move from personal knowledge to shared knowledge?",
+  "Does your argument change when certainty is replaced with reliability?",
+  "Who benefits if this way of knowing is accepted as reliable?",
+  "What would an expert in this AOK say that a non-expert might miss?"
+];
+
+let lastBrainstormText = "";
+
+function randomItem(arr){ return arr[Math.floor(Math.random()*arr.length)]; }
+function shuffle(arr){ return [...arr].sort(() => Math.random() - 0.5); }
+
+function loadTitles(){
+  const stored = localStorage.getItem("tokEssayTitles");
+  return stored ? JSON.parse(stored) : DEFAULT_TITLES;
+}
+
+function renderTitleInputs(){
+  const titles = loadTitles();
+  const container = document.getElementById("titleInputs");
+  container.innerHTML = "";
+  titles.forEach((title, i) => {
+    const row = document.createElement("div");
+    row.className = "title-row";
+    row.innerHTML = `<strong>Title ${i+1}</strong><textarea id="title${i}">${title}</textarea>`;
+    container.appendChild(row);
+  });
+}
+
+function saveTitles(){
+  const titles = [];
+  for(let i=0;i<6;i++) titles.push(document.getElementById(`title${i}`).value.trim() || DEFAULT_TITLES[i]);
+  localStorage.setItem("tokEssayTitles", JSON.stringify(titles));
+  alert("TOK essay titles saved in this browser.");
+}
+
+function resetTitles(){
+  localStorage.removeItem("tokEssayTitles");
+  renderTitleInputs();
+}
+
+function detectCommandMove(title){
+  const lower = title.toLowerCase();
+  const found = commandTerms.find(c => lower.includes(c.term));
+  return found || randomItem(commandTerms);
+}
+
+function generateEssayBrainstorm(){
+  saveTitles();
+  const titles = loadTitles();
+  const title = randomItem(titles);
+  const chosenAOKs = shuffle(aoks).slice(0,2);
+  const concept1 = randomItem(concepts);
+  const concept2 = randomItem(concepts.filter(c => c !== concept1));
+  const move = detectCommandMove(title);
+  const ex1 = randomItem(realExamples[chosenAOKs[0]]);
+  const ex2 = randomItem(realExamples[chosenAOKs[1]]);
+  const structure = randomItem(structures);
+
+  const claim = `In ${chosenAOKs[0]}, the title may be convincing when ${concept1} is treated as central to how knowledge is produced or evaluated.`;
+  const counterclaim = `However, ${chosenAOKs[1]} may complicate the title because ${concept2} can change what counts as convincing knowledge.`;
+  const question = `How does the meaning of the title change when tested through ${chosenAOKs[0]} and ${chosenAOKs[1]}?`;
+
+  lastBrainstormText = `TOK Essay Brainstorm\n\nPrescribed title:\n${title}\n\nAOK Pairing:\n1. ${chosenAOKs[0]}\n2. ${chosenAOKs[1]}\n\nKey Concepts:\n${concept1}, ${concept2}\n\nCommand Term Move:\n${move.term}: ${move.move}\n\nPossible Thesis Direction:\n${question}\n\nClaim:\n${claim}\n\nCounterclaim:\n${counterclaim}\n\nExample 1 (${chosenAOKs[0]}):\n${ex1}\n\nExample 2 (${chosenAOKs[1]}):\n${ex2}\n\nPossible Structure:\n${structure}\n\nTeacher reminder:\nThe essay needs a sustained judgement, not a list of examples.`;
+
+  document.getElementById("output").innerHTML = `
+    <h2 class="section-title">Generated TOK Essay Brainstorm</h2>
+    <div class="big-title">${title}</div>
+    <div class="pillbar">
+      <span class="pill">AOK 1: ${chosenAOKs[0]}</span>
+      <span class="pill">AOK 2: ${chosenAOKs[1]}</span>
+      <span class="pill">Concept: ${concept1}</span>
+      <span class="pill">Concept: ${concept2}</span>
+    </div>
+    <div class="box warm">
+      <strong>Command-term move:</strong> <em>${move.term}</em> — ${move.move}.
+    </div>
+    <div class="grid">
+      <div class="box">
+        <strong>Possible claim</strong>
+        <p>${claim}</p>
+        <strong>Example to investigate:</strong>
+        <p>${ex1}</p>
+      </div>
+      <div class="box">
+        <strong>Possible counterclaim</strong>
+        <p>${counterclaim}</p>
+        <strong>Example to investigate:</strong>
+        <p>${ex2}</p>
+      </div>
+    </div>
+    <div class="box">
+      <strong>Possible thesis direction:</strong>
+      <p>${question}</p>
+    </div>
+    <div class="box">
+      <strong>Possible essay structure:</strong>
+      <p>${structure}</p>
+    </div>
+    <hr>
+    <p class="small"><strong>Student warning:</strong> This is a thinking scaffold. Replace generic examples with precise, researched examples and build a clear judgement that directly answers the prescribed title.</p>
+  `;
+}
+
+function deepenArgument(){
+  const output = document.getElementById("output");
+  const prompts = shuffle(deepeners).slice(0,4);
+  output.innerHTML += `
+    <div class="box warm">
+      <strong>Deepen the Argument</strong>
+      <ul>${prompts.map(p => `<li>${p}</li>`).join("")}</ul>
+    </div>
+  `;
+}
+
+function copyBrainstorm(){
+  if(!lastBrainstormText){ alert("Generate a brainstorm first."); return; }
+  navigator.clipboard.writeText(lastBrainstormText).then(() => alert("Brainstorm copied."));
+}
+
+renderTitleInputs();
+</script>
+</body>
+</html>
