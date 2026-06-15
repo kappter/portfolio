@@ -1,242 +1,332 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <title>TOK Exhibition Object Amalgamator</title>
-  <style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TOK Exhibition Object Amalgamator</title>
+<style>
+  :root {
+    --bg: #f4f1ea;
+    --card: #ffffff;
+    --ink: #222222;
+    --muted: #666666;
+    --accent: #4b2d73;
+    --accent2: #e1b600;
+    --soft: #fafafa;
+    --personal: #fff6d8;
+  }
+
+  * {
+    box-sizing: border-box;
+  }
+
+  body {
+    font-family: Arial, Helvetica, sans-serif;
+    max-width: 1000px;
+    margin: 40px auto;
+    padding: 20px;
+    background: var(--bg);
+    color: var(--ink);
+    line-height: 1.5;
+  }
+
+  h1 {
+    text-align: center;
+    color: var(--accent);
+    margin-bottom: 8px;
+  }
+
+  .subtitle {
+    text-align: center;
+    color: var(--muted);
+    margin-bottom: 30px;
+  }
+
+  .controls {
+    text-align: center;
+    margin-bottom: 25px;
+  }
+
+  button {
+    padding: 12px 20px;
+    margin: 6px;
+    border: none;
+    border-radius: 8px;
+    background: var(--accent);
+    color: white;
+    font-size: 1rem;
+    cursor: pointer;
+  }
+
+  button:hover {
+    opacity: 0.9;
+  }
+
+  .card {
+    background: var(--card);
+    padding: 22px;
+    border-radius: 12px;
+    margin-top: 20px;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.12);
+  }
+
+  .prompt {
+    font-size: 1.35rem;
+    font-weight: bold;
+    color: var(--accent);
+    margin-bottom: 20px;
+  }
+
+  .object-box {
+    margin-top: 15px;
+    padding: 15px;
+    background: var(--soft);
+    border-left: 5px solid var(--accent);
+    border-radius: 6px;
+  }
+
+  .category {
+    font-size: 0.82rem;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    font-weight: bold;
+  }
+
+  .object-title {
+    font-size: 1.1rem;
+    font-weight: bold;
+    margin-top: 5px;
+  }
+
+  .tok-angle {
+    margin-top: 8px;
+  }
+
+  .personal-box {
+    background: var(--personal);
+    border-left-color: var(--accent2);
+  }
+
+  .reflection {
+    margin-top: 20px;
+    padding: 15px;
+    background: #f0edf7;
+    border-radius: 8px;
+  }
+
+  footer {
+    margin-top: 40px;
+    text-align: center;
+    color: var(--muted);
+    font-size: 0.9rem;
+  }
+
+  @media print {
     body {
-      font-family: Arial, sans-serif;
-      background: #f4f1ea;
-      color: #222;
-      max-width: 900px;
-      margin: 40px auto;
-      padding: 20px;
-    }
-    h1 {
-      text-align: center;
-    }
-    button {
-      display: block;
-      margin: 25px auto;
-      padding: 14px 24px;
-      font-size: 1.1rem;
-      border: none;
-      border-radius: 10px;
-      background: #222;
-      color: white;
-      cursor: pointer;
-    }
-    button:hover {
-      background: #444;
-    }
-    .card {
       background: white;
-      border-radius: 14px;
-      padding: 22px;
-      margin-top: 20px;
-      box-shadow: 0 4px 12px rgba(0,0,0,.12);
+      margin: 0;
+      max-width: none;
     }
-    .prompt {
-      font-size: 1.4rem;
-      font-weight: bold;
-      color: #5a2a83;
+
+    button, .controls, footer {
+      display: none;
     }
-    .object {
-      margin: 18px 0;
-      padding: 14px;
-      background: #f8f8f8;
-      border-left: 5px solid #5a2a83;
+
+    .card {
+      box-shadow: none;
+      border: 1px solid #ccc;
     }
-    .label {
-      font-weight: bold;
-    }
-    footer {
-      margin-top: 30px;
-      font-size: .9rem;
-      color: #666;
-      text-align: center;
-    }
-  </style>
+  }
+</style>
 </head>
 <body>
-  <h1>TOK Exhibition Object Amalgamator</h1>
-  <p>
-    Click the button to generate a TOK Exhibition prompt and three possible
-    real-world objects for consideration. Use these as starting points, not final answers.
-  </p>
-  <button onclick="generateExhibition()">Generate Amalgamation</button>
-  <div id="output" class="card">
-    Your TOK exhibition amalgamation will appear here.
-  </div>
-  <footer>
-    Reminder: Strong TOK objects are real, specific, identifiable, and connected to the student's world.
-  </footer>
-  <script>
-    const prompts = [
-      "What counts as knowledge?",
-      "Are some types of knowledge more useful than others?",
-      "What features of knowledge have an impact on its reliability?",
-      "On what grounds might we doubt a claim?",
-      "What counts as good evidence for a claim?",
-      "How does the way that we organize or classify knowledge affect what we know?",
-      "What are the implications of having, or not having, knowledge?",
-      "To what extent is certainty attainable?",
-      "Are some types of knowledge less open to interpretation than others?",
-      "What challenges are raised by the dissemination and/or communication of knowledge?",
-      "Can new knowledge change established values or beliefs?",
-      "Is bias inevitable in the production of knowledge?",
-      "How can we know that current knowledge is an improvement upon past knowledge?",
-      "Does some knowledge belong only to particular communities of knowers?",
-      "What constraints are there on the pursuit of knowledge?",
-      "Should some knowledge not be sought on ethical grounds?",
-      "Why do we seek knowledge?",
-      "Are some things unknowable?",
-      "What counts as a good justification for a claim?",
-      "What is the relationship between personal experience and knowledge?",
-      "What is the relationship between knowledge and culture?",
-      "What role do experts play in influencing our consumption or acquisition of knowledge?",
-      "How important are material tools in the production or acquisition of knowledge?",
-      "How might the context in which knowledge is presented influence whether it is accepted or rejected?",
-      "How can we distinguish between knowledge, belief and opinion?",
-      "Does our knowledge depend on our interactions with other knowers?",
-      "Does all knowledge impose ethical obligations on those who know it?",
-      "To what extent is objectivity possible in the production or acquisition of knowledge?",
-      "Who owns knowledge?",
-      "What role does imagination play in producing knowledge about the world?",
-      "How can we judge when evidence is adequate?",
-      "What makes a good explanation?",
-      "How is current knowledge shaped by its historical development?",
-      "In what ways do our values affect our acquisition of knowledge?",
-      "In what ways do values affect the production of knowledge?"
-    ];
-    const objectBank = [
-      {
-        name: "A screenshot of a ChatGPT response",
-        type: "Digital object",
-        tok: "Raises questions about authority, evidence, trust, bias, and how knowledge is produced by tools."
-      },
-      {
-        name: "A family photograph",
-        type: "Personal object",
-        tok: "Connects memory, perspective, emotion, and the limits of personal knowledge."
-      },
-      {
-        name: "A weather warning notification",
-        type: "Public knowledge object",
-        tok: "Shows how expert knowledge affects behavior, risk, trust, and decision-making."
-      },
-      {
-        name: "A medical test result",
-        type: "Scientific/personal object",
-        tok: "Raises questions about certainty, interpretation, ethics, and the consequences of knowing."
-      },
-      {
-        name: "A religious text or prayer card",
-        type: "Cultural object",
-        tok: "Connects belief, interpretation, community knowledge, and cultural authority."
-      },
-      {
-        name: "A school ID card",
-        type: "Institutional object",
-        tok: "Shows how institutions classify people and authorize certain kinds of knowledge."
-      },
-      {
-        name: "A map or GPS route",
-        type: "Technological object",
-        tok: "Raises questions about trust in tools, representation, error, and interpretation."
-      },
-      {
-        name: "A news article from a specific event",
-        type: "Media object",
-        tok: "Connects dissemination, bias, evidence, framing, and public acceptance of claims."
-      },
-      {
-        name: "A scientific calculator",
-        type: "Knowledge tool",
-        tok: "Shows how tools extend knowledge but may also hide processes from the knower."
-      },
-      {
-        name: "A court ruling",
-        type: "Legal object",
-        tok: "Raises questions about justification, evidence, authority, and competing interpretations."
-      },
-      {
-        name: "A musical score or chord chart",
-        type: "Artistic object",
-        tok: "Connects interpretation, notation, performance, imagination, and shared conventions."
-      },
-      {
-        name: "A social media post",
-        type: "Digital/public object",
-        tok: "Shows how knowledge spreads, mutates, persuades, or becomes distorted."
-      },
-      {
-        name: "A lab report",
-        type: "Scientific object",
-        tok: "Connects evidence, method, uncertainty, reliability, and peer evaluation."
-      },
-      {
-        name: "A protest sign",
-        type: "Political/cultural object",
-        tok: "Raises questions about values, perspective, public knowledge, and persuasion."
-      },
-      {
-        name: "A dictionary entry",
-        type: "Language object",
-        tok: "Shows how language organizes knowledge and how definitions shift over time."
-      },
-      {
-        name: "A passport",
-        type: "Identity object",
-        tok: "Connects classification, authority, identity, access, and institutional knowledge."
-      },
-      {
-        name: "A museum artifact label",
-        type: "Historical object",
-        tok: "Raises questions about who tells history, what gets preserved, and whose knowledge counts."
-      },
-      {
-        name: "A deepfake image or AI-generated image",
-        type: "Digital object",
-        tok: "Raises questions about evidence, perception, authenticity, and trust."
-      }
-    ];
-    function randomItem(array) {
-      return array[Math.floor(Math.random() * array.length)];
-    }
-    function getThreeObjects() {
-      const shuffled = [...objectBank].sort(() => Math.random() - 0.5);
-      return shuffled.slice(0, 3);
-    }
-    function generateExhibition() {
-      const prompt = randomItem(prompts);
-      const objects = getThreeObjects();
-      let html = `
-        <div class="prompt">Prompt: ${prompt}</div>
-        <h3>Possible Object Amalgamation</h3>
-      `;
-      objects.forEach((obj, index) => {
-        html += `
-          <div class="object">
-            <p><span class="label">Object ${index + 1}:</span> ${obj.name}</p>
-            <p><span class="label">Type:</span> ${obj.type}</p>
-            <p><span class="label">TOK angle:</span> ${obj.tok}</p>
-          </div>
-        `;
-      });
-      html += `
-        <h3>Student Reflection Prompt</h3>
-        <p>
-          Which of these objects is most connected to your actual life, community, school,
-          culture, or experience? How could it help reveal something about knowledge rather
-          than simply illustrate a topic?
-        </p>
-      `;
-      document.getElementById("output").innerHTML = html;
-    }
-  </script>
+
+<h1>TOK Exhibition Object Amalgamator</h1>
+
+<p class="subtitle">
+  Generate a TOK Exhibition prompt and a possible set of real-world objects for consideration.
+  Use the results as inspiration, not as final answers.
+</p>
+
+<div class="controls">
+  <button onclick="generateExhibition()">Generate Exhibition</button>
+  <button onclick="makePersonal()">Make It More Personal</button>
+  <button onclick="increaseDepth()">Increase TOK Depth</button>
+</div>
+
+<div id="output" class="card">
+  Press <strong>Generate Exhibition</strong> to begin.
+</div>
+
+<footer>
+  Strong TOK objects are REAL • SPECIFIC • IDENTIFIABLE • CONNECTED TO A KNOWER
+</footer>
+
+<script>
+const prompts = [
+  "What counts as knowledge?",
+  "Are some types of knowledge more useful than others?",
+  "What features of knowledge have an impact on its reliability?",
+  "On what grounds might we doubt a claim?",
+  "What counts as good evidence for a claim?",
+  "How does the way that we organize or classify knowledge affect what we know?",
+  "What are the implications of having, or not having, knowledge?",
+  "To what extent is certainty attainable?",
+  "Are some types of knowledge less open to interpretation than others?",
+  "What challenges are raised by the dissemination and/or communication of knowledge?",
+  "Can new knowledge change established values or beliefs?",
+  "Is bias inevitable in the production of knowledge?",
+  "How can we know that current knowledge is an improvement upon past knowledge?",
+  "Does some knowledge belong only to particular communities of knowers?",
+  "What constraints are there on the pursuit of knowledge?",
+  "Should some knowledge not be sought on ethical grounds?",
+  "Why do we seek knowledge?",
+  "Are some things unknowable?",
+  "What counts as a good justification for a claim?",
+  "What is the relationship between personal experience and knowledge?",
+  "What is the relationship between knowledge and culture?",
+  "What role do experts play in influencing our consumption or acquisition of knowledge?",
+  "How important are material tools in the production or acquisition of knowledge?",
+  "How might the context in which knowledge is presented influence whether it is accepted or rejected?",
+  "How can we distinguish between knowledge, belief and opinion?",
+  "Does our knowledge depend on our interactions with other knowers?",
+  "Does all knowledge impose ethical obligations on those who know it?",
+  "To what extent is objectivity possible in the production or acquisition of knowledge?",
+  "Who owns knowledge?",
+  "What role does imagination play in producing knowledge about the world?",
+  "How can we judge when evidence is adequate?",
+  "What makes a good explanation?",
+  "How is current knowledge shaped by its historical development?",
+  "In what ways do our values affect our acquisition of knowledge?",
+  "In what ways do values affect the production of knowledge?"
+];
+
+const personalObjects = [
+  ["A photograph from a family event", "Memory, perspective, interpretation"],
+  ["A journal entry", "Reflection, belief, personal knowledge"],
+  ["A GPS route from a trip", "Trust, technology, evidence"],
+  ["A text message conversation", "Communication, meaning, context"],
+  ["A school report card", "Authority, measurement, evaluation"],
+  ["A medical test result", "Certainty, ethics, implications of knowing"],
+  ["A social media post you shared", "Dissemination, bias, audience"],
+  ["A music playlist from a specific moment", "Emotion, memory, identity, interpretation"],
+  ["A photo of an object you misunderstood", "Perception, assumptions, revision of knowledge"]
+];
+
+const publicObjects = [
+  ["A newspaper article", "Evidence, framing, bias"],
+  ["A court ruling", "Justification, authority, interpretation"],
+  ["A weather warning", "Expert knowledge, trust, risk"],
+  ["A government passport", "Classification, identity, authority"],
+  ["A museum exhibit label", "Historical knowledge, perspective, preservation"],
+  ["A protest sign", "Values, persuasion, public knowledge"],
+  ["A public health poster", "Knowledge communication, trust, behavior"],
+  ["A fact-checking article", "Evidence, doubt, reliability"],
+  ["A campaign advertisement", "Bias, persuasion, values"]
+];
+
+const knowledgeObjects = [
+  ["A scientific calculator", "Material tools, hidden processes, reliability"],
+  ["A telescope", "Observation, evidence, limits of perception"],
+  ["A microscope image", "Scientific interpretation, evidence, method"],
+  ["A dictionary entry", "Language, classification, changing meaning"],
+  ["A ChatGPT conversation", "AI, authority, reliability, bias"],
+  ["A scientific paper", "Evidence, peer review, uncertainty"],
+  ["A data visualization", "Representation, simplification, interpretation"],
+  ["A map", "Representation, perspective, selection"],
+  ["A textbook diagram", "Simplification, authority, learning"]
+];
+
+const personalPrompts = [
+  "Replace one object with something from your phone.",
+  "Replace one object with something from your family.",
+  "Replace one object with something from school.",
+  "Replace one object with something from a recent trip.",
+  "Replace one object with something that changed your mind.",
+  "Replace one object with something you once misunderstood.",
+  "Replace one object with something you trusted and later questioned.",
+  "Replace one object with something connected to your culture.",
+  "Replace one object with something you created, edited, saved, or deleted."
+];
+
+const depthPrompts = [
+  "Move from a general object to a specific version: not 'a photograph,' but 'the photograph from the day two people remember differently.'",
+  "Find the tension: what does this object make uncertain, debatable, interpreted, or ethically complicated?",
+  "Ask who produced the knowledge, who accepted it, who doubted it, and who was affected by it.",
+  "Connect the object to a real moment when knowledge changed someone’s action, belief, confidence, or responsibility.",
+  "Avoid treating the object as decoration. It should reveal something about evidence, perspective, certainty, interpretation, or authority."
+];
+
+function randomItem(arr) {
+  return arr[Math.floor(Math.random() * arr.length)];
+}
+
+function generateExhibition() {
+  const prompt = randomItem(prompts);
+  const personal = randomItem(personalObjects);
+  const publicObj = randomItem(publicObjects);
+  const knowledge = randomItem(knowledgeObjects);
+
+  document.getElementById("output").innerHTML = `
+    <div class="prompt">Prompt: ${prompt}</div>
+
+    <div class="object-box">
+      <div class="category">Personal Object</div>
+      <div class="object-title">${personal[0]}</div>
+      <div class="tok-angle"><strong>TOK angle:</strong> ${personal[1]}</div>
+    </div>
+
+    <div class="object-box">
+      <div class="category">Public Object</div>
+      <div class="object-title">${publicObj[0]}</div>
+      <div class="tok-angle"><strong>TOK angle:</strong> ${publicObj[1]}</div>
+    </div>
+
+    <div class="object-box">
+      <div class="category">Knowledge-Producing / Knowledge-Storing Object</div>
+      <div class="object-title">${knowledge[0]}</div>
+      <div class="tok-angle"><strong>TOK angle:</strong> ${knowledge[1]}</div>
+    </div>
+
+    <div class="reflection">
+      <strong>Student reflection:</strong> Which object is most connected to your actual world? Which one reveals the strongest knowledge issue rather than merely illustrating a topic?
+    </div>
+  `;
+}
+
+function makePersonal() {
+  const output = document.getElementById("output");
+  const suggestion = randomItem(personalPrompts);
+
+  output.innerHTML += `
+    <div class="object-box personal-box">
+      <div class="category">Make It More Personal</div>
+      <div class="object-title">${suggestion}</div>
+      <ul>
+        <li>Can I photograph or identify this object?</li>
+        <li>Did it actually affect what I knew, believed, assumed, or decided?</li>
+        <li>Can I explain why this object matters in my world?</li>
+      </ul>
+    </div>
+  `;
+}
+
+function increaseDepth() {
+  const output = document.getElementById("output");
+  const suggestion = randomItem(depthPrompts);
+
+  output.innerHTML += `
+    <div class="object-box personal-box">
+      <div class="category">Increase TOK Depth</div>
+      <div class="object-title">${suggestion}</div>
+      <p>
+        The goal is to move from <strong>object as example</strong> to <strong>object as evidence of a knowledge problem</strong>.
+      </p>
+    </div>
+  `;
+}
+</script>
+
 </body>
 </html>
-
-The next best improvement would be adding a second button: “Make it more personal”, which nudges students to replace generic objects with objects from their own life.
