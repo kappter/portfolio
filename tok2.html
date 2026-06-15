@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TOK Exhibition Amalgamator</title>
+<style>
+  :root {
+    --bg: #f4f1ea;
+    --card: #ffffff;
+    --ink: #222222;
+    --muted: #666666;
+    --accent: #4b2d73;
+    --accent2: #e1b600;
+    --soft: #fafafa;
+    --personal: #fff6d8;
+    --lens: #eef3ff;
+    --concept: #edf8f0;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    font-family: Arial, Helvetica, sans-serif;
+    max-width: 1050px;
+    margin: 40px auto;
+    padding: 20px;
+    background: var(--bg);
+    color: var(--ink);
+    line-height: 1.5;
+  }
+
+  h1 { text-align: center; color: var(--accent); margin-bottom: 8px; }
+  h2, h3 { color: var(--accent); }
+
+  .subtitle {
+    text-align: center;
+    color: var(--muted);
+    margin-bottom: 30px;
+  }
+
+  .controls {
+    text-align: center;
+    margin-bottom: 25px;
+  }
+
+  button {
+    padding: 12px 20px;
+    margin: 6px;
+    border: none;
+    border-radius: 8px;
+    background: var(--accent);
+    color: white;
+    font-size: 1rem;
+    cursor: pointer;
+  }
+
+  button.secondary { background: #5f6f89; }
+  button.gold { background: #9a7600; }
+  button:hover { opacity: 0.9; }
+
+  .card {
+    background: var(--card);
+    padding: 22px;
+    border-radius: 12px;
+    margin-top: 20px;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.12);
+  }
+
+  .prompt {
+    font-size: 1.35rem;
+    font-weight: bold;
+    color: var(--accent);
+    margin-bottom: 20px;
+  }
+
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 14px;
+  }
+
+  .object-box, .mini-box {
+    margin-top: 15px;
+    padding: 15px;
+    background: var(--soft);
+    border-left: 5px solid var(--accent);
+    border-radius: 6px;
+  }
+
+  .mini-box { margin-top: 0; }
+  .lens-box { background: var(--lens); border-left-color: #5f6f89; }
+  .concept-box { background: var(--concept); border-left-color: #2f7d46; }
+  .personal-box { background: var(--personal); border-left-color: var(--accent2); }
+
+  .category {
+    font-size: 0.82rem;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    font-weight: bold;
+  }
+
+  .object-title {
+    font-size: 1.1rem;
+    font-weight: bold;
+    margin-top: 5px;
+  }
+
+  .tok-angle { margin-top: 8px; }
+
+  .reflection {
+    margin-top: 20px;
+    padding: 15px;
+    background: #f0edf7;
+    border-radius: 8px;
+  }
+
+  .question {
+    font-size: 1.1rem;
+    font-weight: bold;
+    margin-top: 10px;
+  }
+
+  .small-note {
+    color: var(--muted);
+    font-size: 0.92rem;
+  }
+
+  footer {
+    margin-top: 40px;
+    text-align: center;
+    color: var(--muted);
+    font-size: 0.9rem;
+  }
+
+  @media (max-width: 800px) {
+    .grid { grid-template-columns: 1fr; }
+  }
+
+  @media print {
+    body { background: white; margin: 0; max-width: none; }
+    button, .controls, footer { display: none; }
+    .card { box-shadow: none; border: 1px solid #ccc; }
+  }
+</style>
+</head>
+<body>
+
+<h1>TOK Exhibition Amalgamator</h1>
+
+<p class="subtitle">
+  Generate a TOK Exhibition prompt, possible objects, a TOK lens, a knowledge concept, an Area of Knowledge, and a starter knowledge question.
+  Use this as a thinking spark, not as a final Exhibition answer.
+</p>
+
+<div class="controls">
+  <button onclick="generateExhibition()">Generate Exhibition</button>
+  <button class="secondary" onclick="applyLens()">Apply TOK Lens</button>
+  <button class="secondary" onclick="generateFullAmalgamation()">Full Amalgamation</button>
+  <button class="gold" onclick="makePersonal()">Make It More Personal</button>
+  <button class="gold" onclick="increaseDepth()">Increase TOK Depth</button>
+</div>
+
+<div id="output" class="card">
+  Press <strong>Generate Exhibition</strong> to begin.
+</div>
+
+<footer>
+  Strong TOK objects are REAL • SPECIFIC • IDENTIFIABLE • CONNECTED TO A KNOWER • ANALYTICALLY USEFUL
+</footer>
+
+<script>
+const prompts = [
+  "What counts as knowledge?",
+  "Are some types of knowledge more useful than others?",
+  "What features of knowledge have an impact on its reliability?",
+  "On what grounds might we doubt a claim?",
+  "What counts as good evidence for a claim?",
+  "How does the way that we organize or classify knowledge affect what we know?",
+  "What are the implications of having, or not having, knowledge?",
+  "To what extent is certainty attainable?",
+  "Are some types of knowledge less open to interpretation than others?",
+  "What challenges are raised by the dissemination and/or communication of knowledge?",
+  "Can new knowledge change established values or beliefs?",
+  "Is bias inevitable in the production of knowledge?",
+  "How can we know that current knowledge is an improvement upon past knowledge?",
+  "Does some knowledge belong only to particular communities of knowers?",
+  "What constraints are there on the pursuit of knowledge?",
+  "Should some knowledge not be sought on ethical grounds?",
+  "Why do we seek knowledge?",
+  "Are some things unknowable?",
+  "What counts as a good justification for a claim?",
+  "What is the relationship between personal experience and knowledge?",
+  "What is the relationship between knowledge and culture?",
+  "What role do experts play in influencing our consumption or acquisition of knowledge?",
+  "How important are material tools in the production or acquisition of knowledge?",
+  "How might the context in which knowledge is presented influence whether it is accepted or rejected?",
+  "How can we distinguish between knowledge, belief and opinion?",
+  "Does our knowledge depend on our interactions with other knowers?",
+  "Does all knowledge impose ethical obligations on those who know it?",
+  "To what extent is objectivity possible in the production or acquisition of knowledge?",
+  "Who owns knowledge?",
+  "What role does imagination play in producing knowledge about the world?",
+  "How can we judge when evidence is adequate?",
+  "What makes a good explanation?",
+  "How is current knowledge shaped by its historical development?",
+  "In what ways do our values affect our acquisition of knowledge?",
+  "In what ways do values affect the production of knowledge?"
+];
+
+const personalObjects = [
+  ["A photograph from a family event", "Memory, perspective, interpretation"],
+  ["A journal entry", "Reflection, belief, personal knowledge"],
+  ["A GPS route from a trip", "Trust, technology, evidence"],
+  ["A text message conversation", "Communication, meaning, context"],
+  ["A school report card", "Authority, measurement, evaluation"],
+  ["A medical test result", "Certainty, ethics, implications of knowing"],
+  ["A social media post you shared", "Dissemination, bias, audience"],
+  ["A music playlist from a specific moment", "Emotion, memory, identity, interpretation"],
+  ["A photo of an object you misunderstood", "Perception, assumptions, revision of knowledge"],
+  ["A screenshot of a search result", "Ranking, authority, relevance, trust"]
+];
+
+const publicObjects = [
+  ["A newspaper article", "Evidence, framing, bias"],
+  ["A court ruling", "Justification, authority, interpretation"],
+  ["A weather warning", "Expert knowledge, trust, risk"],
+  ["A government passport", "Classification, identity, authority"],
+  ["A museum exhibit label", "Historical knowledge, perspective, preservation"],
+  ["A protest sign", "Values, persuasion, public knowledge"],
+  ["A public health poster", "Knowledge communication, trust, behavior"],
+  ["A fact-checking article", "Evidence, doubt, reliability"],
+  ["A campaign advertisement", "Bias, persuasion, values"],
+  ["A school policy document", "Institutional authority, values, consequences"]
+];
+
+const knowledgeObjects = [
+  ["A scientific calculator", "Material tools, hidden processes, reliability"],
+  ["A telescope", "Observation, evidence, limits of perception"],
+  ["A microscope image", "Scientific interpretation, evidence, method"],
+  ["A dictionary entry", "Language, classification, changing meaning"],
+  ["A ChatGPT conversation", "AI, authority, reliability, bias"],
+  ["A scientific paper", "Evidence, peer review, uncertainty"],
+  ["A data visualization", "Representation, simplification, interpretation"],
+  ["A map", "Representation, perspective, selection"],
+  ["A textbook diagram", "Simplification, authority, learning"],
+  ["A DNA ancestry report", "Identity, probability, interpretation, ethics"]
+];
+
+const tokLenses = [
+  ["Scope", "What does this object allow us to know, and what does it leave outside the frame?"],
+  ["Perspective", "Who might interpret this object differently, and why?"],
+  ["Methods & Tools", "What methods, technologies, conventions, or processes produced this knowledge?"],
+  ["Ethics", "What responsibilities, risks, or harms emerge from having or using this knowledge?"]
+];
+
+const knowledgeConcepts = [
+  "evidence", "truth", "certainty", "interpretation", "perspective", "justification", "objectivity", "power", "responsibility", "culture", "values", "bias", "explanation", "reliability", "authority", "memory", "classification", "trust", "doubt", "imagination"
+];
+
+const aoks = [
+  "History", "Human Sciences", "Natural Sciences", "Mathematics", "The Arts", "Technology", "Religious Knowledge Systems", "Indigenous Knowledge Systems"
+];
+
+const questionFrames = [
+  "How does {object} complicate the idea of {concept} in relation to this prompt?",
+  "To what extent does {object} show that {concept} depends on context, methods, or perspective?",
+  "What does {object} reveal about the limits of {concept} in {aok}?",
+  "Who gains or loses power when {object} is accepted as knowledge?",
+  "How might different knowers use {object} to justify different conclusions?",
+  "When does {object} become strong enough evidence to change what someone believes or does?",
+  "What ethical obligations appear once the knowledge connected to {object} is known?"
+];
+
+const personalPrompts = [
+  "Replace one object with something from your phone.",
+  "Replace one object with something from your family.",
+  "Replace one object with something from school.",
+  "Replace one object with something from a recent trip.",
+  "Replace one object with something that changed your mind.",
+  "Replace one object with something you once misunderstood.",
+  "Replace one object with something you trusted and later questioned.",
+  "Replace one object with something connected to your culture.",
+  "Replace one object with something you created, edited, saved, or deleted."
+];
+
+const depthPrompts = [
+  "Move from a general object to a specific version: not 'a photograph,' but 'the photograph from the day two people remember differently.'",
+  "Find the tension: what does this object make uncertain, debatable, interpreted, or ethically complicated?",
+  "Ask who produced the knowledge, who accepted it, who doubted it, and who was affected by it.",
+  "Connect the object to a real moment when knowledge changed someone’s action, belief, confidence, or responsibility.",
+  "Avoid treating the object as decoration. It should reveal something about evidence, perspective, certainty, interpretation, or authority."
+];
+
+let currentState = null;
+
+function randomItem(arr) {
+  return arr[Math.floor(Math.random() * arr.length)];
+}
+
+function escapeHTML(value) {
+  return String(value).replace(/[&<>'"]/g, char => ({
+    '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;'
+  }[char]));
+}
+
+function buildQuestion(objectName, concept, aok) {
+  const frame = randomItem(questionFrames);
+  return frame
+    .replaceAll("{object}", objectName.toLowerCase())
+    .replaceAll("{concept}", concept)
+    .replaceAll("{aok}", aok);
+}
+
+function generateState() {
+  const personal = randomItem(personalObjects);
+  const publicObj = randomItem(publicObjects);
+  const knowledge = randomItem(knowledgeObjects);
+  const allObjects = [personal, publicObj, knowledge];
+  const featuredObject = randomItem(allObjects);
+  const lens = randomItem(tokLenses);
+  const concept = randomItem(knowledgeConcepts);
+  const aok = randomItem(aoks);
+
+  return {
+    prompt: randomItem(prompts),
+    personal,
+    publicObj,
+    knowledge,
+    featuredObject,
+    lens,
+    concept,
+    aok,
+    question: buildQuestion(featuredObject[0], concept, aok)
+  };
+}
+
+function renderBase(state) {
+  return `
+    <div class="prompt">Prompt: ${escapeHTML(state.prompt)}</div>
+
+    <div class="object-box">
+      <div class="category">Personal Object</div>
+      <div class="object-title">${escapeHTML(state.personal[0])}</div>
+      <div class="tok-angle"><strong>TOK angle:</strong> ${escapeHTML(state.personal[1])}</div>
+    </div>
+
+    <div class="object-box">
+      <div class="category">Public Object</div>
+      <div class="object-title">${escapeHTML(state.publicObj[0])}</div>
+      <div class="tok-angle"><strong>TOK angle:</strong> ${escapeHTML(state.publicObj[1])}</div>
+    </div>
+
+    <div class="object-box">
+      <div class="category">Knowledge-Producing / Knowledge-Storing Object</div>
+      <div class="object-title">${escapeHTML(state.knowledge[0])}</div>
+      <div class="tok-angle"><strong>TOK angle:</strong> ${escapeHTML(state.knowledge[1])}</div>
+    </div>
+
+    <div class="reflection">
+      <strong>Student reflection:</strong> Which object is most connected to your actual world? Which one reveals the strongest knowledge issue rather than merely illustrating a topic?
+    </div>
+  `;
+}
+
+function renderLens(state) {
+  return `
+    <div class="object-box lens-box">
+      <div class="category">TOK Lens</div>
+      <div class="object-title">${escapeHTML(state.lens[0])}</div>
+      <p>${escapeHTML(state.lens[1])}</p>
+    </div>
+  `;
+}
+
+function renderFull(state) {
+  return `
+    <div class="grid">
+      <div class="mini-box lens-box">
+        <div class="category">TOK Lens</div>
+        <div class="object-title">${escapeHTML(state.lens[0])}</div>
+        <p>${escapeHTML(state.lens[1])}</p>
+      </div>
+      <div class="mini-box concept-box">
+        <div class="category">Knowledge Concept</div>
+        <div class="object-title">${escapeHTML(state.concept)}</div>
+        <p>Use this concept to focus the commentary and avoid writing only about the object.</p>
+      </div>
+      <div class="mini-box">
+        <div class="category">Area of Knowledge</div>
+        <div class="object-title">${escapeHTML(state.aok)}</div>
+        <p>Consider whether this object connects naturally to this AOK or whether another AOK would fit better.</p>
+      </div>
+    </div>
+
+    <div class="object-box personal-box">
+      <div class="category">Generated Knowledge Question</div>
+      <div class="object-title">Featured object: ${escapeHTML(state.featuredObject[0])}</div>
+      <div class="question">${escapeHTML(state.question)}</div>
+      <p class="small-note">This is not the Exhibition prompt. It is a thinking question to help students analyze the object through TOK.</p>
+    </div>
+  `;
+}
+
+function generateExhibition() {
+  currentState = generateState();
+  document.getElementById("output").innerHTML = renderBase(currentState);
+}
+
+function applyLens() {
+  if (!currentState) currentState = generateState();
+  document.getElementById("output").innerHTML = renderBase(currentState) + renderLens(currentState);
+}
+
+function generateFullAmalgamation() {
+  currentState = generateState();
+  document.getElementById("output").innerHTML = renderBase(currentState) + renderFull(currentState);
+}
+
+function makePersonal() {
+  if (!currentState) generateExhibition();
+  const output = document.getElementById("output");
+  const suggestion = randomItem(personalPrompts);
+
+  output.innerHTML += `
+    <div class="object-box personal-box">
+      <div class="category">Make It More Personal</div>
+      <div class="object-title">${escapeHTML(suggestion)}</div>
+      <ul>
+        <li>Can I photograph or identify this object?</li>
+        <li>Did it actually affect what I knew, believed, assumed, or decided?</li>
+        <li>Can I explain why this object matters in my world?</li>
+        <li>Can I connect it directly to the exact wording of the Exhibition prompt?</li>
+      </ul>
+    </div>
+  `;
+}
+
+function increaseDepth() {
+  if (!currentState) generateExhibition();
+  const output = document.getElementById("output");
+  const suggestion = randomItem(depthPrompts);
+
+  output.innerHTML += `
+    <div class="object-box personal-box">
+      <div class="category">Increase TOK Depth</div>
+      <div class="object-title">${escapeHTML(suggestion)}</div>
+      <p>The goal is to move from <strong>object as example</strong> to <strong>object as evidence of a knowledge problem</strong>.</p>
+    </div>
+  `;
+}
+</script>
+
+</body>
+</html>
