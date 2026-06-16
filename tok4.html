@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>TOK Essay Orbital Mind Map</title>
+<style>
+:root{
+  --bg:#f4f1ea;
+  --ink:#202124;
+  --muted:#666;
+  --purple:#4b2d73;
+  --purple2:#6f46a6;
+  --gold:#d5a800;
+  --card:#ffffff;
+  --line:rgba(75,45,115,.22);
+}
+*{box-sizing:border-box}
+body{
+  margin:0;
+  font-family:Arial, Helvetica, sans-serif;
+  background:radial-gradient(circle at top,#fffaf0 0%,var(--bg) 58%);
+  color:var(--ink);
+  min-height:100vh;
+  display:flex;
+  flex-direction:column;
+}
+header{
+  text-align:center;
+  padding:22px 18px 8px;
+}
+h1{margin:0;color:var(--purple);font-size:clamp(1.6rem,3vw,2.5rem)}
+.subtitle{margin:.45rem auto 0;max-width:850px;color:var(--muted);line-height:1.45}
+#stage{
+  position:relative;
+  flex:1;
+  min-height:560px;
+  margin:0 auto;
+  width:min(1000px,100vw);
+  overflow:hidden;
+}
+#links{
+  position:absolute;inset:0;width:100%;height:100%;pointer-events:none;
+}
+.node{
+  position:absolute;
+  transform:translate(-50%,-50%);
+  border:none;
+  border-radius:999px;
+  background:var(--purple);
+  color:white;
+  box-shadow:0 10px 25px rgba(0,0,0,.18);
+  cursor:pointer;
+  transition:left .65s cubic-bezier(.2,.9,.2,1), top .65s cubic-bezier(.2,.9,.2,1), transform .25s, opacity .4s, background .25s;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+  padding:12px;
+  font-weight:700;
+  line-height:1.15;
+}
+.node:hover{transform:translate(-50%,-50%) scale(1.06);background:var(--purple2)}
+.node.center{width:170px;height:170px;font-size:1.25rem;background:var(--purple)}
+.node.primary{width:142px;height:142px;font-size:.96rem;background:#5d378c}
+.node.secondary{width:122px;height:122px;font-size:.82rem;background:#7b58a5}
+.node.back{width:72px;height:72px;font-size:.7rem;background:#333}
+.node.fade{opacity:0;pointer-events:none}
+.info{
+  width:min(1000px,calc(100vw - 28px));
+  margin:0 auto 22px;
+  background:var(--card);
+  border-radius:18px;
+  padding:18px 22px;
+  box-shadow:0 8px 26px rgba(0,0,0,.12);
+  border-top:6px solid var(--gold);
+  min-height:140px;
+}
+.info h2{margin:.1rem 0 .35rem;color:var(--purple)}
+.info p{margin:.45rem 0;line-height:1.45}
+.info ul{margin:.45rem 0 .1rem 1.2rem;padding:0;line-height:1.45}
+.badge{display:inline-block;background:#f1e8ff;color:var(--purple);border-radius:999px;padding:4px 10px;font-size:.78rem;font-weight:bold;margin-bottom:5px}
+@media(max-width:700px){
+  #stage{min-height:620px}
+  .node.center{width:138px;height:138px;font-size:1.05rem}
+  .node.primary{width:112px;height:112px;font-size:.78rem}
+  .node.secondary{width:96px;height:96px;font-size:.68rem}
+}
+</style>
+</head>
+<body>
+<header>
+  <h1>TOK Essay Orbital Mind Map</h1>
+  <p class="subtitle">Click the center to reveal the essay structure. Click any node to move it to the center and reveal its supporting ideas. Use the bottom panel to guide student thinking.</p>
+</header>
+
+<main id="stage" aria-label="Interactive TOK essay mind map">
+  <svg id="links"></svg>
+</main>
+
+<section class="info" id="info">
+  <span class="badge">Start</span>
+  <h2>TOK Essay</h2>
+  <p>The TOK essay is not just an opinion piece. It is an investigation of a prescribed title through claims, counterclaims, examples, evaluation, and Areas of Knowledge.</p>
+  <p>Click <strong>TOK Essay</strong> to begin.</p>
+</section>
+
+<script>
+const DATA = {
+  root:{
+    label:"TOK Essay",
+    info:`<span class="badge">Center</span><h2>TOK Essay</h2><p>The essay asks students to investigate a question about knowledge, not merely report on a topic. Strong essays clarify the title, compare Areas of Knowledge, use focused examples, and evaluate claims rather than simply asserting them.</p>`,
+    children:["prescribed","knowledge","claim","counterclaim","evaluation","aok","lenses","examples","structure"]
+  },
+  prescribed:{
+    label:"Prescribed Title",
+    info:`<span class="badge">Starting Point</span><h2>Prescribed Title</h2><p>The prescribed title must be used exactly as given. The first job is to unpack what the title is really asking about knowledge.</p><ul><li>Identify key terms.</li><li>Find hidden assumptions.</li><li>Translate the title into a knowledge problem.</li></ul>`,
+    children:["keyterms","assumptions","hiddenquestion","commandterms"]
+  },
+  keyterms:{label:"Key Terms",info:`<span class="badge">Analysis</span><h2>Key Terms</h2><p>Students should clarify words that carry the argument: knowledge, information, significance, certainty, evidence, values, objectivity, interpretation, or acquisition.</p><p>Good essays do not define every word mechanically; they define terms that affect the argument.</p>`},
+  assumptions:{label:"Assumptions",info:`<span class="badge">Analysis</span><h2>Assumptions</h2><p>Every title hides assumptions. For example, Title 6 assumes that not all information is equally significant and that selection is necessary for acquiring knowledge.</p>`},
+  hiddenquestion:{label:"Hidden Knowledge Question",info:`<span class="badge">TOK Core</span><h2>Hidden Knowledge Question</h2><p>This is the deeper issue beneath the wording of the title. For Title 6, a hidden question might be: <em>Who decides what information matters, and by what standards?</em></p>`},
+  commandterms:{label:"Command Terms",info:`<span class="badge">Instruction</span><h2>Command Terms</h2><p>Words such as “discuss,” “to what extent,” or “evaluate” tell students how to respond. “Discuss” requires more than one view and some balanced evaluation.</p>`},
+
+  knowledge:{
+    label:"Knowledge Concepts",
+    info:`<span class="badge">TOK Vocabulary</span><h2>Knowledge Concepts</h2><p>Concepts help students move from example description to TOK analysis. They are the vocabulary of the essay.</p>`,
+    children:["evidence","certainty","justification","interpretation","reliability","bias","values","power"]
+  },
+  evidence:{label:"Evidence",info:`<span class="badge">Concept</span><h2>Evidence</h2><p>Evidence is information used to support a claim. TOK asks what counts as good evidence in different Areas of Knowledge and why standards differ.</p>`},
+  certainty:{label:"Certainty",info:`<span class="badge">Concept</span><h2>Certainty</h2><p>Certainty concerns the degree of confidence knowers can reasonably hold. Mathematics, natural sciences, history, and the arts often treat certainty differently.</p>`},
+  justification:{label:"Justification",info:`<span class="badge">Concept</span><h2>Justification</h2><p>Justification explains why a claim should be accepted as knowledge rather than belief or opinion. Methods, evidence, and expert communities all matter.</p>`},
+  interpretation:{label:"Interpretation",info:`<span class="badge">Concept</span><h2>Interpretation</h2><p>Interpretation is central when evidence does not speak for itself. The arts and history especially reveal how meaning depends on perspective and context.</p>`},
+  reliability:{label:"Reliability",info:`<span class="badge">Concept</span><h2>Reliability</h2><p>Reliability asks whether a process, source, method, or knower can be trusted to produce dependable knowledge.</p>`},
+  bias:{label:"Bias",info:`<span class="badge">Concept</span><h2>Bias</h2><p>Bias is not always simple dishonesty. It may arise from perspective, method, language, culture, funding, or selection of evidence.</p>`},
+  values:{label:"Values",info:`<span class="badge">Concept</span><h2>Values</h2><p>Values influence what knowledge is pursued, what is considered important, and how knowledge is used.</p>`},
+  power:{label:"Power",info:`<span class="badge">Concept</span><h2>Power</h2><p>Power shapes who can produce, own, distribute, or validate knowledge. This is especially useful for titles involving significance, ownership, or ethics.</p>`},
+
+  claim:{
+    label:"Claim",
+    info:`<span class="badge">Argument</span><h2>Claim</h2><p>A claim is a focused answer to the prescribed title. It should be debatable, connected to an Area of Knowledge, and supported by a specific example.</p>`,
+    children:["position","support","exampleclaim","linktitle"]
+  },
+  position:{label:"Main Position",info:`<span class="badge">Claim</span><h2>Main Position</h2><p>The main position should answer the title directly. Avoid vague claims like “knowledge is complicated.” Say what factor matters and why.</p>`},
+  support:{label:"Reasoning",info:`<span class="badge">Claim</span><h2>Reasoning</h2><p>Reasoning explains how the example supports the claim. This is where students move from description to analysis.</p>`},
+  exampleclaim:{label:"Example",info:`<span class="badge">Claim</span><h2>Example</h2><p>Examples should be specific enough to analyze. “Science” is too broad; the Higgs boson discovery, CRISPR, or a climate model is more useful.</p>`},
+  linktitle:{label:"Link to Title",info:`<span class="badge">Claim</span><h2>Link to Title</h2><p>Every claim paragraph should return to the wording of the title. This prevents the essay from drifting into a general report.</p>`},
+
+  counterclaim:{
+    label:"Counterclaim",
+    info:`<span class="badge">Balance</span><h2>Counterclaim</h2><p>A counterclaim is not a random opposite. It shows a limitation, exception, or alternative view that complicates the original claim.</p>`,
+    children:["alternative","limitation","exception","tension"]
+  },
+  alternative:{label:"Alternative View",info:`<span class="badge">Counterclaim</span><h2>Alternative View</h2><p>Ask: what would a reasonable knower disagree with? What would another Area of Knowledge reveal differently?</p>`},
+  limitation:{label:"Limitation",info:`<span class="badge">Counterclaim</span><h2>Limitation</h2><p>A limitation shows where the claim works less well. This is often the beginning of strong evaluation.</p>`},
+  exception:{label:"Exception",info:`<span class="badge">Counterclaim</span><h2>Exception</h2><p>An exception prevents overgeneralization. TOK rewards nuanced thinking, not absolute answers.</p>`},
+  tension:{label:"Tension",info:`<span class="badge">Counterclaim</span><h2>Tension</h2><p>The best essays maintain a productive tension between perspectives rather than pretending one side completely wins.</p>`},
+
+  evaluation:{
+    label:"Evaluation",
+    info:`<span class="badge">Higher Level Thinking</span><h2>Evaluation</h2><p>Evaluation answers “so what?” It weighs strengths, limits, implications, and conditions under which a claim is more or less convincing.</p>`,
+    children:["towhatextent","conditions","implications","nuance"]
+  },
+  towhatextent:{label:"To What Extent?",info:`<span class="badge">Evaluation</span><h2>To What Extent?</h2><p>This phrase pushes students away from yes/no answers and toward degrees, conditions, and comparison.</p>`},
+  conditions:{label:"Conditions",info:`<span class="badge">Evaluation</span><h2>Conditions</h2><p>Strong evaluation often says: this claim is convincing under these conditions, but less convincing under these others.</p>`},
+  implications:{label:"Implications",info:`<span class="badge">Evaluation</span><h2>Implications</h2><p>Implications explain why the argument matters for knowers, communities, or the production of knowledge.</p>`},
+  nuance:{label:"Nuance",info:`<span class="badge">Evaluation</span><h2>Nuance</h2><p>Nuance means resisting oversimplified answers. TOK essays should end with a refined judgment, not a slogan.</p>`},
+
+  aok:{
+    label:"Areas of Knowledge",
+    info:`<span class="badge">AOKs</span><h2>Areas of Knowledge</h2><p>Areas of Knowledge give the essay its comparative structure. Students should show how knowledge works differently in different domains.</p>`,
+    children:["naturalsciences","arts","history","humansciences","math"]
+  },
+  naturalsciences:{label:"Natural Sciences",info:`<span class="badge">AOK</span><h2>Natural Sciences</h2><p>Useful ideas: observation, experiment, statistical significance, models, prediction, peer review, replication, uncertainty, and theory change.</p>`},
+  arts:{label:"The Arts",info:`<span class="badge">AOK</span><h2>The Arts</h2><p>Useful ideas: interpretation, meaning, imagination, expression, audience, form, culture, symbolism, and emotional significance.</p>`},
+  history:{label:"History",info:`<span class="badge">AOK</span><h2>History</h2><p>Useful ideas: sources, evidence, memory, perspective, causation, narratives, archives, and the problem of reconstructing the past.</p>`},
+  humansciences:{label:"Human Sciences",info:`<span class="badge">AOK</span><h2>Human Sciences</h2><p>Useful ideas: behavior, surveys, models, prediction, ethics, culture, correlation, interpretation, and researcher bias.</p>`},
+  math:{label:"Mathematics",info:`<span class="badge">AOK</span><h2>Mathematics</h2><p>Useful ideas: proof, axioms, abstraction, certainty, logic, elegance, application, and the relationship between invented systems and reality.</p>`},
+
+  lenses:{
+    label:"TOK Lenses",
+    info:`<span class="badge">Knowledge Framework</span><h2>TOK Lenses</h2><p>Scope, Perspectives, Methods & Tools, and Ethics help students ask disciplined questions about how knowledge works.</p>`,
+    children:["scope","perspectives","methods","ethics"]
+  },
+  scope:{label:"Scope",info:`<span class="badge">Lens</span><h2>Scope</h2><p>Scope asks what an Area of Knowledge studies, what it can explain, and where its limits are.</p>`},
+  perspectives:{label:"Perspectives",info:`<span class="badge">Lens</span><h2>Perspectives</h2><p>Perspectives asks how knowers, cultures, communities, or historical contexts shape knowledge.</p>`},
+  methods:{label:"Methods & Tools",info:`<span class="badge">Lens</span><h2>Methods & Tools</h2><p>This lens asks how knowledge is produced and what role instruments, language, algorithms, models, or procedures play.</p>`},
+  ethics:{label:"Ethics",info:`<span class="badge">Lens</span><h2>Ethics</h2><p>Ethics asks whether knowledge should be pursued, shared, restricted, or used in particular ways.</p>`},
+
+  examples:{
+    label:"Real-World Examples",
+    info:`<span class="badge">Evidence for Essay</span><h2>Real-World Examples</h2><p>Examples should not merely decorate the essay. They should be analyzed to test claims about knowledge.</p>`,
+    children:["specificity","contemporary","comparison","studentworld"]
+  },
+  specificity:{label:"Specificity",info:`<span class="badge">Examples</span><h2>Specificity</h2><p>Specific examples are easier to analyze. “Art” is broad; a named artwork, performance, exhibition, or film scene is better.</p>`},
+  contemporary:{label:"Contemporary / Historical",info:`<span class="badge">Examples</span><h2>Contemporary / Historical</h2><p>Both recent and historical examples can work. What matters is whether they genuinely illuminate the title.</p>`},
+  comparison:{label:"Comparison",info:`<span class="badge">Examples</span><h2>Comparison</h2><p>Examples should help compare Areas of Knowledge, not sit in separate unrelated sections.</p>`},
+  studentworld:{label:"Connection to Knower",info:`<span class="badge">Examples</span><h2>Connection to Knower</h2><p>Personal engagement helps when it serves the argument. The essay is not a diary, but knowers and perspectives matter.</p>`},
+
+  structure:{
+    label:"Essay Structure",
+    info:`<span class="badge">Organization</span><h2>Essay Structure</h2><p>A strong structure makes the argument visible. Each section should answer the title, not simply describe an Area of Knowledge.</p>`,
+    children:["intro","body","comparisonnode","conclusion"]
+  },
+  intro:{label:"Introduction",info:`<span class="badge">Structure</span><h2>Introduction</h2><p>Introduce the title, clarify key terms, identify the knowledge problem, name the Areas of Knowledge, and preview the line of argument.</p>`},
+  body:{label:"Body Paragraphs",info:`<span class="badge">Structure</span><h2>Body Paragraphs</h2><p>Each body paragraph should include a claim, example, analysis, evaluation, and explicit link back to the title.</p>`},
+  comparisonnode:{label:"AOK Comparison",info:`<span class="badge">Structure</span><h2>AOK Comparison</h2><p>Do not treat AOKs as isolated mini-essays. Compare how the title operates differently across them.</p>`},
+  conclusion:{label:"Conclusion",info:`<span class="badge">Structure</span><h2>Conclusion</h2><p>The conclusion should answer the title with nuance, recognize limits, and state what the investigation reveals about knowledge.</p>`}
+};
+
+const stage = document.getElementById('stage');
+const links = document.getElementById('links');
+const info = document.getElementById('info');
+let current = 'root';
+let expanded = false;
+let nodes = [];
+
+function clearNodes(){ nodes.forEach(n=>n.remove()); nodes=[]; links.innerHTML=''; }
+function centerPoint(){ return {x: stage.clientWidth/2, y: stage.clientHeight/2}; }
+function orbitPoints(count, radius){
+  const c = centerPoint();
+  const pts=[];
+  const start = -Math.PI/2;
+  for(let i=0;i<count;i++){
+    const a = start + i*(Math.PI*2/count);
+    pts.push({x:c.x+Math.cos(a)*radius, y:c.y+Math.sin(a)*radius});
+  }
+  return pts;
+}
+function addLine(x1,y1,x2,y2){
+  const line=document.createElementNS('http://www.w3.org/2000/svg','line');
+  line.setAttribute('x1',x1); line.setAttribute('y1',y1); line.setAttribute('x2',x2); line.setAttribute('y2',y2);
+  line.setAttribute('stroke','rgba(75,45,115,.25)'); line.setAttribute('stroke-width','2');
+  links.appendChild(line);
+}
+function makeNode(id, x, y, cls, label){
+  const b=document.createElement('button');
+  b.className='node '+cls;
+  b.textContent=label;
+  b.style.left=x+'px'; b.style.top=y+'px';
+  b.onclick=()=>handleClick(id);
+  stage.appendChild(b); nodes.push(b); return b;
+}
+function render(id='root'){
+  clearNodes(); current=id;
+  const data=DATA[id];
+  const c=centerPoint();
+  info.innerHTML=data.info;
+  makeNode(id,c.x,c.y,'center',data.label);
+  if(id !== 'root') makeNode('root',80,80,'back','Start');
+  const children=data.children || [];
+  const radius = Math.min(stage.clientWidth, stage.clientHeight)*0.34;
+  const pts=orbitPoints(children.length, radius);
+  children.forEach((child,i)=>{
+    addLine(c.x,c.y,pts[i].x,pts[i].y);
+    makeNode(child,pts[i].x,pts[i].y,id==='root'?'primary':'secondary',DATA[child].label);
+  });
+}
+function handleClick(id){
+  if(id==='root' && current==='root' && !expanded){ expanded=true; render('root'); return; }
+  render(id);
+}
+window.addEventListener('resize',()=>render(current));
+makeNode('root', centerPoint().x, centerPoint().y, 'center', DATA.root.label);
+</script>
+</body>
+</html>
