@@ -1,253 +1,352 @@
-<script type="text/javascript">
-        var gk_isXlsx = false;
-        var gk_xlsxFileLookup = {};
-        var gk_fileData = {};
-        function filledCell(cell) {
-          return cell !== '' && cell != null;
-        }
-        function loadFileData(filename) {
-        if (gk_isXlsx && gk_xlsxFileLookup[filename]) {
-            try {
-                var workbook = XLSX.read(gk_fileData[filename], { type: 'base64' });
-                var firstSheetName = workbook.SheetNames[0];
-                var worksheet = workbook.Sheets[firstSheetName];
-
-                // Convert sheet to JSON to filter blank rows
-                var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, blankrows: false, defval: '' });
-                // Filter out blank rows (rows where all cells are empty, null, or undefined)
-                var filteredData = jsonData.filter(row => row.some(filledCell));
-
-                // Heuristic to find the header row by ignoring rows with fewer filled cells than the next row
-                var headerRowIndex = filteredData.findIndex((row, index) =>
-                  row.filter(filledCell).length >= filteredData[index + 1]?.filter(filledCell).length
-                );
-                // Fallback
-                if (headerRowIndex === -1 || headerRowIndex > 25) {
-                  headerRowIndex = 0;
-                }
-
-                // Convert filtered JSON back to CSV
-                var csv = XLSX.utils.aoa_to_sheet(filteredData.slice(headerRowIndex)); // Create a new sheet from filtered array of arrays
-                csv = XLSX.utils.sheet_to_csv(csv, { header: 1 });
-                return csv;
-            } catch (e) {
-                console.error(e);
-                return "";
-            }
-        }
-        return gk_fileData[filename] || "";
-        }
-        </script><!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kenneth Kapptie - Resume</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        body {
-            font-family: 'Roboto', sans-serif;
-            background-color: #1a1a1a;
-            color: #ffffff;
-            line-height: 1.6;
-            padding: 20px;
-        }
-        .container {
-            max-width: 900px;
-            margin: 0 auto;
-            padding: 40px;
-            background-color: #2a2a2a;
-            border-radius: 10px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
-        }
-        .header {
-            text-align: center;
-            margin-bottom: 40px;
-        }
-        .header h1 {
-            font-size: 2.5em;
-            color: #00aaff;
-        }
-        .header p {
-            font-size: 1.1em;
-            color: #cccccc;
-        }
-        .contact-info {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 30px;
-            font-size: 0.9em;
-        }
-        .section {
-            margin-bottom: 30px;
-        }
-        .section h2 {
-            font-size: 1.8em;
-            color: #00aaff;
-            margin-bottom: 15px;
-            border-bottom: 2px solid #00aaff;
-            padding-bottom: 5px;
-        }
-        .section ul {
-            list-style: none;
-        }
-        .section ul li {
-            margin-bottom: 10px;
-            padding-left: 20px;
-            position: relative;
-        }
-        .section ul li:before {
-            content: '•';
-            color: #00aaff;
-            position: absolute;
-            left: 0;
-        }
-        .job {
-            margin-bottom: 20px;
-        }
-        .job h3 {
-            font-size: 1.3em;
-            color: #ffffff;
-        }
-        .job p {
-            font-size: 0.9em;
-            color: #cccccc;
-        }
-        a {
-            color: #00aaff;
-            text-decoration: none;
-        }
-        a:hover {
-            text-decoration: underline;
-        }
-        .references {
-            font-size: 0.9em;
-        }
-        @media (max-width: 600px) {
-            .container {
-                padding: 20px;
-            }
-            .contact-info {
-                flex-direction: column;
-                text-align: center;
-            }
-            .header h1 {
-                font-size: 2em;
-            }
-            .section h2 {
-                font-size: 1.5em;
-            }
-        }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Kenneth J. Kapptie — Resume</title>
+  <style>
+    :root {
+      --ink: #1f2933;
+      --muted: #5f6c7b;
+      --accent: #1f6feb;
+      --line: #d9e2ec;
+      --soft: #f5f7fa;
+      --paper: #ffffff;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: Arial, Helvetica, sans-serif;
+      background: var(--soft);
+      color: var(--ink);
+      line-height: 1.5;
+      padding: 32px;
+    }
+
+    .page {
+      max-width: 980px;
+      margin: 0 auto;
+      background: var(--paper);
+      padding: 48px 56px;
+      border-radius: 14px;
+      box-shadow: 0 12px 32px rgba(15, 23, 42, 0.12);
+    }
+
+    header {
+      border-bottom: 4px solid var(--accent);
+      padding-bottom: 22px;
+      margin-bottom: 30px;
+    }
+
+    h1 {
+      font-size: 2.4rem;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: var(--ink);
+    }
+
+    .tagline {
+      margin-top: 8px;
+      color: var(--muted);
+      font-size: 1.05rem;
+      font-weight: 600;
+    }
+
+    .contact {
+      margin-top: 14px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px 22px;
+      color: var(--muted);
+      font-size: 0.95rem;
+    }
+
+    a {
+      color: var(--accent);
+      text-decoration: none;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+
+    section {
+      margin-bottom: 28px;
+    }
+
+    h2 {
+      color: var(--accent);
+      font-size: 1rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      border-bottom: 1px solid var(--line);
+      padding-bottom: 6px;
+      margin-bottom: 14px;
+    }
+
+    h3 {
+      font-size: 1.05rem;
+      color: var(--ink);
+      margin-bottom: 2px;
+    }
+
+    .role-meta {
+      color: var(--muted);
+      font-size: 0.92rem;
+      margin-bottom: 8px;
+      font-style: italic;
+    }
+
+    p {
+      margin-bottom: 10px;
+    }
+
+    ul {
+      margin-left: 20px;
+      margin-top: 6px;
+    }
+
+    li {
+      margin-bottom: 6px;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 18px 34px;
+    }
+
+    .skills-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px 28px;
+    }
+
+    .skill-title {
+      font-weight: 700;
+      color: var(--ink);
+    }
+
+    .pill-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 8px;
+    }
+
+    .pill {
+      border: 1px solid var(--line);
+      background: #f8fafc;
+      padding: 5px 9px;
+      border-radius: 999px;
+      font-size: 0.88rem;
+      color: var(--ink);
+    }
+
+    .job {
+      margin-bottom: 20px;
+    }
+
+    .compact-list li {
+      margin-bottom: 4px;
+    }
+
+    @media print {
+      body {
+        background: white;
+        padding: 0;
+      }
+
+      .page {
+        max-width: none;
+        box-shadow: none;
+        border-radius: 0;
+        padding: 0.55in;
+      }
+
+      a {
+        color: var(--ink);
+      }
+
+      section {
+        break-inside: avoid;
+      }
+    }
+
+    @media (max-width: 720px) {
+      body {
+        padding: 12px;
+      }
+
+      .page {
+        padding: 28px 24px;
+      }
+
+      h1 {
+        font-size: 1.9rem;
+      }
+
+      .grid,
+      .skills-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
 </head>
 <body>
-    <div class="container">
-        <div class="header">
-            <h1>Kenneth J. Kapptie</h1>
-            <p>Inspiring the next generation through technology and innovation</p>
+  <main class="page">
+    <header>
+      <h1>Kenneth J. Kapptie</h1>
+      <p class="tagline">Educator • Curriculum Designer • Educational Technology Specialist</p>
+      <div class="contact">
+        <span>Salt Lake City, Utah</span>
+        <span><a href="mailto:kkapptie@graniteschools.org">kkapptie@graniteschools.org</a></span>
+      </div>
+    </header>
+
+    <section>
+      <h2>Professional Summary</h2>
+      <p>
+        Innovative educator, curriculum designer, and educational technology specialist with more than twenty years of experience teaching computer science, digital media, programming, game development, educational technology, and International Baccalaureate coursework. Recognized for excellence in instruction, student leadership, and program development through state and local teaching awards. Passionate about helping students develop critical thinking, creativity, problem-solving skills, and technological literacy through authentic, project-based learning experiences.
+      </p>
+    </section>
+
+    <section>
+      <h2>Core Strengths</h2>
+      <div class="pill-list">
+        <span class="pill">Curriculum Design</span>
+        <span class="pill">IB Theory of Knowledge</span>
+        <span class="pill">Computer Science Education</span>
+        <span class="pill">Educational Technology</span>
+        <span class="pill">Project-Based Learning</span>
+        <span class="pill">Student Leadership</span>
+        <span class="pill">Digital Media Production</span>
+        <span class="pill">Software Development</span>
+        <span class="pill">AI & Emerging Technologies</span>
+        <span class="pill">Program Development</span>
+      </div>
+    </section>
+
+    <section>
+      <h2>Professional Experience</h2>
+
+      <div class="job">
+        <h3>Skyline High School — Salt Lake City, Utah</h3>
+        <div class="role-meta">Computer Science, Programming, Digital Media, Yearbook & IB Theory of Knowledge Teacher | 2012–Present</div>
+        <ul>
+          <li>Teach Computer Science, Programming, Digital Media, Game Development, Robotics, Web Development, and International Baccalaureate Theory of Knowledge.</li>
+          <li>Develop curriculum aligned with Utah State standards, industry expectations, and International Baccalaureate frameworks.</li>
+          <li>Design authentic project-based learning experiences that connect classroom learning to real-world applications.</li>
+          <li>Integrate emerging technologies including artificial intelligence, automation, software development, digital production tools, and interactive media.</li>
+          <li>Advise the Technology Student Association, mentoring students in leadership, engineering, programming, media production, and competitive events.</li>
+          <li>Direct yearbook production, managing student editorial teams, publication workflows, photography systems, and production deadlines.</li>
+          <li>Develop custom educational software tools, automation systems, and digital resources to improve student learning and organizational efficiency.</li>
+        </ul>
+      </div>
+
+      <div class="job">
+        <h3>Granite Peaks Adult Education — Salt Lake City, Utah</h3>
+        <div class="role-meta">Adult Educator | 2008–2011</div>
+        <ul>
+          <li>Taught GED preparation, adult high school completion, ESL, and technology courses.</li>
+          <li>Developed instructional materials and technology curriculum for diverse adult learners.</li>
+          <li>Supported accreditation and program improvement efforts.</li>
+        </ul>
+      </div>
+
+      <div class="job">
+        <h3>Stillwater Academy — South Jordan, Utah</h3>
+        <div class="role-meta">Computer Technology & Multimedia Teacher | 2006–2008</div>
+        <ul>
+          <li>Delivered instruction in multimedia production, digital design, and computer technology.</li>
+          <li>Assisted students in developing technical portfolios and career readiness skills.</li>
+        </ul>
+      </div>
+
+      <div class="job">
+        <h3>Conexus, Inc. — Midvale, Utah</h3>
+        <div class="role-meta">Software Developer & Network Administrator | 2005–2008</div>
+        <ul>
+          <li>Developed C# .NET software solutions supporting Department of Defense asset management operations.</li>
+          <li>Maintained databases, servers, and network infrastructure.</li>
+          <li>Supported software deployment, troubleshooting, and system administration.</li>
+        </ul>
+      </div>
+
+      <div class="job">
+        <h3>East High School — Salt Lake City, Utah</h3>
+        <div class="role-meta">Webmaster & Computer Lab Technician | 2000–2005</div>
+        <ul>
+          <li>Developed and maintained school websites and databases.</li>
+          <li>Provided technical support and computer lab management.</li>
+          <li>Delivered community education courses in web design and digital graphics.</li>
+        </ul>
+      </div>
+    </section>
+
+    <section>
+      <h2>Education & Licensure</h2>
+      <div class="grid">
+        <div>
+          <h3>Master of Arts in Education</h3>
+          <p class="role-meta">University of Phoenix | 2009</p>
         </div>
-        <div class="contact-info">
-            <div>
-                <p>Email: <a href="mailto:kkapptie@graniteschools.org">kkapptie@graniteschools.org</a></p>
-            </div>
-            <div>
-                <p>1953 S 1100 E #521431</p>
-                <p>Salt Lake City, UT 84152</p>
-            </div>
+        <div>
+          <h3>Bachelor of Science, Information Technology</h3>
+          <p class="role-meta">University of Phoenix</p>
         </div>
-        <div class="section">
-            <h2>Objective</h2>
-            <p>Inspire young people with the fulfilling promise that technology is meaningful in our world, fostering creativity and innovation through education.</p>
-        </div>
-        <div class="section">
-            <h2>Education & Licensure</h2>
-            <ul>
-                <li>Master of Arts in Education – University of Phoenix, Murray, UT – Feb. 2009</li>
-                <li>B.S., Information Technology, GPA: 3.8 – University of Phoenix, Taylorsville, UT – 2003-2007</li>
-                <li>Utah Level II Secondary Teaching License with Endorsements in Computer Science, Digital Media, Business, and Computer Programming</li>
-            </ul>
-        </div>
-        <div class="section">
-            <h2>Professional Experience</h2>
-            <div class="job">
-                <h3>Programming, Web, Digital Media, Yearbook, and Computer Tech Teacher – Skyline High, Salt Lake City, UT</h3>
-                <p>2012 – Present</p>
-                <ul>
-                    <li>Developed and taught curriculum for computer science, digital media, and web development, impacting over 500 students annually.</li>
-                    <li>Served as Technology Student Association (TSA) Advisor, leading teams to win 12 state and 3 national awards since 2012.</li>
-                    <li>Managed production of the school yearbook with Jostens Inc., overseeing a team of 60 students to create a 260-page annual publication.</li>
-                    <li>Maintained and updated the Skyline High website as school webmaster, improving user engagement by 30% through modern design and functionality.</li>
-                    <li>Integrated emerging technologies like 3D modeling and game development into coursework, preparing students for industry trends.</li>
-                </ul>
-            </div>
-            <div class="job">
-                <h3>Teacher/Adult Educator – Granite Peaks, Salt Lake City, UT</h3>
-                <p>2008 – 2011</p>
-                <ul>
-                    <li>Managed ESL, GED preparation, and adult high school programs, serving over 200 learners annually.</li>
-                    <li>Developed computer technology curriculum and led accreditation efforts.</li>
-                </ul>
-            </div>
-            <div class="job">
-                <h3>Computer Technology and Multimedia Teacher – Stillwater Academy, South Jordan, UT</h3>
-                <p>2006 – 2008</p>
-                <ul>
-                    <li>Taught multimedia and computer technology classes, helping students build digital portfolios.</li>
-                </ul>
-            </div>
-            <div class="job">
-                <h3>Software Developer and Network Administrator – Conexus Inc., Midvale, UT</h3>
-                <p>2005 – 2008</p>
-                <ul>
-                    <li>Developed C# .NET asset management software for the Department of Defense.</li>
-                    <li>Managed web, database, and client servers for operational efficiency.</li>
-                </ul>
-            </div>
-            <div class="job">
-                <h3>Webmaster/Computer Lab Tech – East High School, Salt Lake City, UT</h3>
-                <p>2000 – 2005</p>
-                <ul>
-                    <li>Built and managed the school website and multiple databases for discipline and inventory.</li>
-                    <li>Taught community education courses on web development and graphics.</li>
-                </ul>
-            </div>
-        </div>
-        <div class="section">
-            <h2>IT Skills</h2>
-            <ul>
-                <li><strong>Web & Windows Forms Development:</strong> Proficient in Visual Studio (C#), SQL Server, Adobe Dreamweaver, Flash, Fireworks; experienced in HTML, CSS, JavaScript for modern web applications; basic experience with PHP, MySQL, ASP.</li>
-                <li><strong>Frameworks & Tools:</strong> Skilled in React and Tailwind CSS for building responsive, interactive web interfaces; proficient in Git for version control and project management; developed dynamic data-driven logic in JavaScript for PairPal, enabling comprehensive personality pairing analysis for all 729 possible combinations.</li>
-                <li><strong>Software:</strong> Expert in Microsoft Office (up to 2010), Adobe Photoshop, Acrobat, InDesign; some experience with ActionScript, Visual Basic, C, Java.</li>
-            </ul>
-        </div>
-        <div class="section">
-            <h2>Interests</h2>
-            <ul>
-                <li>Musician (guitar, bass, keyboards, flute).</li>
-                <li>Outdoor activities (biking, running), reading action thriller fiction, writing (philosophy, computer instruction, fiction).</li>
-                <li>Motorcycle enthusiast.</li>
-            </ul>
-        </div>
-        <div class="section references">
-            <p>A full set of references available upon request.</p>
-        </div>
-    </div>
-    <script>
-        // Add subtle fade-in animation on page load
-        document.addEventListener('DOMContentLoaded', () => {
-            const container = document.querySelector('.container');
-            container.style.opacity = 0;
-            let opacity = 0;
-            const fadeIn = setInterval(() => {
-                if (opacity >= 1) clearInterval(fadeIn);
-                container.style.opacity = opacity;
-                opacity += 0.02;
-            }, 20);
-        });
-    </script>
+      </div>
+      <p><strong>Utah Professional Educator License</strong></p>
+      <p>Endorsements: Computer Science, Computer Programming, Digital Media, Business Education</p>
+    </section>
+
+    <section>
+      <h2>Honors & Recognition</h2>
+      <ul class="compact-list">
+        <li>Utah Industrial and Technical Education Association Teacher of the Year — 2025</li>
+        <li>Skyline High School Golden Talon Teacher of the Year — 2024</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>International Baccalaureate Experience</h2>
+      <ul>
+        <li>Current Theory of Knowledge instructor.</li>
+        <li>Facilitate inquiry into knowledge, evidence, justification, perspective, and critical thinking.</li>
+        <li>Guide students through TOK Essay development and reflective analysis.</li>
+        <li>Apply IB frameworks to help students connect learning across disciplines.</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>Projects & Innovation</h2>
+      <ul>
+        <li>Developed custom educational tools, web applications, and automation systems supporting instruction, reflection, assessment, and student engagement.</li>
+        <li>Created the Daily Focus Template system integrating data collection, journaling, analytics, PDF generation, astronomy data, weather systems, and AI-assisted content generation.</li>
+        <li>Built interactive Theory of Knowledge resources to support student inquiry, essay planning, and exhibition development.</li>
+        <li>Designed classroom technologies emphasizing practical problem solving and real-world application.</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>Technical Skills</h2>
+      <div class="skills-grid">
+        <p><span class="skill-title">Programming:</span> Java, JavaScript, Python, C#, SQL, Google Apps Script</p>
+        <p><span class="skill-title">Web Development:</span> HTML, CSS, React, Tailwind CSS, GitHub</p>
+        <p><span class="skill-title">Creative Software:</span> Photoshop, InDesign, Premiere Pro, Acrobat</p>
+        <p><span class="skill-title">Educational Technology:</span> Canvas LMS, Google Workspace, AI-assisted learning tools</p>
+      </div>
+    </section>
+
+    <section>
+      <h2>Personal Interests</h2>
+      <p>Music Theory • Guitar • Astronomy • Writing • Motorcycling • Outdoor Recreation • Educational Innovation</p>
+    </section>
+  </main>
 </body>
 </html>
