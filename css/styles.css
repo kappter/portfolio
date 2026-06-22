@@ -194,6 +194,29 @@ header {
     border-bottom: 1px solid var(--border-color);
 }
 
+.now-photo-strip {
+    display: flex;
+    gap: 16px;
+    overflow-x: auto;
+    padding-top: 20px;
+    scroll-snap-type: x proximity;
+}
+
+.now-photo-strip img {
+    height: 220px;
+    width: auto;
+    border-radius: 12px;
+    flex-shrink: 0;
+    object-fit: cover;
+    scroll-snap-align: start;
+    box-shadow: 0 4px 12px rgba(0,0,0,.15);
+    transition: transform .2s ease;
+}
+
+.now-photo-strip img:hover {
+    transform: scale(1.02);
+}
+
 .header-content {
     position: relative;
     display: inline-block;
