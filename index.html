@@ -117,51 +117,161 @@
                 <p>Active builds, classroom systems, and creative experiments currently moving from idea to artifact.</p>
             </div>
 
-			<div class="now-photo-strip">
-    <figure class="now-photo">
-    <img src="images/01.png" alt="">
-    <figcaption>Honoring the Solstace</figcaption>
-  </figure>
+            <!--
+              EASY UPDATE AREA:
+              Add, remove, or reorder tiles in NOW_ITEMS below.
 
-  <figure class="now-photo">
-    <img src="images/02.png" alt="">
-    <figcaption>SLC Airport Art</figcaption>
-  </figure>
+              Photo tile:
+              { type: "photo", title: "Tile Title", image: "images/04.png", text: "Optional short caption" }
 
-  <figure class="now-photo">
-    <img src="images/03.png" alt="">
-    <figcaption>TSA Nationals Preparation</figcaption>
-  </figure>
-</div>
+              Info tile:
+              { type: "info", title: "Tile Title", badge: "Optional", icon: "★", text: "Short description", links: [{ label: "Open", url: "https://..." }] }
+            -->
+            <div class="now-marquee" id="nowMarquee">
+                <div class="now-controls" aria-label="Current work carousel controls">
+                    <button type="button" class="now-control" id="nowPrev" aria-label="Move current work tiles left">‹</button>
+                    <button type="button" class="now-control now-pause" id="nowPause" aria-label="Pause current work tiles">Pause</button>
+                    <button type="button" class="now-control" id="nowNext" aria-label="Move current work tiles right">›</button>
+                </div>
 
-            <div class="now-grid">
-                <article class="now-card now-card-feature">
-                    <div class="now-card-topline">
-                        <span class="now-badge">Featured</span>
-                        <span class="now-status">PulseTap</span>
-                    </div>
-                    <h3>PulseTap</h3>
-                    <p>A pocket-sized expressive music project focused on loop mode, solo mode, mobile-first UI, tactile interaction, and collaborative rhythm building.</p>
-                    <div class="now-actions">
-                        <a href="https://kappter.github.io/PulseTap/index.html" target="_blank" class="button">Launch PulseTap</a>
-                        <a href="https://github.com/kappter/PulseTap" target="_blank" class="project-link">View Repo</a>
-                    </div>
-                </article>
-
-                <article class="now-card">
-                    <h3>Portfolio Refresh</h3>
-                    <p>Reworking this portfolio into a clearer living record of teaching, apps, design experiments, and student-facing tools.</p>
-                </article>
-
-                <article class="now-card">
-                    <h3>Broadcast Studio</h3>
-                    <p>Building repeatable workflows for Skyline live announcements, studio documentation, and student production roles.</p>
-                </article>
+                <div class="now-viewport" id="nowViewport">
+                    <div class="now-track" id="nowTrack"></div>
+                </div>
             </div>
+
             <canvas id="line-animation-now" class="line-animation"></canvas>
         </section>
-	    
-	<!--  -->
+
+        <script>
+            const NOW_ITEMS = [
+                {
+                    type: "photo",
+                    title: "Honoring the Solstice",
+                    image: "images/01.png",
+                    text: "Summer light, family, ritual, and memory."
+                },
+                {
+                    type: "photo",
+                    title: "SLC Airport Art",
+                    image: "images/02.png",
+                    text: "Capturing travel, light, space, and movement."
+                },
+                {
+                    type: "photo",
+                    title: "TSA Nationals Preparation",
+                    image: "images/03.png",
+                    text: "Traveling with student competitors to Washington, D.C."
+                },
+                {
+                    type: "info",
+                    title: "PulseTap",
+                    badge: "Featured",
+                    icon: "♪",
+                    text: "A pocket-sized expressive music project focused on loop mode, solo mode, mobile-first UI, tactile interaction, and collaborative rhythm building.",
+                    links: [
+                        { label: "Launch", url: "https://kappter.github.io/PulseTap/index.html" },
+                        { label: "Repo", url: "https://github.com/kappter/PulseTap" }
+                    ]
+                },
+                {
+                    type: "info",
+                    title: "Daily Focus Template v2.7",
+                    badge: "Stabilizing",
+                    icon: "◎",
+                    text: "Consolidating the daily briefing system: journal capture, PDF output, weather, sky data, ISS passes, photos, and audio narration."
+                },
+                {
+                    type: "info",
+                    title: "IB Theory of Knowledge",
+                    badge: "New Course",
+                    icon: "?",
+                    text: "Building TOK 2 structures, essay workflows, exhibition tools, knowledge questions, and student-facing reflection systems."
+                },
+                {
+                    type: "info",
+                    title: "Broadcast Studio",
+                    icon: "◉",
+                    text: "Building repeatable workflows for Skyline live announcements, studio documentation, and student production roles."
+                },
+                {
+                    type: "info",
+                    title: "Portfolio Refresh",
+                    icon: "↻",
+                    text: "Reworking this portfolio into a clearer living record of teaching, apps, design experiments, and student-facing tools."
+                }
+            ];
+
+            function buildNowTile(item, duplicate = false) {
+                const tile = document.createElement(item.links?.length ? "a" : "article");
+                tile.className = `now-tile now-tile-${item.type}`;
+                tile.setAttribute("aria-label", item.title);
+
+                if (duplicate) tile.setAttribute("aria-hidden", "true");
+                if (item.links?.length === 1) {
+                    tile.href = item.links[0].url;
+                    tile.target = "_blank";
+                    tile.rel = "noopener";
+                }
+
+                const media = item.type === "photo"
+                    ? `<img src="${item.image}" alt="${item.title}" loading="lazy" onerror="this.src='https://placehold.co/360x240?text=Current+Work';">`
+                    : `<div class="now-icon">${item.icon || "•"}</div>`;
+
+                const badge = item.badge ? `<span class="now-tile-badge">${item.badge}</span>` : "";
+                const links = item.links?.length > 1
+                    ? `<div class="now-tile-links">${item.links.map(link => `<a href="${link.url}" target="_blank" rel="noopener">${link.label}</a>`).join("")}</div>`
+                    : "";
+
+                tile.innerHTML = `
+                    <div class="now-tile-media">${media}</div>
+                    <div class="now-tile-body">
+                        ${badge}
+                        <h3>${item.title}</h3>
+                        ${item.text ? `<p>${item.text}</p>` : ""}
+                        ${links}
+                    </div>
+                `;
+
+                return tile;
+            }
+
+            function renderNowTiles() {
+                const track = document.getElementById("nowTrack");
+                const marquee = document.getElementById("nowMarquee");
+                const viewport = document.getElementById("nowViewport");
+                const pauseButton = document.getElementById("nowPause");
+                const prevButton = document.getElementById("nowPrev");
+                const nextButton = document.getElementById("nowNext");
+
+                if (!track || !marquee) return;
+
+                track.innerHTML = "";
+                NOW_ITEMS.forEach(item => track.appendChild(buildNowTile(item)));
+                NOW_ITEMS.forEach(item => track.appendChild(buildNowTile(item, true)));
+
+                function setPaused(paused) {
+                    marquee.classList.toggle("is-paused", paused);
+                    pauseButton.textContent = paused ? "Play" : "Pause";
+                    pauseButton.setAttribute("aria-label", paused ? "Play current work tiles" : "Pause current work tiles");
+                }
+
+                pauseButton.addEventListener("click", () => {
+                    setPaused(!marquee.classList.contains("is-paused"));
+                });
+
+                prevButton.addEventListener("click", () => {
+                    setPaused(true);
+                    viewport.scrollBy({ left: -240, behavior: "smooth" });
+                });
+
+                nextButton.addEventListener("click", () => {
+                    setPaused(true);
+                    viewport.scrollBy({ left: 240, behavior: "smooth" });
+                });
+            }
+
+            document.addEventListener("DOMContentLoaded", renderNowTiles);
+        </script><!--  -->
       <section id="education">
     <h2>Education</h2>
 
