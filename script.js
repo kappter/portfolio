@@ -389,13 +389,12 @@ function setupNowStoryModal() {
         modal.classList.remove("is-open");
         modal.setAttribute("aria-hidden", "true");
         document.body.classList.remove("modal-open");
-
-        // Stops the embedded page/video/audio from continuing in the background.
         frame.src = "";
     }
 
     document.addEventListener("click", event => {
         const trigger = event.target.closest(".now-modal-trigger");
+
         if (trigger && !trigger.disabled) {
             openModal(trigger.dataset.modalUrl, trigger.dataset.modalTitle);
         }
@@ -412,8 +411,7 @@ function setupNowStoryModal() {
     });
 }
 
-document.addEventListener("DOMContentLoaded", setupNowStoryModal();
-
+setupNowStoryModal();
   // ============================================================
 // Art Carousel Logic
 // ============================================================
