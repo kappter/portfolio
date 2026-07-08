@@ -412,7 +412,7 @@ function setupNowStoryModal() {
     });
 }
 
-document.addEventListener("DOMContentLoaded", setupNowStoryModal);
+document.addEventListener("DOMContentLoaded", setupNowStoryModal();
 
   // ============================================================
 // Art Carousel Logic
