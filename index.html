@@ -142,8 +142,46 @@
             <canvas id="line-animation-now" class="line-animation"></canvas>
         </section>
 
+		<div class="now-story-modal" id="nowStoryModal" aria-hidden="true">
+    <div class="now-story-backdrop" data-close-now-modal></div>
+
+    <div class="now-story-window" role="dialog" aria-modal="true" aria-labelledby="nowStoryTitle">
+        <div class="now-story-header">
+            <div>
+                <span class="eyebrow">Project Origin</span>
+                <h2 id="nowStoryTitle">The Briefing / DFT</h2>
+            </div>
+
+            <button type="button" class="now-story-close" data-close-now-modal aria-label="Close story window">
+                ×
+            </button>
+        </div>
+
+        <iframe 
+            id="nowStoryFrame"
+            class="now-story-frame"
+            src=""
+            title="The Briefing origin story">
+        </iframe>
+
+        <div class="now-story-footer">
+            <a id="nowStoryOpenLink" href="#" target="_blank" rel="noopener">
+                Open full page
+            </a>
+        </div>
+    </div>
+</div>
+
         <script>
             const NOW_ITEMS = [
+				{
+    				type: "photo",
+    				title: "The Briefing / DFT",
+    				badge: "Origin Story",
+    				image: "images/dftv2.png",
+    				text: "A daily external cognitive system for memory, intention, music, sky, body signals, journal capture, and action.",
+    				modalUrl: "dft-history.html"
+				}
                 {
                     type: "photo",
                     title: "Honoring the Solstice",
@@ -201,39 +239,59 @@
                 }
             ];
 
-            function buildNowTile(item, duplicate = false) {
-                const tile = document.createElement(item.links?.length ? "a" : "article");
-                tile.className = `now-tile now-tile-${item.type}`;
-                tile.setAttribute("aria-label", item.title);
+           function buildNowTile(item, duplicate = false) {
+    const opensModal = Boolean(item.modalUrl);
 
-                if (duplicate) tile.setAttribute("aria-hidden", "true");
-                if (item.links?.length === 1) {
-                    tile.href = item.links[0].url;
-                    tile.target = "_blank";
-                    tile.rel = "noopener";
-                }
+    const tile = document.createElement(
+        opensModal ? "button" : item.links?.length ? "a" : "article"
+    );
 
-                const media = item.type === "photo"
-                    ? `<img src="${item.image}" alt="${item.title}" loading="lazy" onerror="this.src='https://placehold.co/360x240?text=Current+Work';">`
-                    : `<div class="now-icon">${item.icon || "•"}</div>`;
+    tile.className = `now-tile now-tile-${item.type}`;
 
-                const badge = item.badge ? `<span class="now-tile-badge">${item.badge}</span>` : "";
-                const links = item.links?.length > 1
-                    ? `<div class="now-tile-links">${item.links.map(link => `<a href="${link.url}" target="_blank" rel="noopener">${link.label}</a>`).join("")}</div>`
-                    : "";
+    if (opensModal) {
+        tile.type = "button";
+        tile.classList.add("now-modal-trigger");
+        tile.dataset.modalUrl = item.modalUrl;
+        tile.dataset.modalTitle = item.title;
+    }
 
-                tile.innerHTML = `
-                    <div class="now-tile-media">${media}</div>
-                    <div class="now-tile-body">
-                        ${badge}
-                        <h3>${item.title}</h3>
-                        ${item.text ? `<p>${item.text}</p>` : ""}
-                        ${links}
-                    </div>
-                `;
+    tile.setAttribute("aria-label", item.title);
 
-                return tile;
-            }
+    if (duplicate) {
+        tile.setAttribute("aria-hidden", "true");
+        tile.tabIndex = -1;
+        if (opensModal) tile.disabled = true;
+    }
+
+    if (!opensModal && item.links?.length === 1) {
+        tile.href = item.links[0].url;
+        tile.target = "_blank";
+        tile.rel = "noopener";
+    }
+
+    const media = item.type === "photo"
+        ? `<img src="${item.image}" alt="${item.title}" loading="lazy" onerror="this.src='https://placehold.co/360x240?text=Current+Work';">`
+        : `<div class="now-icon">${item.icon || "•"}</div>`;
+
+    const badge = item.badge ? `<span class="now-tile-badge">${item.badge}</span>` : "";
+
+    const links = item.links?.length > 1
+        ? `<div class="now-tile-links">${item.links.map(link => `<a href="${link.url}" target="_blank" rel="noopener">${link.label}</a>`).join("")}</div>`
+        : "";
+
+    tile.innerHTML = `
+        <div class="now-tile-media">${media}</div>
+        <div class="now-tile-body">
+            ${badge}
+            <h3>${item.title}</h3>
+            ${item.text ? `<p>${item.text}</p>` : ""}
+            ${opensModal ? `<span class="now-modal-hint">Open story</span>` : ""}
+            ${links}
+        </div>
+    `;
+
+    return tile;
+}
 
             function renderNowTiles() {
                 const track = document.getElementById("nowTrack");
