@@ -1,1 +1,356 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Before It Was The Briefing</title>
 
+    <style>
+        :root {
+            --bg: #f5f3e7;
+            --paper: #fefcf5;
+            --text: #332b1f;
+            --muted: #756a59;
+            --accent: #6b7d4b;
+            --border: #e2dcc9;
+            --shadow: rgba(58, 47, 31, 0.18);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            background:
+                radial-gradient(circle at top left, rgba(107, 125, 75, 0.14), transparent 34rem),
+                var(--bg);
+            color: var(--text);
+            line-height: 1.75;
+            font-size: 17px;
+        }
+
+        .page {
+            max-width: 880px;
+            margin: 0 auto;
+            padding: 32px 22px 64px;
+        }
+
+        .hero {
+            background: var(--paper);
+            border: 1px solid var(--border);
+            border-radius: 22px;
+            box-shadow: 0 18px 48px var(--shadow);
+            overflow: hidden;
+            margin-bottom: 28px;
+        }
+
+        .hero-image {
+            width: 100%;
+            max-height: 380px;
+            object-fit: cover;
+            display: block;
+            background: #ddd8c8;
+        }
+
+        .hero-body {
+            padding: 28px;
+        }
+
+        .eyebrow {
+            display: inline-block;
+            margin-bottom: 10px;
+            font-size: 12px;
+            font-weight: 800;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+            color: var(--accent);
+        }
+
+        h1 {
+            font-size: clamp(2rem, 5vw, 4rem);
+            line-height: 1.05;
+            letter-spacing: -0.04em;
+            margin-bottom: 16px;
+        }
+
+        .subtitle {
+            color: var(--muted);
+            font-size: 1.05rem;
+            max-width: 720px;
+        }
+
+        .artifact-line {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+            margin-top: 24px;
+        }
+
+        .artifact-line span {
+            background: rgba(107, 125, 75, 0.1);
+            border: 1px solid rgba(107, 125, 75, 0.22);
+            border-radius: 999px;
+            padding: 8px 10px;
+            text-align: center;
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--accent);
+        }
+
+        article {
+            background: var(--paper);
+            border: 1px solid var(--border);
+            border-radius: 22px;
+            padding: clamp(24px, 4vw, 44px);
+            box-shadow: 0 12px 36px rgba(58, 47, 31, 0.1);
+        }
+
+        article p {
+            margin-bottom: 1.15em;
+        }
+
+        article p:first-of-type::first-letter {
+            float: left;
+            font-size: 4.4rem;
+            line-height: 0.9;
+            padding: 0.08em 0.1em 0 0;
+            color: var(--accent);
+            font-weight: 800;
+        }
+
+        .pull-quote {
+            margin: 28px 0;
+            padding: 24px;
+            border-left: 5px solid var(--accent);
+            background: rgba(107, 125, 75, 0.09);
+            border-radius: 0 18px 18px 0;
+            font-size: 1.25rem;
+            line-height: 1.55;
+            font-weight: 700;
+            color: #2f3925;
+        }
+
+        .definition-stack {
+            margin: 28px 0;
+            padding: 24px;
+            border-radius: 18px;
+            background: #332b1f;
+            color: #fefcf5;
+            box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.08);
+        }
+
+        .definition-stack p {
+            margin: 0 0 8px;
+            font-size: 1.1rem;
+            font-weight: 700;
+        }
+
+        .definition-stack p:last-child {
+            margin-bottom: 0;
+            color: #dce8bd;
+        }
+
+        .closing-question {
+            margin-top: 36px;
+            padding: 28px;
+            border-radius: 18px;
+            text-align: center;
+            background: linear-gradient(135deg, rgba(107, 125, 75, 0.16), rgba(107, 125, 75, 0.04));
+            border: 1px solid rgba(107, 125, 75, 0.22);
+        }
+
+        .closing-question strong {
+            display: block;
+            font-size: clamp(1.6rem, 4vw, 2.6rem);
+            line-height: 1.1;
+            color: var(--accent);
+            margin-top: 8px;
+        }
+
+        .footer-note {
+            margin-top: 22px;
+            text-align: center;
+            color: var(--muted);
+            font-size: 0.9rem;
+        }
+
+        @media (max-width: 700px) {
+            body {
+                font-size: 16px;
+            }
+
+            .page {
+                padding: 18px 14px 48px;
+            }
+
+            .hero-body,
+            article {
+                padding: 22px;
+            }
+
+            .artifact-line {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <main class="page">
+        <header class="hero">
+            <img
+                src="images/dftv2.png"
+                alt="Daily Focus Template / The Briefing preview"
+                class="hero-image"
+                onerror="this.style.display='none';"
+            >
+
+            <div class="hero-body">
+                <span class="eyebrow">Project Origin</span>
+                <h1>Before It Was The Briefing</h1>
+                <p class="subtitle">
+                    The origin story of a daily artifact system that began as recorded thought,
+                    moved through journals, planners, dashboards, folders, scripts, and finally
+                    became an external cognitive system for memory, intention, and action.
+                </p>
+
+                <div class="artifact-line" aria-label="Briefing evolution">
+                    <span>Journal</span>
+                    <span>Planner</span>
+                    <span>Dashboard</span>
+                    <span>Briefing</span>
+                </div>
+            </div>
+        </header>
+
+        <article>
+            <p>The system I now call <em>The Briefing</em> did not begin as software. It did not begin as a spreadsheet, a journal template, a dashboard, or even a planner. It began much earlier than that, in the form of a small recording device and cassette tapes passed between the divided geographies of my childhood.</p>
+
+            <p>My earliest journal was not written. It was spoken.</p>
+
+            <p>As a child, I used audio recordings to communicate with whichever parent I was not with at the time. When I was with my mother during the school year, I made tapes for my father in preparation for seeing him in the summer. Then the pattern would reverse. My life, from the beginning, required a kind of record-keeping. Separation created distance, and distance created the need to preserve thoughts, feelings, updates, and fragments of self across time.</p>
+
+            <p>Before I understood journaling as a discipline, I understood the value of recorded thought. A tape could carry a voice forward. It could say, <em>Here I am. This is what I’m thinking. This is what happened while you were away.</em></p>
+
+            <p>That impulse never really left me.</p>
+
+            <p>There were written attempts too, of course. Sketchbooks, notebooks, loose pages, poems, and fragments of thought. They were not always dated or organized, but they revealed an early attraction to leaving a written record. I was drawn to the idea that experience could be captured, revisited, and made meaningful later. I did not yet have a system, but I had the instinct.</p>
+
+            <p>That instinct formalized in high school, especially after I met Tim McGee.</p>
+
+            <p>By the eleventh grade, I was living with my father and inhabiting the entire basement of the house. As an only child, I had a rare kind of private kingdom. I had a study, a bedroom, a large living area, a bar, a sink, and enough space to keep a band setup ready at all times. My amp was there. A drum kit for Alex was there. Extra amps for bass, vocals, and whatever else we needed were there. It was a fantastic period of life because it gave me a domain: a place to read, write, play music, think, and become.</p>
+
+            <p>Around that time, I convinced my father to order a Brother digital typewriter. I believe it cost around $400, and I likely had to help raise the money for it. In retrospect, it was the first computational device I truly owned. It had a small two-line display that let me see what I was typing, but it was not a full screen. There was no modern visual interface, no true WYSIWYG environment, only a narrow preview of text before the machine committed it to paper.</p>
+
+            <p>Still, to me, it was extraordinary.</p>
+
+            <p>I could sit down, type thoughts, transfer handwritten material into a more permanent form, save files to a floppy disk, call them up again, edit them, and print them. Sometimes I typed and printed immediately. Other times I saved, revised, returned, and printed later. Whenever there was something worth preserving, I printed it. By the time I graduated, I had binders full of thoughts and poetry. I had contributed to the school literary magazine. I was writing often, and writing had become one of the ways I knew myself.</p>
+
+            <p>Tim McGee mattered because he helped make literature real to me. Under his tutelage, I read my first real book and became a voracious reader, even if a slow one. His own reported slowness as a reader encouraged me. It gave me permission to read deeply rather than quickly. The journal during that period existed in pages, binders, poems, drafts, and printed reflections. It was not merely documentation. It was apprenticeship.</p>
+
+            <p>Then, on my mission, the journal changed again.</p>
+
+            <p>Two things entered my life: Franklin Planners and a laptop computer.</p>
+
+            <p>This was around 1993 or 1994. The laptop was small, limited by modern standards, but miraculous to me. I loved it. I learned everything I could about it. It allowed me to store and print journal entries in a way that felt both mobile and expansive. The Franklin Planner, meanwhile, gave structure to time. It divided life into future and record. The planner belonged to what was coming next: next week, next month, next appointment, next obligation. The digital journal became the daily account of what had actually happened.</p>
+
+            <p>That distinction became important.</p>
+
+            <div class="pull-quote">
+                The future needed structure. The past needed memory. The present needed a place to stand between them.
+            </div>
+
+            <p>When I moved to Utah and began working for the church, I discovered Franklin Covey software that let me create planner pages digitally and then print them onto blank Franklin Covey pages. I remember the beauty of those themed pages, especially the Monticello-style designs. It was a marriage of preparation and presentation: plan the week on the computer, print it into a physical binder, then carry that binder into the world.</p>
+
+            <p>Looking back, I can see that I was already trying to place the best information for any given day at my fingertips. I wanted the ability to zoom in on a day and zoom out to a larger block of time. I wanted to walk into a meeting with more than a schedule. I wanted context. I wanted reminders. I wanted the meaningful parts of my life present with me.</p>
+
+            <p>At East High School, that impulse evolved again. I began using early internet dashboards from places like Excite, Yahoo, Google, and Microsoft. These dashboards gathered information that mattered or interested me: dates, headlines, weather, quotes, reminders, and whatever else could be placed into a daily field of awareness. I remember being disappointed when some of those dashboard systems disappeared. They seemed so simple, so text-based, so useful. Yet they vanished.</p>
+
+            <p>So I printed them.</p>
+
+            <p>I would arrive at East High on a Monday morning, print the week’s materials, add my daily dashboard, and place it into my Franklin Planner. During meetings, I could look not only at the task in front of me but also at larger patterns and personal priorities. I could be reminded of what mattered beyond the meeting itself. Again, the journal was becoming something more than a journal. It was becoming a portable context engine.</p>
+
+            <p>My years in the LDS church also shaped the visual and philosophical side of this impulse. Scripture taught me something about presentation. The information itself was treated as sacred, but so was the medium: thin opaque paper, leather binding, careful typography, index cutouts, ribbons, spine markings, tabs, colors, editions, and sizes. These books were designed to be touched, marked, carried, searched, and revered.</p>
+
+            <p>I began to think: what if the books that mattered most to me could be made in that style? What if a personal canon could be bound with the same care? What if the presentation of information could communicate its importance before a word was even read?</p>
+
+            <p>That fascination led me toward bookmaking. I never fully gave it the space it deserved, but I loved watching bookbinders work. The craft itself was satisfying: paper, thread, glue, spine, cover, pressure, patience. A book was not just a container. It was an argument that certain information deserved permanence.</p>
+
+            <p>Sometime after 2000, my journal structure became increasingly digital. I discovered the power of a simple folder hierarchy: year, month, day. Inside a year folder, each month could exist as 01, 02, 03, and so on. The structure itself became an invitation. If anything important happened in July 2026, I knew exactly where it belonged. A purchase, a bonus, a screenshot, a letter, a photograph, a note, a PDF, a finished thought—drop it into the right place. Presentation could come later. The first job was preservation.</p>
+
+            <p>Over time, that structure became a daily artifact system. A typical day might include the journal text, the daily briefing report, and a Sudoku puzzle. Sometimes more. These files would sync across devices: phone, laptop, tablet, iCloud, and eventually the reMarkable. On the phone, I could drill down into the folder and pull up the day’s document. On the reMarkable, I could annotate it, mark it, draw over it, critique its layout, and imagine better ways to arrange the information.</p>
+
+            <p>The system became both archive and workshop.</p>
+
+            <p>Then came the template.</p>
+
+            <p>What began as a daily focus sheet slowly turned into something much larger. Every morning, I could fill out a simple form capturing the previous day: people, places, mood, movement, sleep, photos, journal text, and other signals. The process, when prepared, took less than five minutes. Choose three representative photographs. Drop them into the right folder with the right names. Add the journal text. Run the script. Wait as the system updated itself into a usable document.</p>
+
+            <p>Behind that simple act grew thousands of lines of code and dozens of sheets, each feeding a different dimension of the report. Weather. Sky. Music. Words. Trends. Body signals. Calendar. Tasks. Financial cues. Date mathematics. Photos. Journal archive. What looked like a single page was actually an ecosystem.</p>
+
+            <p>When I showed it to Athena, my therapist, I described it as a template. But even as I said the word, I knew it was becoming inaccurate. It was not just a template. It was not just a journal. It was not just a planner. It was an external cognitive system.</p>
+
+            <p>It helped me remember what is increasingly difficult to call up on demand. It helped me see who I spoke with, where I had been, what mattered enough to photograph, what my body was signaling, what the sky was doing, what the day meant numerically, and what I might want to carry forward. It reduced the time required to create the artifact so I could spend more time using it.</p>
+
+            <p>That distinction matters. For years, the act of building the daily artifact was part of the learning. But now the system is moving toward maturity. The goal is not to spend the day constructing the map. The goal is to wake up with the map ready, then live from it.</p>
+
+            <p>The music system made this evolution especially clear.</p>
+
+            <p>For a long time, my daily guitar practice used a known root and a randomly selected mode. The system required usable open strings because I love the resonance and freedom of open-string playing. That alone was useful. But recently, I began to realize that a single daily mode is not enough. Songs do not usually remain in one mode forever. They begin somewhere, depart, create tension, ask questions, and resolve. Music is not merely a location. It is a journey.</p>
+
+            <p>That insight changed the template. The daily practice prompt became part of a weekly musical progression. Instead of asking only, “What key and mode am I playing today?” I began asking, “Where am I coming from, where am I going, and why does the transition matter?” A week could become a composition. A mode could become a mood. A transition could become a question. Resolution could become meaning.</p>
+
+            <p>That same principle applies to the rest of life.</p>
+
+            <p>A day is not isolated. It is part of a progression. Tasks should not simply appear randomly. If something matters enough to live in the weekly realm, it deserves an intentional place. Money should not merely be observed after it disappears. It should be briefed: what came in, what must be protected, what can be used, what should be directed toward a goal. Travel should not merely interrupt the system. The system should know when I am home, when I am offline, when I am on a cruise ship, when I need expedition mode, and when the day requires a different kind of readiness.</p>
+
+            <p>This is where the old name began to fail.</p>
+
+            <p>“Daily Focus Template” described an earlier version of the work. It was useful, but it was too small. The thing had outgrown the phrase. It had become a briefing.</p>
+
+            <div class="definition-stack">
+                <p>A journal preserves memory.</p>
+                <p>A planner organizes intention.</p>
+                <p>A dashboard displays information.</p>
+                <p>A briefing prepares action.</p>
+            </div>
+
+            <p>That is the difference.</p>
+
+            <p>The Briefing is the result of a lifetime of trying to place meaningful information within reach. It began with cassette tapes sent across parental distance. It moved through notebooks, poems, typewriters, floppy disks, laptops, Franklin Planners, digital dashboards, scripture design, folder architectures, tablets, scripts, spreadsheets, AI, and daily PDFs. Each era contributed something. Each tool solved part of the problem. Each version brought me closer to the real objective.</p>
+
+            <p>I was never simply trying to keep a diary.</p>
+
+            <p>I was trying to preserve trajectory.</p>
+
+            <p>Now, when I open a folder and compare one July 7th to another, I am not merely comparing documents. I am comparing selves. Who was I then? What was I worried about? Was I secure? Was I in love? Was I making money? Was I lost? Was I building? What did I believe mattered? What did I fail to notice? What patterns return every year? What has finally changed?</p>
+
+            <p>The archive becomes a mirror, but The Briefing becomes something more. It does not only say, “This is who you were.” It asks, “Given who you have been, who will you become today?”</p>
+
+            <p>That is where I am now.</p>
+
+            <p>I am celebrating the journal, but I am also celebrating its transformation. The artifact no longer exists merely to be stored away. It exists to be used. It exists to help me act with more memory, more intention, more creativity, and more awareness. It gives me a sense of power—not power over the world, but power over the day. It reminds me that meaning can be assembled, that information can be composed, and that a life can be briefed before it is lived.</p>
+
+            <p>The Briefing is not finished. It may never be finished. But it has finally revealed what it is.</p>
+
+            <p>It is the external extension of a mind that has spent fifty-two years collecting, arranging, preserving, and recomposing information into usable meaning. It is not replacing memory. It is giving memory direction.</p>
+
+            <div class="closing-question">
+                Every morning, it asks the same question:
+                <strong>What matters today?</strong>
+            </div>
+        </article>
+
+        <p class="footer-note">
+            Daily Focus Template → The Briefing
+        </p>
+    </main>
+</body>
+</html>
