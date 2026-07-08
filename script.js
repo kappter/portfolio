@@ -367,7 +367,54 @@ let photographyIsTransitioning = false;
   }, 500);
 }
 
-// ============================================================
+function setupNowStoryModal() {
+    const modal = document.getElementById("nowStoryModal");
+    const frame = document.getElementById("nowStoryFrame");
+    const title = document.getElementById("nowStoryTitle");
+    const openLink = document.getElementById("nowStoryOpenLink");
+
+    if (!modal || !frame || !title || !openLink) return;
+
+    function openModal(url, modalTitle) {
+        title.textContent = modalTitle || "The Briefing / DFT";
+        frame.src = url;
+        openLink.href = url;
+
+        modal.classList.add("is-open");
+        modal.setAttribute("aria-hidden", "false");
+        document.body.classList.add("modal-open");
+    }
+
+    function closeModal() {
+        modal.classList.remove("is-open");
+        modal.setAttribute("aria-hidden", "true");
+        document.body.classList.remove("modal-open");
+
+        // Stops the embedded page/video/audio from continuing in the background.
+        frame.src = "";
+    }
+
+    document.addEventListener("click", event => {
+        const trigger = event.target.closest(".now-modal-trigger");
+        if (trigger && !trigger.disabled) {
+            openModal(trigger.dataset.modalUrl, trigger.dataset.modalTitle);
+        }
+
+        if (event.target.closest("[data-close-now-modal]")) {
+            closeModal();
+        }
+    });
+
+    document.addEventListener("keydown", event => {
+        if (event.key === "Escape" && modal.classList.contains("is-open")) {
+            closeModal();
+        }
+    });
+}
+
+document.addEventListener("DOMContentLoaded", setupNowStoryModal);
+
+  // ============================================================
 // Art Carousel Logic
 // ============================================================
 
