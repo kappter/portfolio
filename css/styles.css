@@ -150,6 +150,8 @@ body.modal-open {
 }
 
 .now-modal-trigger {
+    appearance: none;
+    -webkit-appearance: none;
     border: none;
     text-align: left;
     font: inherit;
