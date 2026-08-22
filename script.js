@@ -30,8 +30,6 @@ document.addEventListener("DOMContentLoaded", function () {
   // handle dark/light mode
   if (themeName.includes("dark")) {
     html.setAttribute("data-theme", "dark");
-  } else if (themeName.includes("pulsetap")) {
-    html.setAttribute("data-theme", themeName);
   } else {
     html.removeAttribute("data-theme");
   }
@@ -50,31 +48,7 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 }
 
-  function ensurePulseTapThemeOptions() {
-    if (!themeSelector) return;
-
-    const existingValues = Array.from(themeSelector.options).map(function (option) {
-      return option.value;
-    });
-
-    if (!existingValues.includes("pulsetap-dark")) {
-      const option = document.createElement("option");
-      option.value = "pulsetap-dark";
-      option.textContent = "PulseTap Dark";
-      themeSelector.appendChild(option);
-    }
-
-    if (!existingValues.includes("pulsetap-light")) {
-      const option = document.createElement("option");
-      option.value = "pulsetap-light";
-      option.textContent = "PulseTap Light";
-      themeSelector.appendChild(option);
-    }
-  }
-
   if (themeSelector) {
-    ensurePulseTapThemeOptions();
-
     let savedTheme = "natural-light";
 
     try {
@@ -292,6 +266,7 @@ function drawLine() {
       });
   }
 
+  window.loadGuitarPieces = loadGuitarPieces;
   loadGuitarPieces();
 
   // ============================================================
