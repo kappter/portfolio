@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>World Attention — How to Read the Audit</title>
+  <style>
+    :root { --ink:#1f2d35; --muted:#5c6b73; --paper:#f7f3ea; --panel:#ffffff; --accent:#36545b; --gold:#b48b46; --line:#d8d2c5; }
+    * { box-sizing:border-box; }
+    body { margin:0; font-family:Arial,Helvetica,sans-serif; color:var(--ink); background:var(--paper); line-height:1.55; }
+    main { max-width:960px; margin:0 auto; padding:42px 24px 64px; }
+    .kicker { text-transform:uppercase; letter-spacing:.12em; font-size:.76rem; font-weight:700; color:var(--accent); }
+    h1 { margin:.35rem 0 .2rem; font-size:clamp(2rem,5vw,3.5rem); line-height:1.05; }
+    .subtitle { margin:0 0 28px; color:var(--muted); }
+    .purpose { background:var(--panel); border-left:6px solid var(--gold); padding:18px 20px; border-radius:8px; box-shadow:0 8px 24px rgba(31,45,53,.07); }
+    h2 { margin-top:34px; color:var(--accent); }
+    ol { padding-left:1.4rem; }
+    li { margin:.7rem 0; }
+    .grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:14px; }
+    .card { background:var(--panel); border:1px solid var(--line); padding:16px; border-radius:8px; }
+    .card strong { display:block; margin-bottom:4px; color:var(--accent); }
+    .rule { margin:30px 0 0; padding:18px; background:#263642; color:#fff; border-radius:8px; font-weight:700; letter-spacing:.02em; }
+    .meta { margin-top:24px; color:var(--muted); font-size:.9rem; }
+    a { color:#315f70; }
+  </style>
+</head>
+<body>
+<main>
+  <div class="kicker">The Briefing / World Attention</div>
+  <h1>How World Attention Should Be Read</h1>
+  <p class="subtitle">One-page goal, process, and audit guide | Daily Briefing v2</p>
+
+  <div class="purpose"><strong>Purpose.</strong> The goal is to identify 3–10 major attention clusters from the day, show where the attention comes from, and display the perceived source-orientation mix as percentages. It does not decide what is true or morally important.</div>
+
+  <h2>The process</h2>
+  <ol>
+    <li><strong>Retrieve a live sample.</strong> At refresh time, the system requests Google News RSS front-page feeds for six English-language editions: United States, United Kingdom, Canada, Australia, India, and South Africa. It reads up to 12 items per edition and records the retrieval time.</li>
+    <li><strong>Extract headline evidence.</strong> For each RSS item it retains the headline, named outlet, edition, and cleaned headline tokens. It does not read the full article or independently verify its claims.</li>
+    <li><strong>Group related headlines.</strong> Headlines are clustered when they share sufficiently specific terms. Common words and weak editorial wrappers are removed so repeated events can be recognized across editions.</li>
+    <li><strong>Measure attention.</strong> Each cluster receives a score: 12 points per represented edition + 4 per distinct outlet + 3 per article + 8 when the topic overlaps the briefing’s current trend list, capped at 100.</li>
+    <li><strong>Select the day’s major clusters.</strong> The current code prints up to 3. The intended design expands dynamically to 3–10 qualifying clusters, ranked by spread and recurrence while discouraging near-duplicates.</li>
+    <li><strong>Describe origin and perceived orientation.</strong> Show editions/regions, outlets, ownership families, and L/C/R/U percentages. Orientation comes only from reviewed source profiles; unreviewed outlets remain UNKNOWN.</li>
+    <li><strong>Add a TOK inquiry frame.</strong> Keyword rules assign a provisional category, Area of Knowledge, concept, suggested object, and question. These are prompts for examination, not conclusions about the event.</li>
+    <li><strong>Publish in two layers.</strong> The briefing keeps a fixed summary of the strongest 3 signals plus one TOK Lens card, with each representative headline wrapped in full. A separate WORLD_ATTENTION_MASTER worksheet shows all 3–10 qualifying clusters, complete headlines and links, percentages, sources, timestamps, and audit fields.</li>
+  </ol>
+
+  <h2>How to read the card</h2>
+  <div class="grid">
+    <div class="card"><strong>ATTN</strong>A recurrence index—not a percentage of the world, credibility, truth, or importance.</div>
+    <div class="card"><strong>Editions / Articles</strong>How widely and often the cluster appeared; edition share = represented ÷ sampled.</div>
+    <div class="card"><strong>Source Mix / Families</strong>Distinct outlets and known ownership families; unprofiled sources are disclosed.</div>
+    <div class="card"><strong>Orientation L/C/R/U</strong>Percent of distinct outlets in each reviewed orientation bucket; UNKNOWN stays visible.</div>
+    <div class="card"><strong>Why / AOK / Object</strong>Rule-generated classroom prompts that require human scrutiny.</div>
+  </div>
+
+  <div class="rule">ATTENTION ≠ TRUTH • ORIENTATION ≠ CLAIM ACCURACY<br><span style="font-weight:400">Profile coverage = (L+C+R) ÷ all outlets; L/C/R/U percentages use all distinct outlets as the denominator.</span></div>
+
+  <p class="meta">Implementation basis: <code>98_DFT_WORLD_ATTENTION_V60_REPLACEMENT.gs</code> (installed implementation reviewed August 21, 2026).</p>
+  <p class="meta"><a href="index.html">← Back to portfolio</a></p>
+</main>
+</body>
+</html>
