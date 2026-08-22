@@ -1,43 +1,4 @@
-<script type="text/javascript">
-        var gk_isXlsx = false;
-        var gk_xlsxFileLookup = {};
-        var gk_fileData = {};
-        function filledCell(cell) {
-          return cell !== '' && cell != null;
-        }
-        function loadFileData(filename) {
-        if (gk_isXlsx && gk_xlsxFileLookup[filename]) {
-            try {
-                var workbook = XLSX.read(gk_fileData[filename], { type: 'base64' });
-                var firstSheetName = workbook.SheetNames[0];
-                var worksheet = workbook.Sheets[firstSheetName];
-
-                // Convert sheet to JSON to filter blank rows
-                var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, blankrows: false, defval: '' });
-                // Filter out blank rows (rows where all cells are empty, null, or undefined)
-                var filteredData = jsonData.filter(row => row.some(filledCell));
-
-                // Heuristic to find the header row by ignoring rows with fewer filled cells than the next row
-                var headerRowIndex = filteredData.findIndex((row, index) =>
-                  row.filter(filledCell).length >= filteredData[index + 1]?.filter(filledCell).length
-                );
-                // Fallback
-                if (headerRowIndex === -1 || headerRowIndex > 25) {
-                  headerRowIndex = 0;
-                }
-
-                // Convert filtered JSON back to CSV
-                var csv = XLSX.utils.aoa_to_sheet(filteredData.slice(headerRowIndex)); // Create a new sheet from filtered array of arrays
-                csv = XLSX.utils.sheet_to_csv(csv, { header: 1 });
-                return csv;
-            } catch (e) {
-                console.error(e);
-                return "";
-            }
-        }
-        return gk_fileData[filename] || "";
-        }
-        </script><!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -45,7 +6,8 @@
     <title>Ken Kapptie | Computer Science Portfolio</title>
     <link rel="icon" href="images/kjklogo.png" type="image/png" sizes="32x32">
     <link rel="apple-touch-icon" href="images/kjklogo.png">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Montserrat:wght@400;500;600;700&family=Orbitron:wght@400;500;600;700&family=Cinzel:wght@400;700&display=swap">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Montserrat:wght@400;500;600;700&family=Orbitron:wght@400;500;600;700&family=Cinzel:wght@400;700&display=swap">
     <link id="theme-stylesheet" rel="stylesheet" href="css/styles.css">
 </head>
 <body>
@@ -88,10 +50,6 @@
                     <optgroup label="Medieval Theme">
                         <option value="medieval-light">Medieval Light</option>
                         <option value="medieval-dark">Medieval Dark</option>
-                    </optgroup>
-                    <optgroup label="PulseTap Theme">
-                        <option value="pulsetap-light">PulseTap Light</option>
-                        <option value="pulsetap-dark">PulseTap Dark</option>
                     </optgroup>
                 </select>
             </li>
@@ -259,18 +217,15 @@
            function buildNowTile(item, duplicate = false) {
     const opensModal = Boolean(item.modalUrl);
 
-    const links = item.links?.length > 1
-    ? `<div class="now-tile-links">${
-        item.links.map(link => `
-            <a href="${link.url}"
-               target="_blank"
-               rel="noopener"
-               ${duplicate ? 'tabindex="-1"' : ''}>
-                ${link.label}
-            </a>
-        `).join("")
-    }</div>`
-    : "";
+    // A tile is only an anchor when it has exactly one link.
+    // Multi-link tiles must be articles so we do not create nested <a> elements.
+    const tile = document.createElement(
+        opensModal
+            ? "button"
+            : item.links?.length === 1
+                ? "a"
+                : "article"
+    );
 
     tile.className = `now-tile now-tile-${item.type}`;
 
@@ -292,17 +247,28 @@
     if (!opensModal && item.links?.length === 1) {
         tile.href = item.links[0].url;
         tile.target = "_blank";
-        tile.rel = "noopener";
+        tile.rel = "noopener noreferrer";
     }
 
     const media = item.type === "photo"
         ? `<img src="${item.image}" alt="${item.title}" loading="lazy" onerror="this.src='https://placehold.co/360x240?text=Current+Work';">`
         : `<div class="now-icon">${item.icon || "•"}</div>`;
 
-    const badge = item.badge ? `<span class="now-tile-badge">${item.badge}</span>` : "";
+    const badge = item.badge
+        ? `<span class="now-tile-badge">${item.badge}</span>`
+        : "";
 
     const links = item.links?.length > 1
-        ? `<div class="now-tile-links">${item.links.map(link => `<a href="${link.url}" target="_blank" rel="noopener">${link.label}</a>`).join("")}</div>`
+        ? `<div class="now-tile-links">${
+            item.links.map(link => `
+                <a href="${link.url}"
+                   target="_blank"
+                   rel="noopener noreferrer"
+                   ${duplicate ? 'tabindex="-1"' : ''}>
+                    ${link.label}
+                </a>
+            `).join("")
+        }</div>`
         : "";
 
     tile.innerHTML = `
@@ -489,7 +455,7 @@
                         <img src="images/gpa.png" alt="GPA Calculator">
                     </a>
                     <h3>GPA Calculator</h3>
-                    <p>Maybe as a freshman who just had a rough first year, you’re probably feeling stressed about your GPA and wondering if you can still hit a 3.5 or even a 3.2 by the time your a senior. Let’s break down the EstimateYourGrade app in a way that’s super clear and hopeful, focusing on how it can help you figure out if those goals are possible.</p>
+                    <p>Maybe as a freshman who just had a rough first year, you’re probably feeling stressed about your GPA and wondering if you can still hit a 3.5 or even a 3.2 by the time you’re a senior. Let’s break down the EstimateYourGrade app in a way that’s super clear and hopeful, focusing on how it can help you figure out if those goals are possible.</p>
                     <a href="https://github.com/kappter/estimateyourgrade" target="_blank" class="project-link">View on GitHub</a>
                 </div>      
 					
@@ -641,7 +607,7 @@
 
 				<div class="project-card">
                     <a href="https://kappter.github.io/LoveSync/" target="_blank">
-                        <img src="images/lovesync.png" alt="SlideCraft">
+                        <img src="images/lovesync.png" alt="LoveSync">
                     </a>
                     <h3>LoveSync</h3>
                     <p>LoveSync is a mobile-first, interactive web app that reimagines Gary Chapman's The 5 Love Languages® as a dynamic self-evaluation tool. Users rate their preferences for receiving and giving love across five categories—Words of Affirmation, Acts of Service, Receiving Gifts, Quality Time, and Physical Touch—using intuitive 1-10 sliders for each mode. </p>
@@ -650,7 +616,7 @@
 							
 				<div class="project-card">
                     <a href="https://kappter.github.io/blocktime/index.html" target="_blank">
-                        <img src="images/blocktime.png" alt="SlideCraft">
+                        <img src="images/blocktime.png" alt="BlockTime">
                     </a>
                     <h3>BlockTime</h3>
                     <p>BlockTime is a minimalist web app designed to help users, particularly students, manage their weekly time allocation. Inspired by a Lego-based time management concept, it allows users to create custom categories, assign colors, and "drop" blocks into a 7-day grid (Monday to Sunday) to represent time spent on activities. Each block shows its category and time range (e.g., "Sleep: 8:00-8:30 PM"), with time labels (12AM, 6AM, 12PM, 6PM) integrated into the grid. Running totals for categories and the week are displayed below the grid. Users can copy days, save/apply day types (e.g., Work, Weekend), save/load schedules as JSON, and undo actions. The app supports time resolutions (15, 30, or 60 minutes) and generates a report with a summary, table, and pie chart, downloadable as a PDF. It’s optimized for desktop and mobile with a touch-friendly, simple design. </p>
@@ -659,7 +625,7 @@
 					
 				<div class="project-card">
                     <a href="https://kappter.github.io/FretFlow/test/index.html" target="_blank">
-                        <img src="images/fretFlow.png" alt="SlideCraft">
+                        <img src="images/fretFlow.png" alt="FretFlow">
                     </a>
                     <h3>FretFlow</h3>
                     <p>A web application that visualizes MIDI files in real-time on both a guitar fretboard and piano roll. This project merges MIDI visualization functionality from FretFlow with the design aesthetic of musicTheory.</p>
@@ -701,7 +667,7 @@
 					
 				<div class="project-card">
                     <a href="https://kappter.github.io/paydayplanner/" target="_blank">
-                        <img src="images/plan.png" alt="SlideCraft">
+                        <img src="images/plan.png" alt="Payday Planner">
                     </a>
                     <h3>Payday Planner</h3>
                     <p>Payday Planner is a simple web app that helps you manage your monthly bills by calculating the total amount needed in your checking account until your next payday (assumed to be the 1st or 15th of each month). Upload a CSV file with your bills, and the app will display the next payday, the total amount required for bills due before then, and a detailed list of those bills. </p>
@@ -843,7 +809,7 @@
                 </div>
 
                 <div class="project-card">
-                    <a href="https://2j6h5i7cm7m0.manus.space/index.html" target="_blank">
+                    <a href="https://kappter.github.io/word/" target="_blank">
                         <img src="https://github.com/kappter/portfolio/blob/main/images/createword.png?raw=true" alt="WordMaker">
                     </a>
                     <h3>WordMaker</h3>
@@ -862,7 +828,7 @@
 
                 <div class="project-card">
                     <a href="https://kappter.github.io/curriculabrowser/" target="_blank">
-                        <img src="images/curriculum.png" alt="Groovish">
+                        <img src="images/curriculum.png" alt="Lesson Visualizer">
                     </a>
                     <h3>Lesson Visualizer</h3>
                     <p>This project is a web-based application designed to display lesson plans for Computer Programming 1 and Computer Programming 2, aligned with Utah’s curriculum standards. The application features a single-page interface with a dropdown menu to select a course (Programming 1 or Programming 2) and a paginated table displaying lesson details, including Day, Strand/Standard, Title, Concepts, and Starter activity. The interface is styled with Tailwind CSS for a clean, responsive design and uses Papa Parse to parse CSV files containing the lesson plans.</p>
@@ -871,7 +837,7 @@
 
                 <div class="project-card">
                     <a href="https://kappter.github.io/mealplan/" target="_blank">
-                        <img src="images/meals.png" alt="Groovish">
+                        <img src="images/meals.png" alt="MealPlan">
                     </a>
                     <h3>MealPlan</h3>
                     <p>This is a simple web-based application that helps you randomize full meal ideas, including an appetizer, an entree, and a side dish. You can also filter entree suggestions based on specific ingredients you have on hand. It features a modern, responsive design with a light/dark mode toggle.</p>
@@ -1218,47 +1184,6 @@
         </div>
     </div>
 </footer>
-
-    <script type="text/javascript">
-        var gk_isXlsx = false;
-        var gk_xlsxFileLookup = {};
-        var gk_fileData = {};
-        function filledCell(cell) {
-          return cell !== '' && cell != null;
-        }
-        function loadFileData(filename) {
-        if (gk_isXlsx && gk_xlsxFileLookup[filename]) {
-            try {
-                var workbook = XLSX.read(gk_fileData[filename], { type: 'base64' });
-                var firstSheetName = workbook.SheetNames[0];
-                var worksheet = workbook.Sheets[firstSheetName];
-
-                // Convert sheet to JSON to filter blank rows
-                var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, blankrows: false, defval: '' });
-                // Filter out blank rows (rows where all cells are empty, null, or undefined)
-                var filteredData = jsonData.filter(row => row.some(filledCell));
-
-                // Heuristic to find the header row by ignoring rows with fewer filled cells than the next row
-                var headerRowIndex = filteredData.findIndex((row, index) =>
-                  row.filter(filledCell).length >= filteredData[index + 1]?.filter(filledCell).length
-                );
-                // Fallback
-                if (headerRowIndex === -1 || headerRowIndex > 25) {
-                  headerRowIndex = 0;
-                }
-
-                // Convert filtered JSON back to CSV
-                var csv = XLSX.utils.aoa_to_sheet(filteredData.slice(headerRowIndex)); // Create a new sheet from filtered array of arrays
-                csv = XLSX.utils.sheet_to_csv(csv, { header: 1 });
-                return csv;
-            } catch (e) {
-                console.error(e);
-                return "";
-            }
-        }
-        return gk_fileData[filename] || "";
-        }
-    </script>
     <script src="script.js"></script>
 </body>
 </html>
