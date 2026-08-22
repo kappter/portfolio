@@ -259,9 +259,18 @@
            function buildNowTile(item, duplicate = false) {
     const opensModal = Boolean(item.modalUrl);
 
-    const tile = document.createElement(
-        opensModal ? "button" : item.links?.length ? "a" : "article"
-    );
+    const links = item.links?.length > 1
+    ? `<div class="now-tile-links">${
+        item.links.map(link => `
+            <a href="${link.url}"
+               target="_blank"
+               rel="noopener"
+               ${duplicate ? 'tabindex="-1"' : ''}>
+                ${link.label}
+            </a>
+        `).join("")
+    }</div>`
+    : "";
 
     tile.className = `now-tile now-tile-${item.type}`;
 
